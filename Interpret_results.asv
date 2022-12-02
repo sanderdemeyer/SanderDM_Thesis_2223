@@ -1,0 +1,16 @@
+load('Hubbard_1D_external_field_1_half_filling.mat');
+
+[pspace, vspace, trivspace, fusion_trees] = get_spaces('Hubbard', false, 1/2, 12, 3);
+
+t = 1.5;
+U = 9;
+mu = 0;
+h_field = 1;
+
+H = get_hamiltonian('Hubbard_external_field', fusion_trees, pspace, t, U, mu, h_field);
+
+AC1 = mps.
+E = contract()
+
+get_filling(mps, pspace, trivspace, 2, false);
+
