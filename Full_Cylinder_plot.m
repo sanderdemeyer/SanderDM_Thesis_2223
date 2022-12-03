@@ -1,10 +1,10 @@
-files = dir(('Data structures/FullCylinder_N_2'));
+files = dir(('Data structures/FullCylinder_N_6'));
 l = length(files);
 disp(l);
 [pspace, vspace, trivspace, fusion_trees] = get_spaces('Heisenberg XXZ');
 
-stag_magn = zeros(1, (l-2)/2);
-h_stag = zeros(1, (l-2)/2);
+stag_magn = zeros(1, (l-2));
+h_stag = zeros(1, (l-2));
 j = 1;
 for i = 3:l
     disp(i);
@@ -14,11 +14,13 @@ for i = 3:l
     disp(name);
     %load(name);
     if strcmp(name(name_length-8:name_length-4), 'final')
-        load(strcat('Data structures/FullCylinder_N_2/', name))
+        load(strcat('Data structures/FullCylinder_N_6/', name))
         %gs_mps = canonicalize(mps, 'Order', 'rl');
         disp('here');
         disp(name(49:name_length-10));
-        h = str2double(name(49:name_length-10));
+        start_index = strfind(name, 'stagh') + 6;
+        end_index = 10;
+        h = str2double(name(start_index:name_length-end_index));
         disp(h);
         h_stag(j) = h;
         m_stag = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 2.1, false, true);

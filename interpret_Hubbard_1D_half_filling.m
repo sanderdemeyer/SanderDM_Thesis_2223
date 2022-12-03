@@ -53,6 +53,9 @@ for i = 1:length
     E1 = contract(AL1, [1 2 3], AC2, [3 4 5], conj(AL1), [1 6 7], conj(twist(AC2,3)), [7 8 5], H, [2 4 6 8]);
     E2 = contract(AL2, [1 2 3], AC1, [3 4 5], conj(AL2), [1 6 7], conj(twist(AC1,3)), [7 8 5], H, [2 4 6 8]);
     E = (E1+E2)/2;
+
+    E_1_1 = contract(AC1, [1 2 3], conj(twist(AC1, 3)), [1 4 3], H_one_site, [-1 4 -2 2]);
+    E_1_2 = contract(AC2, [1 2 3], conj(twist(AC2, 3)), [1 4 3], H_one_site, [-1 4 -2 2]);
     disp(E);
     energies(i) = E;
     [V, D] = transfereigs(gs_mps, gs_mps, 5);
