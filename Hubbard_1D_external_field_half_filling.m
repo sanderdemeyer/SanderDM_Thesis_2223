@@ -38,8 +38,8 @@ function gs_mps = Hubbard_1D_external_field_half_filling(t, U, maxdim, cut, maxi
     %cut = 4;
     naam = 'Hubbard_1D_half_filling_idmrg2_t_' + string(t) + '_U_' + string(U) + '_maxdim_' +string(maxdim) + '_cut_' + string(cut) + '_redef_' + string(redefined);
     %{'TruncBelow', 10^(-cut)} can be used.
-    alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-6), 'maxiter', maxdim, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
-    %alg = Vumps('which', 'smallestreal', 'maxiter', 200, 'verbosity', Verbosity.iter, 'dynamical_tols', false, 'doSave', true, 'name', naam, 'tol', 10^(-6));
+    %alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-6), 'maxiter', maxdim, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
+    alg = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'dynamical_tols', true, 'doSave', true, 'name', naam, 'tol', 10^(-6), 'doplot', true);
     
     [gs_mps, gs_energy] = fixedpoint(alg, H1, mps);
     

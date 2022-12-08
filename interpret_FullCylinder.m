@@ -1,3 +1,4 @@
+%{
 %N = 3;
 delta = 1;
 %stag_h_field = 0;
@@ -49,31 +50,61 @@ E2_B_R = contract(AC2, [1 2 3], AR1, [3 4 5], conj(AC2), [1 6 8], conj(twist(AR1
 E2 = (E2_A_L + E2_B_L + E2_A_R + E2_B_R)/4;
 
 E = E1 + E2;
-
+%}
 %%
 
-AL = gs_mps.AC;
-AC1 = gs_mps.AR;
-% General Energy calculation
-n_tens = 2*N+1;
-contr_list{n_tens*2} = 0;
-contr_list{1} = AL{1};
-contr_list{2} = [1 2 5];
-contr_list{3} = conj(AL{1});
-contr_list{4} = [1 3 4];
-for i = 1 : N-2
-    contr_list{4*i+1} = AL{i+1};
-    contr_list{4*i+2} = [4*i+1 4*i+2 4*i+5];
-    contr_list{4*i+3} = conj(AL{i+1});
-    contr_list{4*i+4} = [4*i 4*i+3 4*i+4];
+AL = gs_mps.AL;
+AC = gs_mps.AC;
+
+p = [1 2 3 4];
+c = get_energy(p);
+p = [2 3 4 1];
+c = get_energy(p);
+p = [3 4 1 2];
+c = get_energy(p);
+p = [4 1 2 3];
+c = get_energy(p);
+
+
+function c = get_energy(p)
+    load('XXX_FullCylinder_idmrg2_2_maxdim_50_cut_6_stagh_0.002_final.mat')
+    AL = gs_mps.AL;
+    AC = gs_mps.AC;
+
+    N = 4;
+    contr_list = zeros(1,1);
+    contr_list = num2cell(contr_list);
+    % General Energy calculation
+    n_tens = 2*N+1;
+    contr_list{n_tens*2} = 0;
+    contr_list{1} = AL(p(1));
+    contr_list{2} = [1 2 5];
+    contr_list{3} = conj(AL(p(1)));
+    contr_list{4} = [1 3 4];
+    for i = 1 : N-2
+        contr_list{4*i+1} = AL(p(i+1));
+        contr_list{4*i+2} = [4*i+1 4*i+2 4*i+5];
+        contr_list{4*i+3} = conj(AL(p(i+1)));
+        contr_list{4*i+4} = [4*i 4*i+3 4*i+4];
+    end
+    
+    contr_list{4*N-3} = AC(p(N));
+    contr_list{4*N-2} = [4*N-3 4*N-2 4*N]; % Normally the last one would be 4*N+1, but contracted with conj
+    contr_list{4*N-1} = conj(twist(AC(p(N)),3));
+    contr_list{4*N} = [4*N-4 4*N-1 4*N];
+    
+    
+    contr_list{4*N+1} = H;
+    contr_list{4*N+2} = [2 6 3 7];
+    contr_list{4*N+3} = H;
+    contr_list{4*N+4} = [10 14 11 15];
+    
+    %{
+    contr_list{4*N+5} = H;
+    contr_list{4*N+6} = [18 22 19 23];
+    contr_list{4*N+7} = H;
+    contr_list{4*N+8} = [26 30 27 31];
+    %}    
+    c = contraction_general(contr_list);
+    disp(c);
 end
-
-contr_list{4*N-3} = AC{N};
-contr_list{4*N-2} = [4*N-3 4*N-2 4*N]; % Normally the last one would be 4*N+1, but contracted with conj
-contr_list{4*N-1} = conj(twist(AC{N},3));
-contr_list{4*N} = [4*N-4 4*N-1 4*N];
-
-
-
-contr_list{4*N+1} = H;
-contr_list{4*N+2} = H_contr_ind;

@@ -180,7 +180,45 @@ function H = get_hamiltonian(type, varargin)
         H = fill_tensor(tens, tblocks);
         H = tpermute(H, [3 4 1 2], [2 2]);
         return
+    elseif strcmp('XXZ_stag', type)
+        % copied from XXX_stag and changed with delta
+        % arguments are
+        % staggered pspace, trivspace, h_field, order
+        pspace = varargin{1};
+        trivspace = varargin{2};
+        stagh = varargin{3};
+        order = varargin{4};
+        delta = varargin{5};
+        tens = Tensor([pspace pspace], [pspace pspace]);
 
+        H_vars = [delta, 2, -delta, -delta, 2, delta]/4;
+        tblocks = num2cell(H_vars);
+        H = fill_tensor(tens, tblocks);
+
+        tens_one_site_l = Tensor(pspace, [trivspace pspace]);
+        tens_one_site_r = Tensor(pspace, [trivspace' pspace]);
+
+        tens_l = tpermute(tens_one_site_l, [2 3 1], [1 2]); %T_l has triv leg on the right
+        tens_r = tpermute(tens_one_site_r, [2 3 1], [2 1]);
+        tblocks_A = num2cell(stagh*[-1 1]);
+        one_blocks = num2cell([1 1]);
+        sigma_l = fill_tensor(tens_l, tblocks_A);
+        sigma_r = fill_tensor(tens_r, tblocks_A);
+        one_l = fill_tensor(tens_l, one_blocks);
+        one_r = fill_tensor(tens_r, one_blocks);
+        M_s_1 = contract(sigma_l, [-1 1 -3], one_r, [-2 1 -4]);
+        M_s_2 = contract(one_l, [-1 1 -3], sigma_r, [-2 1 -4]);
+        if order == 'AB'
+            M_s = M_s_1 - M_s_2;
+        elseif order == 'BA'
+            M_s = -M_s_1 + M_s_2;
+        else
+            error('order not implemented, check for spelling errors')
+        end
+        M_s = tpermute(M_s, [1 2 3 4], [2 2]);
+        H = tpermute(H, [3 4 1 2], [2 2]);
+        H = plus(H, M_s);
+        return
     elseif strcmp('XXX_stag', type)
         % arguments are
         % staggered pspace, trivspace, h_field, order

@@ -1,4 +1,4 @@
-files = dir(('Data structures/FullCylinder_N_6'));
+files = dir(('Data structures/FullCylinder_N_4'));
 l = length(files);
 disp(l);
 [pspace, vspace, trivspace, fusion_trees] = get_spaces('Heisenberg XXZ');
@@ -14,7 +14,7 @@ for i = 3:l
     disp(name);
     %load(name);
     if strcmp(name(name_length-8:name_length-4), 'final')
-        load(strcat('Data structures/FullCylinder_N_6/', name))
+        load(strcat('Data structures/FullCylinder_N_4/', name))
         %gs_mps = canonicalize(mps, 'Order', 'rl');
         disp('here');
         disp(name(49:name_length-10));

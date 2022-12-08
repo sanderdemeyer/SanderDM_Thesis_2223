@@ -10,10 +10,15 @@ function gs_mps = FullCylinder(N, maxdim, cut, maxiter, stag_h_field, starting_n
     pspace = GradedSpace.new(charges, [1 1], false);
     trivspace = GradedSpace.new(U1(0), 1, false);
     
-    D1 = [2 16 39 52 39 16 2];
-    D2 = [1 9 28 49 49 28 9 1];
-    vspace1 = GradedSpace.new(U1([-5 -3 -1 1 3 5 7]), D1, false);
-    vspace2 = GradedSpace.new(U1([-6 -4 -2 0 2 4 6 8]), D2, false);
+    %D1 = [2 16 39 52 39 16 2];
+    %D2 = [1 9 28 49 49 28 9 1];
+    D1 = [12 12];
+    D2 = [8 8 8];
+
+    %vspace1 = GradedSpace.new(U1([-5 -3 -1 1 3 5 7]), D1, false);
+    %vspace2 = GradedSpace.new(U1([-6 -4 -2 0 2 4 6 8]), D2, false);
+    vspace1 = GradedSpace.new(U1([-1 1]), D1, false);
+    vspace2 = GradedSpace.new(U1([-2 0 2]), D2, false);
     
 
     %%

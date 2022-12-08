@@ -1,7 +1,7 @@
-function XXZ_Cylinder(N, maxdim, cut, maxiter, stag_h_field, starting_name, final)
-    disp('Code started running');
+function [gs_mps, gs_energy] = XXZ_Cylinder(N, delta, maxdim, cut, maxiter, stag_h_field, starting_name, final)
+    disp('Code has started running');
     %N = 3;
-    delta = 1;
+    %delta = 2;
     %stag_h_field = 0;
     h_field = 0;
     
@@ -15,14 +15,14 @@ function XXZ_Cylinder(N, maxdim, cut, maxiter, stag_h_field, starting_name, fina
     vspace2 = GradedSpace.new(U1([2, 0, -2]), [D/2 D/2 D/2], false);
     
     %%
-    H_A = get_hamiltonian('XXX_stag', pspace, trivspace, stag_h_field, 'AB');
-    H_B = get_hamiltonian('XXX_stag', pspace, trivspace, stag_h_field, 'BA');
+    H_A = get_hamiltonian('XXZ_stag', pspace, trivspace, stag_h_field, 'AB', delta);
+    H_B = get_hamiltonian('XXZ_stag', pspace, trivspace, stag_h_field, 'BA', delta);
     H_one_site = get_hamiltonian('one_site_XXZ', pspace, trivspace, 0, 0);
     H_one_site_A = H_one_site{1};
     H_one_site_B = H_one_site{2};
     
-    mpo_A = get_mpo(H_A, N);
-    mpo_B = get_mpo(H_B, N);
+    mpo_A = get_mpo(H_A, N, 'Helix');
+    mpo_B = get_mpo(H_B, N, 'Helix');
 
     mpo_joint = {mpo_A mpo_B};
         
@@ -45,13 +45,13 @@ function XXZ_Cylinder(N, maxdim, cut, maxiter, stag_h_field, starting_name, fina
     disp('initialization correct');
     %%
     %naam = strcat(starting_name, 'VUMPS')
-    naam = 'XXZ_Cylinder_idmrg2_' + string(N) + '_maxdim_' + string(maxdim) + '_cut_' + string(cut) + '_stagh_' + string(stag_h_field);
-    alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-5), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
-    %alg = Vumps('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'dynamical_tols', false, 'doSave', true, 'name', naam, 'tol', 10^(-6));
+    naam = 'XXZ_Cylinder_idmrg2_' + string(N) + '_delta_' + string(delta) + '_maxdim_' + string(maxdim) + '_cut_' + string(cut) + '_stagh_' + string(stag_h_field);
+    %alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-5), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
+    alg = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'dynamical_tols', true, 'doSave', true, 'trunc', {'TruncTotalDim', maxdim}, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
     [gs_mps, gs_energy] = fixedpoint(alg, H1, mps);
     
     %%
-    save(naam + '_final')
+    save(strcat(naam, '_final.mat'));
     disp('Done');
     %magn = get_magnetisation(gs_mps, pspace, trivspace, 2, true);
     
