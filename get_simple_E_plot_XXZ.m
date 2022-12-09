@@ -1,3 +1,4 @@
+doPath;
 deltas = linspace(4, -2, 50);
 energies = zeros(1, 50);
 corr_lengths = zeros(1, 50);
@@ -5,7 +6,7 @@ corr_lengths = zeros(1, 50);
 for i = 1:50
     disp(i);
     delta = deltas(i);
-    [gs_mps, energy] = XXZ_Cylinder(0, delta, 70, 8, 100, 0,0,0);
+    [gs_mps, energy] = XXZ_Cylinder(0, delta, 100, 7, 200, 0,0,0);
     energies(i) = energy;
     fprintf('for delta = %s, energy is %s\n', delta, energy);
     save('energies', 'energies')
@@ -19,3 +20,4 @@ for i = 1:50
     corr_lengths(i) = 1/epsilons(2);
     save('corr_lengths', 'corr_lengths');
 end
+
