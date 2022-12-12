@@ -1,4 +1,5 @@
 files = dir(('Data structures/Prachtig'));
+files = dir(('Data structures/XXZ_1D_delta_1_sizeD'));
 l = length(files);
 deltas = zeros(1, 5);
 epsilon1s = zeros(1, 5);
@@ -24,6 +25,7 @@ for i = 3:l
         disp(epsilons);
         deltas(k) = epsilons(3) - epsilons(2);
         epsilon1s(k) = epsilons(2);
+        %{
         AL1 = gs_mps.AL(1);
         AC2 = gs_mps.AC(2);
         W1 = mpo_joint{1};
@@ -43,6 +45,8 @@ for i = 3:l
         var_A = contract(hoera, [1 2 3 -1 4], conj(AL1), [1 2 5], conj(AC2), [5 3 4]);
         disp(var_A.var.var);
         variances(k) = var_A.var.var;
+        %}
+
         k = k+1;
     end
 end

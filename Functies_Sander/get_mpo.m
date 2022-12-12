@@ -49,6 +49,18 @@ function mpo_full = get_mpo(H, N, type)
             warning('Not implemented for FullCylinder, using Helix instead')
             mpo_full = get_mpo(H, 0, 'Helix');
             return
+        elseif N == 2
+            sz = 5;
+            mpo = MpoTensor.zeros(sz, 1, sz, 1);
+            mpo(1, 1, 1, 1) = MpoTensor(1);
+            mpo(sz, 1, sz, 1) = MpoTensor(1);
+            mpo(1, 1, 2, 1) = MpoTensor(L);
+            mpo(2, 1, sz, 1) = MpoTensor(R);
+            mpo(1, 1, 3, 1) = MpoTensor(L);
+            mpo(3, 1, 4, 1) = MpoTensor(1);
+            mpo(4, 1, sz, 1) = MpoTensor(R);
+            mpo_full = {mpo mpo mpo mpo};
+            return
         else
             sz = 2*N+2;
             mpo = MpoTensor.zeros(sz, 1, sz, 1);
