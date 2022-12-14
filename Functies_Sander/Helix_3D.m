@@ -1,6 +1,9 @@
-function [gs_mps, gs_energy] = XXZ_Cylinder(N, delta, trunc, maxiter, vumps_way, stag_h_field, starting_name, final)
+function [gs_mps, gs_energy] = Helix_3D(N, delta, trunc, maxiter, vumps_way, stag_h_field, starting_name, final)
     doPath
     disp('Code has started running');
+
+    P = N(1);
+    Q = N(2);
     %N = 3;
     %delta = 2;
     %stag_h_field = 0;
@@ -55,11 +58,13 @@ function [gs_mps, gs_energy] = XXZ_Cylinder(N, delta, trunc, maxiter, vumps_way,
     H_one_site_A = H_one_site{1};
     H_one_site_B = H_one_site{2};
     
-    mpo_A = get_mpo(H_A, N, 'Helix');
-    mpo_B = get_mpo(H_B, N, 'Helix');
+    %mpo_A = get_mpo(H_A, N, '3D_Helix');
+    %mpo_B = get_mpo(H_B, N, '3D_Helix');
+    mpo = get_mpo(H_A, [P Q], 'Helix_3D');
 
-    mpo_joint = {mpo_A mpo_B};
-        
+    %mpo_joint = {mpo_A mpo_B};
+    mpo_joint = {mpo mpo}; 
+
     mpo_joint{1}(1, 1, N+3, 1) = tpermute(H_one_site_A, [2 1 4 3], [2 2]);
     mpo_joint{2}(1, 1, N+3, 1) = tpermute(H_one_site_B, [2 1 4 3], [2 2]);
     
@@ -80,19 +85,17 @@ function [gs_mps, gs_energy] = XXZ_Cylinder(N, delta, trunc, maxiter, vumps_way,
     %%
     %naam = strcat(starting_name, 'VUMPS')
     if trunc_tot
-        naam = 'XXZ_Cylinder_vumps_' + string(N) + '_delta_' + string(delta) + '_trunctotdim_' + string(trunc) + '_stagh_' + string(stag_h_field);
+        naam = '3D_Helix_vumps_' + string(P) + '_' + string(Q) + '_delta_' + string(delta) + '_trunctotdim_' + string(trunc) + '_stagh_' + string(stag_h_field);
     else
-        naam = 'XXZ_Cylinder_vumps_' + string(N) + '_delta_' + string(delta) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2}) + '_stagh_' + string(stag_h_field);
+        naam = '3D_Helix_vumps_' + string(P) + '_' + string(Q) + '_delta_' + string(delta) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2}) + '_stagh_' + string(stag_h_field);
     end
+    %alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-5), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
     if vumps_way == 1
         alg1 = Vumps('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
         [gs_mps, gs_energy] = fixedpoint(alg1, H1, mps);
     elseif vumps_way == 2
         alg2 = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
         [gs_mps, gs_energy] = fixedpoint(alg2, H1, mps);
-    elseif vumps_way == 3
-        alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-trunc{2}), 'TruncDim', trunc{1}}, 'tol', 10^(-5), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
-        [gs_mps, gs_energy] = fixedpoint(alg, H1, mps);
     else
         maxiter1 = maxiter(1);
         maxiter2 = maxiter(2);
@@ -112,3 +115,4 @@ function [gs_mps, gs_energy] = XXZ_Cylinder(N, delta, trunc, maxiter, vumps_way,
     %magn = get_magnetisation(gs_mps, pspace, trivspace, 2, true);
     
     %[prob_up, prob_down] = get_probabilities(gs_mps, pspace, trivspace, 2);
+end

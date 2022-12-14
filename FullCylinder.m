@@ -1,10 +1,17 @@
-function gs_mps = FullCylinder(N, maxdim, cut, maxiter, stag_h_field, starting_name, final)
+function [gs_mps, gs_energy] = FullCylinder(N, trunc, maxiter, vumps_way, stag_h_field, starting_name, finalized)
     doPath
     disp('Code started running');
     %N = 3;
     delta = 1;
     %stag_h_field = 0;
     
+    trunc_tot = ~iscell(trunc);
+    if trunc_tot
+        trunc_way = {'TruncTotalDim', trunc};
+    else
+        trunc_way = {'TruncBelow', 10^(-trunc{2}), 'TruncDim', trunc{1}};
+    end
+
     charges = U1([1 -1]);
     fusion_trees = FusionTree.new([2 2], charges, false, charges, false, charges, false, charges, false);
     pspace = GradedSpace.new(charges, [1 1], false);
@@ -47,25 +54,47 @@ function gs_mps = FullCylinder(N, maxdim, cut, maxiter, stag_h_field, starting_n
 
     pspaces = repmat(pspace, 1, 2*N);
     vspaces = repmat([vspace1 vspace2], 1, N);
-    mps = UniformMps.randnc(pspaces , vspaces);
     
-    %{
-    if ~final
+    if finalized == 2
+        load(starting_name, 'gs_mps');
+        mps = gs_mps;
+    elseif finalized == 1
+        load(starting_name, 'mps');
         mps = Canonicalize(mps, 'Order', 'rl');
     else
-        mps = gs_mps;
+        mps = UniformMps.randnc(pspaces , vspaces);
     end
-    %}
     disp('initialization correct');
-    %%
-    %cut = 5;
-    %naam = strcat(starting_name, 'VUMPS')
-    naam = 'XXX_FullCylinder_idmrg2_' + string(N) + '_maxdim_' + string(maxdim) + '_cut_' + string(cut) + '_stagh_' + string(stag_h_field);
-    alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-5), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', strcat(naam, '.mat'), 'doSave', true, 'saveIterations', 1);
-    %alg = Vumps('which', 'smallestreal', 'maxiter', 2, 'verbosity', Verbosity.iter);
-    %alg = Vumps('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'dynamical_tols', false, 'doSave', true, 'name', naam, 'tol', 10^(-6));
-    [gs_mps, gs_energy] = fixedpoint(alg, H1, mps);
     
+    %%
+    if trunc_tot
+        naam = 'XXZ_FullCylinder_vumps_' + string(N) + '_delta_' + string(delta) + '_trunctotdim_' + string(trunc) + '_stagh_' + string(stag_h_field);
+    else
+        naam = 'XXZ_FullCylinder_vumps_' + string(N) + '_delta_' + string(delta) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2}) + '_stagh_' + string(stag_h_field);
+    end
+    %alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-5), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', naam, 'doSave', true, 'saveIterations', 1);
+    if vumps_way == 1
+        alg1 = Vumps('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
+        [gs_mps, gs_energy] = fixedpoint(alg1, H1, mps);
+    elseif vumps_way == 2
+        alg2 = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
+        [gs_mps, gs_energy] = fixedpoint(alg2, H1, mps);
+    else
+        maxiter1 = maxiter(1);
+        maxiter2 = maxiter(2);
+        iterations = maxiter(3);
+        alg1 = Vumps('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter1, 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
+        alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter2, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
+        gs_mps = mps;
+        for i = 1:iterations
+            fprintf('Big iteration %d \n', i);
+            [gs_mps, gs_energy] = fixedpoint(alg2, H1, gs_mps);
+            [gs_mps, gs_energy] = fixedpoint(alg1, H1, gs_mps);
+        end
+    end
+
+
+
     %%
     save(strcat(naam, '_final.mat'));
     disp('Done');

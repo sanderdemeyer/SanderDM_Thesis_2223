@@ -22,14 +22,26 @@ hold off
 
 %%
 
-plot(q_lijst, s4);
+plot(q_lijst/pi, s4);
 hold on
-plot(q_lijst, s6);
+plot(q_lijst/pi, s6);
 hold on
-plot(q_lijst, s8);
+plot(q_lijst/pi, s8);
+hold on
 
-legend('N = 4', 'N = 6', 'N = 8')
-xlabel('$q$', 'interpreter', 'latex')
+legend('N = 4', 'N = 6', 'N = 8');
+xlabel('$q/ \pi$', 'interpreter', 'latex')
 ylabel('Structure function $s^{\alpha \beta}(q)$', 'interpreter', 'latex')
-title('Static structure function for the Hamiltonian of the 1D Heisenberg model with $\Delta = 1$', 'interpreter', 'latex')
-hold off
+title('Static structure function of the Heisenberg model with $\Delta = 1$ on a cylinder', 'interpreter', 'latex')
+
+%%
+
+tens = Tensor([pspace' pspace'], [pspace' pspace']);
+swap = num2cell([0 1 0 0 1 0]);
+swap_tens = fill_tensor(tens, swap);
+
+q_lijst = linspace(0, 2*pi, 500);
+
+s4 = get_structure_function(swap_tens, gs_mps, q_lijst, 500);
+
+
