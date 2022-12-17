@@ -1,5 +1,5 @@
 files = dir(('Data structures/Prachtig'));
-files = dir(('Data structures/XXZ_1D_delta_1_sizeD'));
+%files = dir(('Data structures/XXZ_1D_delta_1_sizeD'));
 l = length(files);
 deltas = zeros(1, 5);
 epsilon1s = zeros(1, 5);

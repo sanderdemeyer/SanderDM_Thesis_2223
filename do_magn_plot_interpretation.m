@@ -4,12 +4,9 @@ trivspace = GradedSpace.new(U1(0), 1, false);
 
 disp('Interpretation started');
 
-files = dir(('Data structures/XXX_stagh_N_3'));
+files = dir(('Data structures/FullCylinder_N_4_postchange'));
 l = length(files);
-count = 0;
-h_list = zeros(1, l-3);
-stag_magn_list = zeros(1, l-3);
-E_list = zeros(1, l-3);
+count = 1;
 for i = 3:l
     disp('ok');
     file = files(i);
@@ -24,11 +21,13 @@ for i = 3:l
         else
             disp('not can');
         end
-        h_field = str2double(name(47:len-10));
+        h_field = str2double(name(len-14:len-10));
+        disp(name(len-15:len-10));
         disp(h_field);
-        stag_magn_new = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 2, false, true);
-        stag_magn_list(i-2) = (stag_magn_new);
-        h_list(i-2) = h_field;
+        stag_magn = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
+
+        stag_magn_list{count} = stag_magn;
+        h_list{count} = h_field;
         %{
         AC1 = gs_mps.AC(1);
         AC2 = gs_mps.AC(2);
