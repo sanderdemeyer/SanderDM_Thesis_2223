@@ -88,8 +88,13 @@ function [gs_mps, gs_energy] = FullCylinder(N, trunc, maxiter, vumps_way, stag_h
         gs_mps = mps;
         for i = 1:iterations
             fprintf('Big iteration %d \n', i);
-            [gs_mps, gs_energy] = fixedpoint(alg2, H1, gs_mps);
-            [gs_mps, gs_energy] = fixedpoint(alg1, H1, gs_mps);
+            [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg2, H1, gs_mps);
+            [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg1, H1, gs_mps);
+            if eta < 10^(-5)
+                save(strcat(naam, '_final.mat'));
+                disp('Done');
+                return
+            end
         end
     end
 

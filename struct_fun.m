@@ -37,11 +37,22 @@ title('Static structure function of the Heisenberg model with $\Delta = 1$ on a 
 %%
 
 tens = Tensor([pspace' pspace'], [pspace' pspace']);
-swap = num2cell([0 1 0 0 1 0]);
+%swap = num2cell([0 1 0 0 1 0]); actual swap
+swap = num2cell([1 0 -1 -1 0 1]);
 swap_tens = fill_tensor(tens, swap);
 
 q_lijst = linspace(0, 2*pi, 500);
 
-s4 = get_structure_function(swap_tens, gs_mps, q_lijst, 500);
+s4_swapped = get_structure_function(swap_tens, gs_mps, q_lijst, 500, 2, 8);
 
+%%
+for i = 1:8
+    plot(q_lijst, s4_swapped{i})
+    hold on
+end
+legend('0', '1', '2', '3', '4', '5', '6', '7');
+xlabel('$q/ \pi$', 'interpreter', 'latex')
+ylabel('Structure function $s^{\alpha \beta}(q)$', 'interpreter', 'latex')
+title('Static structure function of the Heisenberg model with $\Delta = 1$ on a cylinder of N = 8, for $S_z^{i} S_z^{i+1}$', 'interpreter', 'latex')
 
+hold off

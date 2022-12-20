@@ -44,8 +44,10 @@ for i = 3:l
     end
 end
 %%
-scatter(h_list, (stag_magn_list));
+%scatter(h_list, (stag_magn_list));
+h_list = [0 cell2mat(h_list)];
+stag_magn_list = [0 cell2mat(stag_magn_list)];
+scatter((h_list), abs((stag_magn_list)));
 xlabel('staggered magnetic field');
 ylabel('staggered magnetisation')
-xlim([0.8 1]);
-title('Staggered magnetisation for N = 2')
+title('Staggered magnetisation for N = 4')

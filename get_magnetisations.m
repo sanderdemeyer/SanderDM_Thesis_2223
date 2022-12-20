@@ -61,7 +61,11 @@ fprintf('Magnetisation is %s \n', magn)
 
 stag_magn = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
 fprintf('Staggered magnetisation is %s \n', stag_magn)
+% above converges to 1
 
 stag_magn_new = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 2, false, true);
 fprintf('New staggered magnetisation is %s \n', stag_magn_new)
+% above converges to 2
 
+stag_magn = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 2.1, false, true);
+fprintf('Staggered magnetisation is %s \n', stag_magn)

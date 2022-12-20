@@ -7,7 +7,7 @@ function [gs_mps, gs_energy, eta] = doVumps(mpo, mps, naam, maxiter, tol, vararg
     alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter2, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc, 'name', strcat(naam, '.mat'), 'tol', 10^(-tol), 'doplot', true);
     gs_mps = mps;
     for i = 1:iterations
-        fprintf('Big iteration %s \n', iterations)
+        fprintf('Big iteration %d \n', i);
         [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg2, mpo, gs_mps);
         [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg1, mpo, gs_mps);
         if eta < 10^(-tol)
