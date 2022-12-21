@@ -66,7 +66,7 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
         [gs_mps, gs_energy, eta] = doVumps(H1, mps, name, maxiter, tol, trunc_way);
     end
     
-    save(naam + '_final');
+    save(name + '_final');
     disp('Done, Hooray!');
 
 end
