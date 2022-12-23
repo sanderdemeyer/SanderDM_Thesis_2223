@@ -41,9 +41,9 @@ tens = Tensor([pspace' pspace'], [pspace' pspace']);
 swap = num2cell([1 2 -1 -1 2 1]);
 swap_tens = fill_tensor(tens, swap);
 
-q_lijst = linspace(0, 2*pi, 500);
+q_lijst = linspace(0, 5*2*pi, 500);
 
-s4_echt_swapped = get_structure_function(swap_tens, gs_mps, q_lijst, 150, 2);
+s4_echt_swapped = get_structure_function(swap_tens, gs_mps, q_lijst, 500, 1);
 
 %%
 for i = 1:4

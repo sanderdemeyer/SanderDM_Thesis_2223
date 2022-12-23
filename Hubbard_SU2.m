@@ -1,6 +1,7 @@
-function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trunc, maxiter, tol, vumps_way, redefined, stag_h_field, starting_name, finalized)
+function [gs_mps, gs_energy] = Hubbard_SU2(t, U, trunc, maxiter, tol, vumps_way, redefined, stag_h_field, starting_name, finalized)
+    doPath
     disp('Code started running');
-    [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', false, 1, 1, 12, 3);
+    [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', true, 1, 1, 12, 3);
         
     trunc_tot = ~iscell(trunc);
     if trunc_tot
@@ -18,8 +19,7 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
     N = 0;
 
     %H = get_hamiltonian('Hubbard_external_field', fusion_trees, pspace, t, 0, 0, 0);
-    %H = get_hamiltonian('Hubbard_two_site', fusion_trees, pspace, t, mu, true);
-    H = Hubbard_operators();
+    H = get_hamiltonian('Hubbard_two_site', fusion_trees, pspace, t, mu, true);
     %H = tpermute(H, [3 4 1 2], [2 2]);
     if redefined
         H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
@@ -57,10 +57,10 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
     end
 
     if vumps_way == 1
-        alg1 = Vumps('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(name, '.mat'), 'tol', 10^(-6), 'doplot', true);
+        alg1 = Vumps('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
         [gs_mps, gs_energy] = fixedpoint(alg1, H1, mps);
     elseif vumps_way == 2
-        alg2 = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(name, '.mat'), 'tol', 10^(-6), 'doplot', true);
+        alg2 = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(naam, '.mat'), 'tol', 10^(-6), 'doplot', true);
         [gs_mps, gs_energy] = fixedpoint(alg2, H1, mps);
     else
         [gs_mps, gs_energy, eta] = doVumps(H1, mps, name, maxiter, tol, trunc_way);

@@ -1,4 +1,4 @@
-function corr_list = correlation_function(O, gs_mps, max_dist)
+function corr_list = correlation_function(O, gs_mps, max_dist, varargin)
 % Takes an 2-site operator O_{ij}, together with the properties of an
 % optimized MPS (AC1, AC2, AR1, AR2), which is thus a 2-site MPS
 % It returns a list, where the expectation value of H_{i,i+dist} is
@@ -16,6 +16,14 @@ function corr_list = correlation_function(O, gs_mps, max_dist)
     else
         assert(nspaces(O) == 4, 'O should have 4 legs')
     end
+
+    if nargin == 4
+        tol_check = true;
+        tol = varargin{1};
+    else
+        tol_check = false;
+    end
+
     AC = gs_mps.AC;
     AR = gs_mps.AR;
     %{
@@ -88,7 +96,12 @@ function corr_list = correlation_function(O, gs_mps, max_dist)
             for b = 1:w
                 x_final{b} = contract(x{b}, [1 4], AR(loop(b,i,w)), [1 2 5], conj(twist(AR(loop(b,i,w)),3)), [4 3 5], O_beta, [2 3]);
             end
-            corr_list(i) = mean(cell2mat(x_final));
+            new_value = mean(cell2mat(x_final));
+            corr_list(i) = new_value;
+            if tol_check && abs(new_value) < tol
+                corr_list = corr_list(1:i);
+                return
+            end
             if i ~= max_dist
                 for b = 1:w
                     x{b} = contract(x{b}, [1 2], AR(loop(b,i,w)), [1 3 -1], conj(AR(loop(b,i,w))), [2 3 -2]);
@@ -107,7 +120,12 @@ function corr_list = correlation_function(O, gs_mps, max_dist)
             for b = 1:w
                 x_final{b} = contract(x{b}, [1 3 2 4], AR(loop(b,i,w)), [1 2 5], conj(twist(AR(loop(b,i,w)),3)), [3 4 5]);
             end
-            corr_list(i) = mean(cell2mat(x_final));
+            new_value = mean(cell2mat(x_final));
+            corr_list(i) = new_value;
+            if tol_check && abs(new_value) < tol
+                corr_list = corr_list(1:i);
+                return
+            end
             if i ~= max_dist
                 for b = 1:w
                     x{b} = contract(x{b}, [1 2 -3 -4], AR(loop(b,i,w)), [1 3 -1], conj(AR(loop(b,i,w))), [2 3 -2]);

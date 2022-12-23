@@ -1,4 +1,4 @@
-function [pspace, vspace, trivspace, fusion_trees] = get_spaces(type, varargin)
+function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type, varargin)
     if strcmp('Hubbard', type)
         % For type = 'Hubbard', which implements the fermionic hubbard
         % model, the arguments are SU2, P, Q, degeneracies
@@ -17,12 +17,12 @@ function [pspace, vspace, trivspace, fusion_trees] = get_spaces(type, varargin)
         % In total, the hilbert space is 4-dimensional with elements:
         % 0, up, down, en doubly occupated.
 
-        SU2 = varargin{1};
+        SU2_symm = varargin{1};
         P = varargin{2};
         Q = varargin{3};
         D1 = varargin{4};
         D2 = varargin{5};
-        if SU2  
+        if SU2_symm  
             a = ProductCharge(U1(-P), SU2(0), fZ2(0));
             b = ProductCharge(U1(Q-P), SU2(1), fZ2(1));
             c = ProductCharge(U1(2*Q-P), SU2(0), fZ2(0));
@@ -38,11 +38,12 @@ function [pspace, vspace, trivspace, fusion_trees] = get_spaces(type, varargin)
             trivcharge = ProductCharge(U1(0), SU2(0), fZ2(0));
 
             fusion_trees = FusionTree.new([2 2], charges1, false, charges1, false, charges1, false, charges1, false);
-            pspace = GradedSpace.new(charges1, [1 1 1 1], false);
+            pspace = GradedSpace.new(charges1, [1 1 1], false);
             trivspace = GradedSpace.new(trivcharge, 1, false);
-            
-            vspace1 = GradedSpace.new(charges1, [D1 D1 D1 D1], false);
-            vspace2 = GradedSpace.new(charges2, [D2 D2 D2 D2 D2 D2 D2 D2 D2], false);
+            prodspace = GradedSpace.new(charges2, [1 1 1 1 1]);
+
+            vspace1 = GradedSpace.new(charges1, [D1 D1 D1], false);
+            vspace2 = GradedSpace.new(charges2, [D2 D2 D2 D2 D2], false);
             vspace = [vspace1 vspace2];
             return
         else
@@ -69,7 +70,8 @@ function [pspace, vspace, trivspace, fusion_trees] = get_spaces(type, varargin)
             fusion_trees = FusionTree.new([2 2], charges1, false, charges1, false, charges1, false, charges1, false);
             pspace = GradedSpace.new(charges1, [1 1 1 1], false);
             trivspace = GradedSpace.new(trivcharge, 1, false);
-            
+            prodspace = GradedSpace.new(charges2, [1 1 1 1 1 1 1 1 1], false);
+
             vspace1 = GradedSpace.new(charges1, [D1 D1 D1 D1], false);
             vspace2 = GradedSpace.new(charges2, [D2 D2 D2 D2 D2 D2 D2 D2 D2], false);
             vspace = [vspace1 vspace2];

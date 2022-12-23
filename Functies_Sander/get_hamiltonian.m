@@ -276,7 +276,7 @@ function H = get_hamiltonian(type, varargin)
         return
 
     elseif strcmp('XXX_Ferromagnet', type)
-    
+        error('TBA');
     else
         error('type %s not implemented.\n', type)
     end        

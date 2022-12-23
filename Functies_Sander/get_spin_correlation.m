@@ -1,4 +1,5 @@
 function spin_correlation = get_spin_correlation(gs_mps, pspace, trivspace, fusion_trees, site_number, filling, fermion, max_dist)
+    warning('outdated, check validity');
     % site_number is 1 or 2
     % fermion indicates whether there should be a twist on the right
     % virtual leg, as is the case with fermions.
@@ -67,7 +68,7 @@ function spin_correlation = get_spin_correlation(gs_mps, pspace, trivspace, fusi
     tblocks = num2cell(O_vars);
     O = fill_tensor(tens, tblocks);
     O = tpermute(O, [3 4 2 1], [2 2]);
-    corr_list1 = correlation_function(O, gs_mps, 2, fermion, max_dist);
+    corr_list1 = correlation_function(O, gs_mps, max_dist);
     %O = tpermute(O, [3 4 2 1], [2 2]);
     %O = tpermute(O, [1 2 4 3], [2 2]);
 %     disp(O);
@@ -126,6 +127,7 @@ function spin_correlation = get_spin_correlation(gs_mps, pspace, trivspace, fusi
         N_down = (N_down + N_down2)/2;
     end
     number_correlation = corr_list1 - (N_up)*(N_down);
+    spin_correlation = number_correlation;
     plot(1:max_dist , number_correlation, 'Color', [0.8500 0.3250 0.0980]);
     hold on
     scatter(1:max_dist, number_correlation, "blue", "x");

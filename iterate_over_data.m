@@ -1,11 +1,13 @@
-files = dir(('Data structures/Prachtig'));
-%files = dir(('Data structures/XXZ_1D_delta_1_sizeD'));
+files = dir(('Data structures/Helix_N_3_postchange'));
+
 l = length(files);
-deltas = zeros(1, 5);
-epsilon1s = zeros(1, 5);
-variances = zeros(1, 5);
-bond_dims = zeros(1, 5);
-energies = zeros(1, 5);
+deltas = zeros(1, l-2);
+epsilon1s = zeros(1, l-2);
+variances = zeros(1, l-2);
+bond_dims = zeros(1, l-2);
+energies = zeros(1, l-2);
+stag_magn = zeros(1, l-2);
+
 k = 1;
 for i = 3:l
     file = files(i);
@@ -14,9 +16,10 @@ for i = 3:l
     if strcmp(name(name_l-9:name_l), '_final.mat')
         disp(name);
         load(name);
-        %dimensions = dims(gs_mps.AL(1));
-        %bond_dim = dimensions(1) + dimensions(3);
-        %bond_dims(k) = bond_dim;
+        dimensions = dims(gs_mps.AL(1).var);
+        bond_dim = dimensions(1) + dimensions(3);
+        bond_dims(k) = bond_dim;
+        energies(k) = gs_energy;
         [V, D] = transfereigs(gs_mps, gs_mps, 3);
         epsilons = zeros(1,3);
         for j = 1:3
@@ -25,6 +28,10 @@ for i = 3:l
         disp(epsilons);
         deltas(k) = epsilons(3) - epsilons(2);
         epsilon1s(k) = epsilons(2);
+
+        stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
+        fprintf('Staggered magnetisation is %s \n', stag_m)
+        stag_magn(k) = stag_m;
         %{
         AL1 = gs_mps.AL(1);
         AC2 = gs_mps.AC(2);
@@ -85,14 +92,33 @@ pol = arrayfun(@(x) polynomial(x, p2(1), p2(2)), deltas);
 RMS2 = sqrt(mean((pol-epsilon1s).^2));
 
 %%
-p3 = polyfit(variances, epsilon1s, 1);
 
 
+p3 = polyfit(deltas(1:11), stag_magn(1:11), 1);
 
 
+scatter(bond_dims(1:11)./2, abs(stag_magn(1:11)));
+xlabel('Bond dimension')
+ylabel('spontaneous staggered magnetisation')
+title('Staggered magnetisation as finite bond dimension effect')
+
+%{
 function y = polynomial(x, a, b)
     y = a*x+b;
 end
+%}
+%%
 
+scatter(bond_dims./2, abs(stag_magn));
+xlabel('Bond dimension')
+ylabel('spontaneous staggered magnetisation')
 
+%%
 
+plot(x, y);
+hold on
+scatter(1./bond_dims, abs(stag_magn));
+hold off
+xlabel('1/D', 'interpreter', 'latex');
+ylabel('spontaneous staggered magnetisation');
+title('Staggered magnetisation as finite bond dimension effect');
