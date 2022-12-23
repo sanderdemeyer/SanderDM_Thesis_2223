@@ -1,4 +1,4 @@
-function cdc = Hubbard_operators()
+function cdc = Hubbard_operators(t)
     [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, 1, 1, 12, 3);
     %prodspace = pspace * pspace;
     c_dagger = Tensor(pspace, [prodspace pspace]);
@@ -26,5 +26,5 @@ function cdc = Hubbard_operators()
     cdc_down_ij = contract(c_dagger_down, [-1 1 -3], c_down, [-2 1 -4]);
     cdc_down_ji = contract(c_dagger_down, [-2 1 -4], c_down, [-1 1 -3]);
     
-    cdc = (cdc_up_ij + cdc_up_ji + cdc_down_ij + cdc_down_ji)/2;
+    cdc = -t*(cdc_up_ij + cdc_up_ji + cdc_down_ij + cdc_down_ji)/2;
 end

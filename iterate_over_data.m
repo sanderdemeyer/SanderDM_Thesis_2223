@@ -1,13 +1,20 @@
-files = dir(('Data structures/Helix_N_3_postchange'));
+folder = 'Data structures/Hubbard_t_1_different_D/';
 
+files = dir(('Data structures/Helix_N_3_postchange'));
+files = dir((folder));
 l = length(files);
+
+disp('started');
+%{
 deltas = zeros(1, l-2);
 epsilon1s = zeros(1, l-2);
 variances = zeros(1, l-2);
 bond_dims = zeros(1, l-2);
 energies = zeros(1, l-2);
 stag_magn = zeros(1, l-2);
-
+inv_corr = zeros(1, l-2);
+Us = zeros(1, l-2);
+%}
 k = 1;
 for i = 3:l
     file = files(i);
@@ -15,23 +22,34 @@ for i = 3:l
     name_l = length(name);
     if strcmp(name(name_l-9:name_l), '_final.mat')
         disp(name);
-        load(name);
+        disp(name(length(name)-8:length(name)));
+        %load(name);
+        load(strcat(folder, name), 'gs_mps', 'gs_energy');
         dimensions = dims(gs_mps.AL(1).var);
         bond_dim = dimensions(1) + dimensions(3);
-        bond_dims(k) = bond_dim;
-        energies(k) = gs_energy;
+        bond_dims{k} = bond_dim;
+        energies{k} = gs_energy;
+
+        disp(name(31:length(name)-38));
+        U = str2double(name(31:length(name)-38));        
+        disp('here');
+        disp(U);
+        disp('alle_here');
+        Us{k} = U;
+
         [V, D] = transfereigs(gs_mps, gs_mps, 3);
         epsilons = zeros(1,3);
         for j = 1:3
             epsilons(j) = -log(norm(D(j,j)));
         end
         disp(epsilons);
-        deltas(k) = epsilons(3) - epsilons(2);
-        epsilon1s(k) = epsilons(2);
+        deltas{k} = epsilons(3) - epsilons(2);
+        epsilon1s{k} = epsilons(2);
+        inv_corr{k} = epsilons(3);
 
-        stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
-        fprintf('Staggered magnetisation is %s \n', stag_m)
-        stag_magn(k) = stag_m;
+        %stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
+        %fprintf('Staggered magnetisation is %s \n', stag_m)
+        %stag_magn(k) = stag_m;
         %{
         AL1 = gs_mps.AL(1);
         AC2 = gs_mps.AC(2);
@@ -115,6 +133,10 @@ ylabel('spontaneous staggered magnetisation')
 
 %%
 
+scatter(Us_array./(Us_array-4), cell2mat(energies));
+xlim([0,10]);
+
+%%
 plot(x, y);
 hold on
 scatter(1./bond_dims, abs(stag_magn));

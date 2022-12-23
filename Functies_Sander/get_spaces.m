@@ -24,14 +24,14 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
         D2 = varargin{5};
         if SU2_symm  
             a = ProductCharge(U1(-P), SU2(0), fZ2(0));
-            b = ProductCharge(U1(Q-P), SU2(1), fZ2(1));
+            b = ProductCharge(U1(Q-P), SU2(2), fZ2(1));
             c = ProductCharge(U1(2*Q-P), SU2(0), fZ2(0));
             charges1 = [a b c];
 
             d = ProductCharge(U1(-2*P), SU2(0), fZ2(0));
-            e = ProductCharge(U1(Q-2*P), SU2(1), fZ2(1));
+            e = ProductCharge(U1(Q-2*P), SU2(2), fZ2(1));
             f = ProductCharge(U1(2*Q-2*P), SU2(0), fZ2(0));
-            g = ProductCharge(U1(3*Q-2*P), SU2(1), fZ2(1));
+            g = ProductCharge(U1(3*Q-2*P), SU2(2), fZ2(1));
             h = ProductCharge(U1(4*Q-2*P), SU2(0), fZ2(0));
             charges2 = [d e f g h];
 
@@ -40,7 +40,7 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
             fusion_trees = FusionTree.new([2 2], charges1, false, charges1, false, charges1, false, charges1, false);
             pspace = GradedSpace.new(charges1, [1 1 1], false);
             trivspace = GradedSpace.new(trivcharge, 1, false);
-            prodspace = GradedSpace.new(charges2, [1 1 1 1 1]);
+            prodspace = GradedSpace.new(charges2, [1 1 1 1 1], false);
 
             vspace1 = GradedSpace.new(charges1, [D1 D1 D1], false);
             vspace2 = GradedSpace.new(charges2, [D2 D2 D2 D2 D2], false);
@@ -57,6 +57,7 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
             f = ProductCharge(U1(Q-2*P), U1(1), fZ2(1));
             g = ProductCharge(U1(Q-2*P), U1(-1), fZ2(1));
             h = ProductCharge(U1(2*Q-2*P), U1(0), fZ2(0));
+
             i = ProductCharge(U1(2*Q-2*P), U1(2), fZ2(0));
             j = ProductCharge(U1(2*Q-2*P), U1(0), fZ2(0)); % same as h
             k = ProductCharge(U1(3*Q-2*P), U1(1), fZ2(1));

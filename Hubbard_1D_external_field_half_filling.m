@@ -19,7 +19,7 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
 
     %H = get_hamiltonian('Hubbard_external_field', fusion_trees, pspace, t, 0, 0, 0);
     %H = get_hamiltonian('Hubbard_two_site', fusion_trees, pspace, t, mu, true);
-    H = Hubbard_operators();
+    H = Hubbard_operators(t);
     %H = tpermute(H, [3 4 1 2], [2 2]);
     if redefined
         H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
@@ -66,7 +66,7 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
         [gs_mps, gs_energy, eta] = doVumps(H1, mps, name, maxiter, tol, trunc_way);
     end
     
-    save(name + '_final');
+    save(strcat(name, '_final.mat'));
     disp('Done, Hooray!');
 
 end

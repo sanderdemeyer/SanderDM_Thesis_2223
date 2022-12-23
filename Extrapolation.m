@@ -17,12 +17,13 @@ for i = 3:l
         %dimensions = dims(gs_mps.AL(1));
         %bond_dim = dimensions(1) + dimensions(3);
         %bond_dims(k) = bond_dim;
-        [V, D] = transfereigs(gs_mps, gs_mps, 3);
-        epsilons = zeros(1,3);
-        for j = 1:3
+        [V, D] = transfereigs(gs_mps, gs_mps, 10);
+        epsilons = zeros(1,10);
+        for j = 1:10
             epsilons(j) = -log(norm(D(j,j)));
         end
         disp(epsilons);
+        corr_length = 1/epsilons(2);
         deltas(k) = epsilons(3) - epsilons(2);
         epsilon1s(k) = epsilons(2);
         %{
