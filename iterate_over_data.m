@@ -1,4 +1,5 @@
-folder = 'Data structures/Hubbard_t_1_different_D/';
+folder = 'Data structures/Hubbard_t_1_24_dec/';
+folder = 'Data structures/Helix_N_3_postchange/';
 
 files = dir(('Data structures/Helix_N_3_postchange'));
 files = dir((folder));
@@ -24,19 +25,22 @@ for i = 3:l
         disp(name);
         disp(name(length(name)-8:length(name)));
         %load(name);
-        load(strcat(folder, name), 'gs_mps', 'gs_energy');
+        load(strcat(folder, name))%, 'gs_mps', 'gs_energy');
         dimensions = dims(gs_mps.AL(1).var);
         bond_dim = dimensions(1) + dimensions(3);
         bond_dims{k} = bond_dim;
         energies{k} = gs_energy;
 
+        %{
         disp(name(31:length(name)-38));
         U = str2double(name(31:length(name)-38));        
         disp('here');
         disp(U);
         disp('alle_here');
         Us{k} = U;
+        %}
 
+        %{
         [V, D] = transfereigs(gs_mps, gs_mps, 3);
         epsilons = zeros(1,3);
         for j = 1:3
@@ -46,10 +50,10 @@ for i = 3:l
         deltas{k} = epsilons(3) - epsilons(2);
         epsilon1s{k} = epsilons(2);
         inv_corr{k} = epsilons(3);
-
-        %stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
-        %fprintf('Staggered magnetisation is %s \n', stag_m)
-        %stag_magn(k) = stag_m;
+        %}
+        stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
+        fprintf('Staggered magnetisation is %s \n', stag_m)
+        stag_magn(k) = stag_m;
         %{
         AL1 = gs_mps.AL(1);
         AC2 = gs_mps.AC(2);
