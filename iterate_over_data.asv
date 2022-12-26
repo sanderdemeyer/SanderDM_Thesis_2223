@@ -39,10 +39,11 @@ for i = 3:l
         disp('alle_here');
         Us{k} = U;
         %}
+
         %{
-        [V, D] = transfereigs(gs_mps, gs_mps, 10);
-        epsilons = zeros(1,10);
-        for j = 1:10
+        [V, D] = transfereigs(gs_mps, gs_mps, 3);
+        epsilons = zeros(1,3);
+        for j = 1:3
             epsilons(j) = -log(norm(D(j,j)));
         end
         disp(epsilons);
@@ -50,7 +51,6 @@ for i = 3:l
         epsilon1s{k} = epsilons(2);
         inv_corr{k} = epsilons(3);
         %}
-
         stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
         fprintf('Staggered magnetisation is %s \n', stag_m)
         stag_magn(k) = stag_m;

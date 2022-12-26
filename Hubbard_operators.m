@@ -20,20 +20,28 @@ function cdc = Hubbard_operators(t)
     c_up = fill_tensor(c, data_up);
     
     %%
-    %{
     cdc_up_ij = contract(c_dagger_up, [-1 1 -3], c_up, [-2 1 -4]);
     cdc_up_ji = contract(c_dagger_up, [-2 1 -4], c_up, [-1 1 -3]);
     cdc_down_ij = contract(c_dagger_down, [-1 1 -3], c_down, [-2 1 -4]);
     cdc_down_ji = contract(c_dagger_down, [-2 1 -4], c_down, [-1 1 -3]);
-    %}
+
+    %{
+    % Probably wrong
     cdc_up_ij = contract(c_dagger_up, [-1 1 -4], c_up, [-2 1 -3]);
     cdc_up_ji = contract(c_dagger_up, [-2 1 -3], c_up, [-1 1 -4]);
     cdc_down_ij = contract(c_dagger_down, [-1 1 -4], c_down, [-2 1 -3]);
     cdc_down_ji = contract(c_dagger_down, [-2 1 -3], c_down, [-1 1 -4]);
-
+    %}
     
     cdc = -t*(cdc_up_ij + cdc_up_ji + cdc_down_ij + cdc_down_ji)/2;
 
+    %%
+    %{
+    c_test = Tensor([pspace' pspace'], [pspace' pspace']);
+    c_up_ij_data = num2cell([0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0]);
+    c_test = fill_tensor(c_test, c_up_ij_data);
+    %}
+    
     %%
     %{
     ctest2 = Tensor([pspace' pspace'], [pspace' pspace']);
