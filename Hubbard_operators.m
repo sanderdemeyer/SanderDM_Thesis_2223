@@ -50,4 +50,11 @@ function cdc = Hubbard_operators(t)
     cdc = ctestt2;
     return
     %}
+
+    %%
+    ttest = Tensor([pspace', pspace'], [pspace', pspace']);
+    %var = num2cell(1:36);
+    var = num2cell([0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);
+    ttest = fill_tensor(ttest, var);
+    [tc, tb] = tensorblocks(ttest);
 end

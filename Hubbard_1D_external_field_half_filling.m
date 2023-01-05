@@ -19,7 +19,13 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
 
     %H = get_hamiltonian('Hubbard_external_field', fusion_trees, pspace, t, 0, 0, 0);
     %H = get_hamiltonian('Hubbard_two_site', fusion_trees, pspace, t, mu, true);
-    H = Hubbard_operators(t);
+    %H = Hubbard_operators(t);
+
+    ttest = Tensor([pspace', pspace'], [pspace', pspace']);
+    %var = num2cell(1:36);
+    var = num2cell(-(t/2)*[0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);
+    H = fill_tensor(ttest, var);
+
     %H = tpermute(H, [3 4 1 2], [2 2]);
     if redefined
         H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
@@ -34,10 +40,11 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
 
     H1 = InfJMpo(mpo_joint);
     if finalized == 2
-        load(starting_name);
+        load(starting_name, 'gs_mps');
         mps = gs_mps;
     elseif finalized == 1
-        mps = Canonicalize(mps, 'Order', 'rl');
+        load(starting_name, 'mps');
+        mps = canonicalize(mps, 'Order', 'rl');
     else
         %mps = UniformMps.randnc(pspace, {vspace1 vspace2});
         if length(vspaces) == 1

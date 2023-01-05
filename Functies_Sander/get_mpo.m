@@ -12,12 +12,24 @@ function mpo_full = get_mpo(H, N, type)
     L = tpermute(L, [4 3 2 1], [2 2]);
     R = tpermute(R, [4 3 2 1], [2 2]);
 
-    L = MpoTensor(L);
-    R = MpoTensor(R);
+    %L = MpoTensor(L);
+    %R = MpoTensor(R);
         
-    if strcmp('Helix', type)    
-        if N == 0        
-            
+    if strcmp('Helix', type)
+        if N == 0
+            pspace = L.domain(1);
+            vspace = L.domain(2);
+%            trivspace = L.codomain(1);
+            cod = SumSpace([one(vspace) vspace one(vspace)], pspace);
+            dom = SumSpace(pspace, [one(vspace), vspace, one(vspace)]);
+            O = MpoTensor.zeros(cod, dom);
+            %O = MpoTensor.zeros([pspace' pspace'], [pspace' pspace']);
+            O(3, 1, 3, 1) = 1;
+            O(1, 1, 1, 1) = 1;
+            O(1, 1, 2, 1) = L;
+            O(2, 1, 3, 1) = R;
+            mpo_full = O;
+        elseif N == 10000        
             mpo = MpoTensor.zeros(3, 1, 3, 1);
             mpo(3, 1, 3, 1) = MpoTensor(1);
             mpo(1,1,1,1) = MpoTensor(1);
