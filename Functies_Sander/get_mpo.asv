@@ -38,9 +38,9 @@ function O = get_mpo(H, N, type)
             return
         elseif N == 3
             assert(floor(N) == N, 'Radius (N) should be an integer.')
-
-            cod = SumSpace([one(vspace), one(vspace), one(vspace), vspace, vspace, one(vspace)], pspace);
-            dom = SumSpace(pspace, [one(vspace), vspace, one(vspace), one(vspace), vspace, one(vspace)]);
+            
+            cod = SumSpace([one(vspace) vspace one(vspace)], pspace);
+            dom = SumSpace(pspace, [one(vspace), vspace, one(vspace)]);
             O = MpoTensor.zeros(cod, dom);
             sz = N+3;
             O(sz,1,sz,1) = 1;
