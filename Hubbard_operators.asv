@@ -22,7 +22,6 @@ function O = Hubbard_operators(type)
 
     c_dagger_up = fill_tensor(c_dagger_up, num2cell([1 1]));
     c_dagger_down = fill_tensor(c_dagger_down, num2cell([1 -1]));
-    c_dagger_updown = fill_tensor(c_dagger_updown, num2cell(1));
     up_flip = fill_tensor(up_flip, num2cell(1));
     down_flip = fill_tensor(down_flip, num2cell(1));
     up_flip_conj = conj(up_flip);
@@ -34,8 +33,6 @@ function O = Hubbard_operators(type)
     c_up = tpermute(c_up, [3 2 1]);
     c_down = conj(c_dagger_down);
     c_down = tpermute(c_down, [3 2 1]);
-    c_updown = conj(c_dagger_updown);
-    c_updown = tpermute(c_updown, [3 2 1]);
 
     cdc_up = contract(c_dagger_up, [-3 1 -1], c_up, [-4 1 -2]);
     cdc_down = contract(c_dagger_down, [-3 1 -1], c_down, [-4 1 -2]);
@@ -57,17 +54,17 @@ function O = Hubbard_operators(type)
 
 
     if strcmp('c_dagger_up', type)
-        O = c_dagger_up;
+        O = c_dagger_up
     elseif strcmp('c_dagger_down', type)
-        O = c_dagger_down;
+        O = c_dagger_down
     elseif strcmp('c_up', type)
-        O = c_up;
+        O = c_up
     elseif strcmp('c_down', type)
-        O = c_down;
+        O = c_down
     elseif strcmp('up_flip', type)
-        O = up_flip;
+        O = up_flip
     elseif strcmp('down_flip', type)
-        O = down_flip;
+        O = down_flip
     elseif strcmp('up_down_flip', type)
         O = contract(up_flip, [-3 1 -1], up_flip_conj, [-4 1 -2]);
     elseif strcmp('down_up_flip', type)
@@ -76,8 +73,6 @@ function O = Hubbard_operators(type)
         O = contract(c_dagger_up, [-3 1 -1], c_up, [-4 1 -2]);
     elseif strcmp('cdc_down', type)
         O = contract(c_dagger_down, [-3 1 -1], c_down, [-4 1 -2]);
-    elseif strcmp('cdc_updown', type)
-        O = contract(c_dagger_updown, [-3 1 -1], c_updown, [-4 1 -2]);
     end
 
     %{

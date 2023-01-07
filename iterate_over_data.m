@@ -1,5 +1,5 @@
 folder = 'Data structures/Hubbard_t_1_24_dec/';
-folder = 'Data structures/Helix_N_5_postchange/';
+folder = 'Data structures/Hubbard_1D_U_6_new/';
 
 files = dir((folder));
 l = length(files);
@@ -22,6 +22,7 @@ for i = 3:l
     name_l = length(name);
     disp(name);
     U = str2double(name(31:length(name)-38));
+    disp(U);
     if strcmp(name(name_l-9:name_l), '_final.mat')
         disp(name);
         disp(name(length(name)-8:length(name)));
@@ -31,26 +32,34 @@ for i = 3:l
         bond_dim = dimensions(1) + dimensions(3);
         bond_dims{k} = bond_dim;
         energies{k} = gs_energy;
-        disp(name(1));
-        disp('here');
-        disp(name);
-        disp(length(name));
-        disp(name(2:length(name)));
-        disp('alle_here');
+        disp(U);
         Us{k} = U;
         [V, D] = transfereigs(gs_mps, gs_mps, 3);
         epsilons = zeros(1,3);
         for j = 1:3
             epsilons(j) = -log(norm(D(j,j)));
         end
-        disp(epsilons);
+        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2), U1(0), fZ2(0)));
+        charge_sector{k} = D;
+        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
+        spin_sector{k} = D;
+
+        spin_epsilons = zeros(1,3);
+        for j = 1:3
+            spin_epsilons(j) = -log(norm(D(j,j)));
+        end
+        disp(spin_epsilons);
+        spin_eps1{k} = spin_epsilons(1);
+        spin_delta{k} = spin_epsilons(2) - spin_epsilons(1);
         deltas{k} = epsilons(3) - epsilons(2);
         epsilon1s{k} = epsilons(2);
         inv_corr{k} = epsilons(3);
         
+        %{
         stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
         fprintf('Staggered magnetisation is %s \n', stag_m)
         stag_magn(k) = stag_m;
+        %}
         %{
         AL1 = gs_mps.AL(1);
         AC2 = gs_mps.AC(2);
@@ -146,3 +155,13 @@ hold off
 xlabel('1/D', 'interpreter', 'latex');
 ylabel('spontaneous staggered magnetisation');
 title('Staggered magnetisation as finite bond dimension effect');
+
+%%
+
+scatter(Us_a, cell2mat(energies)/2);
+xlim([0 10]);
+
+%%
+
+scatter(Us_a./(Us_a+4), cell2mat(energies)/2);
+

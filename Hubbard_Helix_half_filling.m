@@ -1,4 +1,4 @@
-function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trunc, maxiter, tol, vumps_way, redefined, stag_h_field, starting_name, finalized)
+function [gs_mps, gs_energy] = Hubbard_Helix_half_filling(N, t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
     disp('Code started running');
     [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', false, 1, 1, 12, 3);
         
@@ -9,31 +9,13 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
         trunc_way = {'TruncBelow', 10^(-trunc{2}), 'TruncDim', trunc{1}};
     end
 
-    % For atomic separation = 2å of 1D hydrogen chain: 
-    % t = 1.5 en abs(U/t) = 6
-    %t = 1.5;
-    %U = 9;
     mu = 0;
     h_field = 0;
-    N = 0;
 
-    %H = get_hamiltonian('Hubbard_external_field', fusion_trees, pspace, t, 0, 0, 0);
-    %H = get_hamiltonian('Hubbard_two_site', fusion_trees, pspace, t, mu, true);
-    %H = Hubbard_operators(t);
-    %{
-    ttest = Tensor([pspace', pspace'], [pspace', pspace']);
-    %var = num2cell(1:36);
-    var = num2cell(-(t)*[0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);
-    H_old = fill_tensor(ttest, var);
-    %}
     H = Hubbard_Hamiltonian(t);
-    %H = tpermute(H, [3 4 1 2], [2 2]);
-    if redefined
-        H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
-    else
-        H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
-    end
-    mpo = get_mpo(H, 0, 'Helix');
+    H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
+
+    mpo = get_mpo(H, N, 'Helix');
     mpo_joint = {mpo mpo};
         
     mpo_joint{1}(1, 1, N+3, 1) = H_one_site;
@@ -47,7 +29,6 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
         load(starting_name, 'mps');
         mps = canonicalize(mps, 'Order', 'rl');
     else
-        %mps = UniformMps.randnc(pspace, {vspace1 vspace2});
         if length(vspaces) == 1
             mps = UniformMps.randnc(pspace, vspaces);
         elseif length(vspaces) == 2
@@ -59,9 +40,9 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
     disp('initialization correct');
     
     if trunc_tot
-        name = 'Hubbard_1D_half_filling_t_' + string(t) + '_U_' + string(U) + '_trunctotdim_' + string(trunc) + '_h_' + string(h_field) + '_redef_' + string(redefined);
+        name = 'Hubbard_Helix_half_filling_t_' + string(t) + '_U_' + string(U) + '_trunctotdim_' + string(trunc);
     else
-        name = 'Hubbard_1D_half_filling_t_' + string(t) + '_U_' + string(U) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2}) + '_h_' + string(h_field) + '_redef_' + string(redefined);
+        name = 'Hubbard_Helix_half_filling_t_' + string(t) + '_U_' + string(U) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2});
     end
 
     if vumps_way == 1

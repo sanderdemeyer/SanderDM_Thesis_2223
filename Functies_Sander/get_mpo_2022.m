@@ -1,4 +1,4 @@
-function O = get_mpo(H, N, type)
+function mpo_full = get_mpo(H, N, type)
 % Get the InfJMpo of a given two-site operator
 % N is the radius of the cylinder.
 % If this is 0, the model is just 1D
@@ -12,12 +12,9 @@ function O = get_mpo(H, N, type)
     L = tpermute(L, [4 3 2 1], [2 2]);
     R = tpermute(R, [4 3 2 1], [2 2]);
 
-    pspace = L.domain(1);
-    vspace = L.domain(2);
-
-    cod = SumSpace([one(vspace) vspace one(vspace)], pspace);
-    dom = SumSpace(pspace, [one(vspace), vspace, one(vspace)]);
-    O = MpoTensor.zeros(cod, dom);
+    %L = MpoTensor(L);
+    %R = MpoTensor(R);
+        
     if strcmp('Helix', type)
         if N == 0
             pspace = L.domain(1);
@@ -31,22 +28,32 @@ function O = get_mpo(H, N, type)
             O(1, 1, 1, 1) = 1;
             O(1, 1, 2, 1) = L;
             O(2, 1, 3, 1) = R;
+            mpo_full = O;
+        elseif N == 10000        
+            mpo = MpoTensor.zeros(3, 1, 3, 1);
+            mpo(3, 1, 3, 1) = MpoTensor(1);
+            mpo(1,1,1,1) = MpoTensor(1);
+            mpo(1, 1, 2, 1) = L;
+            mpo(2,1,3,1) = R;
+            mpo_full = mpo;
             return
         else
             assert(floor(N) == N, 'Radius (N) should be an integer.')
     
             sz = N+3;
-            O(sz,1,sz,1) = 1;
-            O(1,1,1,1) = 1;
-            O(1, 1, 2, 1) = L;
-            O(1, 1, sz-1, 1) = L;
+            mpo = MpoTensor.zeros(sz, 1, sz, 1);
+            mpo(sz,1,sz,1) = MpoTensor(1);
+            mpo(1,1,1,1) = MpoTensor(1);
+            mpo(1, 1, 2, 1) = L;
+            mpo(1, 1, sz-1, 1) = L;
+            %mpo(1, sz) = H_one_site;
             
             for i = 2:N
-                O(i,1,i+1,1) = 1;
+                mpo(i,1,i+1,1) = MpoTensor(1);
             end
-            O(N+1,1, sz,1) = R;
-            O(N+2,1, sz,1) = R;
-            return
+            mpo(N+1,1, sz,1) = R;
+            mpo(N+2,1, sz,1) = R;
+            mpo_full = mpo;
         end
     elseif strcmp('Helix_3D', type)
         P = N(1);
