@@ -18,43 +18,58 @@ Us = zeros(1, l-2);
 k = 1;
 for i = 3:l
     file = files(i);
-    name = file.name;
-    name_l = length(name);
+    naam = file.name;
+    name_l = length(naam);
+    if name_l == 1
+        naam = naam{1};
+        name_l = length(naam);
+    end
     disp(name);
-    U = str2double(name(31:length(name)-38));
+    U = str2double(naam(31:length(naam)-38));
     disp(U);
-    if strcmp(name(name_l-9:name_l), '_final.mat')
-        disp(name);
-        disp(name(length(name)-8:length(name)));
+    load(strcat(folder, naam))%, 'gs_mps', 'gs_energy');
+    disp(length(naam));
+    if ~strcmp(naam(name_l-9:name_l), '_final.mat')
+        gs_mps = canonicalize(mps, 'Order', 'rl');
+    end
+    if 0 == 0
+        disp(naam);
+        disp(naam(length(naam)-8:length(naam)));
         %load(name);
-        load(strcat(folder, name))%, 'gs_mps', 'gs_energy');
         dimensions = dims(gs_mps.AL(1).var);
         bond_dim = dimensions(1) + dimensions(3);
         bond_dims{k} = bond_dim;
-        energies{k} = gs_energy;
+        energies{k} = lambda; % gs_energy;
         disp(U);
         Us{k} = U;
+
         [V, D] = transfereigs(gs_mps, gs_mps, 3);
         epsilons = zeros(1,3);
         for j = 1:3
             epsilons(j) = -log(norm(D(j,j)));
         end
-        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2), U1(0), fZ2(0)));
-        charge_sector{k} = D;
-        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
-        spin_sector{k} = D;
-
-        spin_epsilons = zeros(1,3);
-        for j = 1:3
-            spin_epsilons(j) = -log(norm(D(j,j)));
-        end
-        disp(spin_epsilons);
-        spin_eps1{k} = spin_epsilons(1);
-        spin_delta{k} = spin_epsilons(2) - spin_epsilons(1);
+        all_sectors{k} = D;
         deltas{k} = epsilons(3) - epsilons(2);
         epsilon1s{k} = epsilons(2);
-        inv_corr{k} = epsilons(3);
-        
+
+        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2), U1(0), fZ2(0)));
+        epsilons = zeros(1,3);
+        for j = 1:3
+            epsilons(j) = -log(norm(D(j,j)));
+        end
+        charge_sector{k} = D;
+        deltas_charge{k} = epsilons(2) - epsilons(1);
+        epsilon1s_charge{k} = epsilons(1);
+
+        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
+        epsilons = zeros(1,3);
+        for j = 1:3
+            epsilons(j) = -log(norm(D(j,j)));
+        end
+        spin_sector{k} = D;
+        deltas_spin{k} = epsilons(2) - epsilons(1);
+        epsilon1s_spin{k} = epsilons(1);
+
         %{
         stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
         fprintf('Staggered magnetisation is %s \n', stag_m)
@@ -87,20 +102,25 @@ for i = 3:l
 end
 
 %%
+x_data = cell2mat(deltas_charge);
+y_data = cell2mat(epsilon1s_charge);
 
-scatter(deltas, epsilon1s);
+resolution = 500;
+scatter(x_data, y_data);
+
 hold on
-p1 = polyfit(deltas, epsilon1s, 1);
-x = linspace(0,max(deltas)*1.1,500);
+p1 = polyfit(x_data, y_data, 1);
+x = linspace(0,max(x_data)*1.1,resolution);
 y = p1(2) + p1(1)*x;
-plot(x, y, "red");
+
+%plot(x, y, "red");
 xlabel('$\delta = \epsilon_2 - \epsilon_1$', 'interpreter', 'latex');
 ylabel('$\epsilon_1 = 1/\xi$', 'interpreter', 'latex')
-title('Extrapolation of $\epsilon_1$ for the Heisenberg XXX model', 'interpreter', 'latex')
+title('Extrapolation of $\epsilon_1$ for the 1D Hubbard model - Charge sector', 'interpreter', 'latex')
 hold off
 
-pol = arrayfun(@(x) polynomial(x, p1(1), p1(2)), deltas);
-RMS1 = sqrt(mean((pol-epsilon1s).^2));
+pol = arrayfun(@(x) x*p1(1) + p1(2), x_data);
+RMS1 = sqrt(mean((pol-y_data).^2));
 
 %%
 rec_bond_dims = 1./bond_dims;
@@ -130,11 +150,8 @@ xlabel('Bond dimension')
 ylabel('spontaneous staggered magnetisation')
 title('Staggered magnetisation as finite bond dimension effect')
 
-%{
-function y = polynomial(x, a, b)
-    y = a*x+b;
-end
-%}
+
+
 %%
 
 scatter(bond_dims./2, abs(stag_magn));
@@ -164,4 +181,8 @@ xlim([0 10]);
 %%
 
 scatter(Us_a./(Us_a+4), cell2mat(energies)/2);
+%%
+function y = polynomial(x, a, b)
+    y = a*x+b;
+end
 

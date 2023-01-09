@@ -1,4 +1,4 @@
-function [gs_mps, gs_energy] = Hubbard_Helix_half_filling(N, t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
+function [gs_mps, gs_energy] = Hubbard_helix_half_filling(N, t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
     disp('Code started running');
     [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', false, 1, 1, 12, 3);
         
@@ -10,7 +10,6 @@ function [gs_mps, gs_energy] = Hubbard_Helix_half_filling(N, t, U, trunc, maxite
     end
 
     mu = 0;
-    h_field = 0;
 
     H = Hubbard_Hamiltonian(t);
     H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
@@ -40,9 +39,9 @@ function [gs_mps, gs_energy] = Hubbard_Helix_half_filling(N, t, U, trunc, maxite
     disp('initialization correct');
     
     if trunc_tot
-        name = 'Hubbard_Helix_half_filling_t_' + string(t) + '_U_' + string(U) + '_trunctotdim_' + string(trunc);
+        name = 'Hubbard_Helix_half_filling_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_trunctotdim_' + string(trunc);
     else
-        name = 'Hubbard_Helix_half_filling_t_' + string(t) + '_U_' + string(U) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2});
+        name = 'Hubbard_Helix_half_filling_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2});
     end
 
     if vumps_way == 1
