@@ -12,9 +12,9 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
     mu = 0;
 
     H = Hubbard_Hamiltonian(t);
-    H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
+    H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
 
-    mpo_joint = get_mpo(H, N, 'FullCylinder_inefficient');        
+    mpo_joint = get_mpo(H, N, 'FullCylinder');        
 
     for i = 1: 2*N
         mpo_joint{i}(1, 1, N+4, 1) = H_one_site;

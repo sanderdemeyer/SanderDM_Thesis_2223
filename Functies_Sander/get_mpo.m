@@ -182,7 +182,7 @@ function O = get_mpo(H, N, type)
     elseif strcmp('FullCylinder_New', type)
         if N == 0
             warning('Not implemented for FullCylinder, using Helix instead')
-            mpo_full = get_mpo(H, 0, 'Helix');
+            O = get_mpo(H, 0, 'Helix');
             return
         else
             sz = 2*N+2;
@@ -233,7 +233,7 @@ function O = get_mpo(H, N, type)
     elseif strcmp('FullCylinder', type)
         if N == 0
             warning('Not implemented for FullCylinder, using Helix instead')
-            mpo_full = get_mpo(H, 0, 'Helix');
+            O = get_mpo(H, 0, 'Helix');
             return
         else
             sz = N+4;
