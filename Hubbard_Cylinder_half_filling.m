@@ -16,6 +16,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
 
     mpo_joint = get_mpo(H, N, 'FullCylinder');        
 
+    
     for i = 1: 2*N
         mpo_joint{i}(1, 1, N+4, 1) = H_one_site;
     end
