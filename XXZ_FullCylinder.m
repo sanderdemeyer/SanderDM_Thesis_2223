@@ -1,4 +1,5 @@
-function [gs_mps, gs_energy] = FullCylinder(N, trunc, maxiter, vumps_way, stag_h_field, starting_name, finalized)
+function [gs_mps, gs_energy] = XXZ_FullCylinder(N, trunc, maxiter, vumps_way, stag_h_field, starting_name, finalized)
+    warning('You should probably use the file Heisenberg_XXZ_cylinder');
     doPath
     disp('Code started running');
     %N = 3;

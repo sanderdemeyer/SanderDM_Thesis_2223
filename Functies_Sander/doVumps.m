@@ -14,4 +14,21 @@ function [gs_mps, gs_energy, eta] = doVumps(mpo, mps, naam, maxiter, tol, vararg
             return
         end
     end
+    %{
+    iterations = length(maxiter);
+    for i = 1:iterations
+        if mod(i,2) == 1
+            fprintf('Big iteration %d of %d \n', i, iterations);
+            alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc, 'name', strcat(naam, '.mat'), 'tol', 10^(-tol), 'doplot', true);
+            [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg2, mpo, gs_mps);
+        else
+            fprintf('Big iteration %d of %d \n', i, iterations);
+            alg1 = Vumps('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(naam, '.mat'), 'tol', 10^(-tol), 'doplot', true);
+            [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg1, mpo, gs_mps);
+        end
+        if eta < 10^(-tol)
+            return
+        end
+    end
+    %}
 end

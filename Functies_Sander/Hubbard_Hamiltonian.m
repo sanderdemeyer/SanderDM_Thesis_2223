@@ -1,9 +1,8 @@
-function cdc = Hubbard_Hamiltonian(t)
-    P = 1;
-    Q = 1;
-    [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
-    up_charge = ProductCharge(U1(2*Q-P), U1(1), fZ2(1));
-    down_charge = ProductCharge(U1(2*Q-P), U1(-1), fZ2(1));
+function cdc = Hubbard_Hamiltonian(t, P, Q)
+    %[pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
+    [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard_asymmetric', P, Q);
+    up_charge = ProductCharge(U1(Q), U1(1), fZ2(1));
+    down_charge = ProductCharge(U1(Q), U1(-1), fZ2(1));
 
     up_space = GradedSpace.new(up_charge, 1, false);
     down_space = GradedSpace.new(down_charge, 1, false);

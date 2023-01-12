@@ -1,4 +1,5 @@
 function [gs_mps, gs_energy] = Hubbard_SU2(t, U, trunc, maxiter, tol, vumps_way, redefined, stag_h_field, starting_name, finalized)
+    warning('Not checked. Probably wrong');
     doPath
     disp('Code started running');
     [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', true, 1, 1, 12, 3);

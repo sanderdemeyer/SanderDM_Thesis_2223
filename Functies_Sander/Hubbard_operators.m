@@ -1,6 +1,4 @@
-function O = Hubbard_operators(type)
-    P = 1;
-    Q = 1;
+function O = Hubbard_operators(type, P, Q)
     [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
     up_charge = ProductCharge(U1(2*Q-P), U1(1), fZ2(1));
     down_charge = ProductCharge(U1(2*Q-P), U1(-1), fZ2(1));

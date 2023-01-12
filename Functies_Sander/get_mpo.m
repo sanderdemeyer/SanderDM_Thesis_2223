@@ -111,6 +111,7 @@ function O = get_mpo(H, N, type)
         %}
         else
             sz = 2*N+2;
+            %{
             cod_spacesA = repmat(one(vspace), 1, sz);
             dom_spacesA = repmat(one(vspace), 1, sz);
             cod_spacesB = repmat(one(vspace), 1, sz);
@@ -133,6 +134,26 @@ function O = get_mpo(H, N, type)
 
             cod_spacesD(2) =  vspace;
             cod_spacesD(N+1) =  vspace;
+            %}
+            cod_spacesA = repmat(vspace, 1, sz);
+            dom_spacesA = repmat(vspace, 1, sz);
+            cod_spacesB = repmat(vspace, 1, sz);
+            dom_spacesB = repmat(vspace, 1, sz);
+            cod_spacesD = repmat(vspace, 1, sz);
+            dom_spacesD = repmat(vspace, 1, sz);
+
+            cod_spacesA(1) = one(vspace);
+            cod_spacesB(1) = one(vspace);
+            cod_spacesD(1) = one(vspace);
+            cod_spacesA(sz) = one(vspace);
+            cod_spacesB(sz) = one(vspace);
+            cod_spacesD(sz) = one(vspace);
+            dom_spacesA(1) = one(vspace);
+            dom_spacesB(1) = one(vspace);
+            dom_spacesD(1) = one(vspace);
+            dom_spacesA(sz) = one(vspace);
+            dom_spacesB(sz) = one(vspace);
+            dom_spacesD(sz) = one(vspace);
 
             mpoA = MpoTensor.zeros(SumSpace(cod_spacesA, pspace), SumSpace(pspace, dom_spacesA));
             mpoB = MpoTensor.zeros(SumSpace(cod_spacesB, pspace), SumSpace(pspace, dom_spacesB));
@@ -145,6 +166,7 @@ function O = get_mpo(H, N, type)
             mpoD(1, 1, 1, 1) = 1;
             mpoD(sz, 1, sz, 1) = 1;
 
+            % Underlying code implements N-range interaction
             mpoA(1, 1, N+2, 1) = L;
             mpoB(1, 1, N+2, 1) = L;
             mpoD(1, 1, N+2, 1) = L;
@@ -157,15 +179,18 @@ function O = get_mpo(H, N, type)
                 mpoD(j, 1, j+1, 1) = 1;
             end
 
+            % Underlying code implements 'A' type mpo
             mpoA(1, 1, 2, 1) = L;
             mpoA(1, 1, 3, 1) = L;
 
+            % Underlying code implements 'B' type mpo
             mpoB(1, 1, 2, 1) = L;
             mpoB(2, 1, sz, 1) = R;
             for i = 3:N
                 mpoB(i, 1, i+1, 1) = 1;
             end
 
+            % Underlying code implements 'D' type mpo
             mpoD(2, 1, sz, 1) = R;
             mpoD(N+1, 1, sz, 1) = R;
             
@@ -233,10 +258,12 @@ function O = get_mpo(H, N, type)
     elseif strcmp('FullCylinder', type)
         if N == 0
             warning('Not implemented for FullCylinder, using Helix instead')
-            O = get_mpo(H, 0, 'Helix');
+            mpo = get_mpo(H, 0, 'Helix');
+            O = {mpo mpo};
             return
         else
             sz = N+4;
+            %{
             cod_spacesA = repmat(one(vspace), 1, sz);
             dom_spacesA = repmat(one(vspace), 1, sz);
             cod_spacesB = repmat(one(vspace), 1, sz);
@@ -259,6 +286,33 @@ function O = get_mpo(H, N, type)
 
             cod_spacesD(2) =  vspace;
             cod_spacesD(3) =  vspace;
+            %}
+            cod_spacesA = repmat(vspace, 1, sz);
+            dom_spacesA = repmat(vspace, 1, sz);
+            cod_spacesB = repmat(vspace, 1, sz);
+            dom_spacesB = repmat(vspace, 1, sz);
+            cod_spacesD = repmat(vspace, 1, sz);
+            dom_spacesD = repmat(vspace, 1, sz);
+
+            cod_spacesA(1) = one(vspace);
+            cod_spacesB(1) = one(vspace);
+            cod_spacesD(1) = one(vspace);
+            cod_spacesA(sz) = one(vspace);
+            cod_spacesB(sz) = one(vspace);
+            cod_spacesD(sz) = one(vspace);
+            %{
+            cod_spacesA(2) = one(vspace);
+            cod_spacesA(3) = one(vspace);
+            dom_spacesD(2) = one(vspace);
+            dom_spacesD(3) = one(vspace);
+            %}
+            dom_spacesA(1) = one(vspace);
+            dom_spacesB(1) = one(vspace);
+            dom_spacesD(1) = one(vspace);
+            dom_spacesA(sz) = one(vspace);
+            dom_spacesB(sz) = one(vspace);
+            dom_spacesD(sz) = one(vspace);
+
 
             mpoA = MpoTensor.zeros(SumSpace(cod_spacesA, pspace), SumSpace(pspace, dom_spacesA));
             mpoB = MpoTensor.zeros(SumSpace(cod_spacesB, pspace), SumSpace(pspace, dom_spacesB));

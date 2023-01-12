@@ -1,10 +1,17 @@
-function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
+function [gs_mps, gs_energy] = Heisenberg_XXZ_cylinder(N, delta, trunc, maxiter, tol, vumps_way, starting_name, finalized)
     disp('Code started running');
-    P = 1;
-    Q = 1;
-    [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
-%    [pspace, vspaces, trivspace] = get_spaces('Heisenberg XXZ');
+    charges = U1([1 -1]);
+    fusion_trees = FusionTree.new([2 2], charges, false, charges, false, charges, false, charges, false);
+    pspace = GradedSpace.new(charges, [1 1], false);
+    trivspace = GradedSpace.new(U1(0), 1, false);
         
+    D1 = [2 16 39 52 39 16 2];
+    D2 = [1 9 28 49 49 28 9 1];
+
+    vspace1 = GradedSpace.new(U1([-5 -3 -1 1 3 5 7]), D1, false);
+    vspace2 = GradedSpace.new(U1([-6 -4 -2 0 2 4 6 8]), D2, false);
+    vspaces = [vspace1 vspace2];
+
     trunc_tot = ~iscell(trunc);
     if trunc_tot
         trunc_way = {'TruncTotalDim', trunc};
@@ -12,30 +19,23 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
         trunc_way = {'TruncBelow', 10^(-trunc{2}), 'TruncDim', trunc{1}};
     end
 
-    mu = 0;
-
-    H = Hubbard_Hamiltonian(t, P, Q);
-    H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
-
-%    H = get_hamiltonian('XXZ', 1, pspace);
-%    H_one_site = get_hamiltonian('one_site_XXZ', pspace, trivspace, 0, 0);
-
+    stag_h_field = 0;
+    H = get_hamiltonian('XXZ', 1, pspace);
+    H_one_site = get_hamiltonian('one_site_XXZ', pspace, trivspace, stag_h_field, 0);
 
     mpo_way = 'FullCylinder';
     mpo_joint = get_mpo(H, N, mpo_way);        
 
     if strcmp('FullCylinder', mpo_way)
-        one_site_place = N+4;
+        place = N+4;
     elseif strcmp('FullCylinder_inefficient', mpo_way)
-        one_site_place = 2*N+2;
-    elseif strcmp('1D', mpo_way)
-        one_site_place = 3;
+        place = 2*N+2;
     else
         error('Mpo_way not implemented')
     end
 
-    for i = 1: max(2*N,2)
-        mpo_joint{i}(1, 1, one_site_place, 1) = H_one_site;
+    for i = 1: 2*N
+        mpo_joint{i}(1, 1, place, 1) = H_one_site;
     end
 
     H1 = InfJMpo(mpo_joint);
@@ -46,13 +46,6 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
         load(starting_name, 'mps');
         mps = canonicalize(mps, 'Order', 'rl');
     else
-        args = cell(2, max(2*N,2));
-        for i = 1:max(2*N,2)
-            args{1,i} = pspace;
-            args{2,i} = vspaces((mod(i-1,2)+1));
-        end
-        mps = UniformMps.randnc(args{:});
-        %{
         if length(vspaces) == 1
             mps = UniformMps.randnc(pspace, vspaces);
         elseif length(vspaces) == 2
@@ -68,14 +61,13 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
         else
             error('check length of vspaces');
         end
-        %}
     end
     disp('initialization correct');
     
     if trunc_tot
-        name = 'Hubbard_FullCylinder_half_filling_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_trunctotdim_' + string(trunc);
+        name = 'Heisenberg_cylinder_delta_' + string(delta) + '_trunctotdim_' + string(trunc);
     else
-        name = 'Hubbard_FullCylinder_half_filling_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2});
+        name = 'Heisenberg_cylinder_delta' + string(delta) + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2});
     end
 
     if vumps_way == 1

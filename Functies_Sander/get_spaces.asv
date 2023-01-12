@@ -5,7 +5,7 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
         % SU2 is a boolean and indicates whether spin up and down are
         % equivalent. SU2 = true implements SU(2) symmetry, SU2 = false
         % implements U(1) symmetry.
-        % filling = P/Q, with P and Q integers. Maximum is 2.
+        % filling = P/Q, with P and Q integers.
         % half-filling: P = 1. Q = 1.
         % degeneracies are the degeneracies of EACH charge in the virtual
         % spaces, if the MPS is two-site, these are 2 integers.
@@ -78,7 +78,7 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
             vspace = [vspace1 vspace2];
             return
         end
-    elseif strcmp('Hubbard_asymmetric_OLD', type)
+    elseif strcmp('Hubbard_asymmetric', type)
         P = varargin{1};
         Q = varargin{2};
         % Implementation of the physical charge = 2Z
@@ -145,19 +145,18 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
         %vspace6 = GradedSpace.new(ProductCharge(U1(0), U1(0), fZ2(0)), 1, false);
         vspace = [vspace1 vspace2 vspace3 vspace4 vspace5 vspace6];
         return
-    elseif strcmp('Hubbard_asymmetric', type)
+    elseif strcmp('Hubbard_asymmetric_again', type)
         P = varargin{1};
         Q = varargin{2};
-        assert(gcd(P,Q) == 1, 'P and Q should be relative prime')
-
-        % Implementation of the physical charge
+        assert(gcd(P,Q) == 1, '')
+        % Implementation of the physical charge = 2Z
         a = ProductCharge(U1(-P), U1(0), fZ2(0));
         b = ProductCharge(U1(Q-P), U1(1), fZ2(1));
         c = ProductCharge(U1(Q-P), U1(-1), fZ2(1));
         d = ProductCharge(U1(2*Q-P), U1(0), fZ2(0));
         charges1 = [a b c d];
 
-        % Implementation of the charges of the productspace
+        % Implementation of the charges 2Z + 1
         e = ProductCharge(U1(-2*P), U1(0), fZ2(0));
         f = ProductCharge(U1(Q-2*P), U1(1), fZ2(1));
         g = ProductCharge(U1(Q-2*P), U1(-1), fZ2(1));
@@ -169,6 +168,7 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
         l = ProductCharge(U1(2*Q-2*P), U1(-2), fZ2(0));
         m = ProductCharge(U1(3*Q-2*P), U1(-1), fZ2(1));
         n = ProductCharge(U1(4*Q-2*P), U1(0), fZ2(0));
+        new = ProductCharge(U1(1), U1(0), fZ2(0));
         charges2 = [e f g h i k l m n];
 
         trivcharge = ProductCharge(U1(0), U1(0), fZ2(0));
@@ -177,19 +177,32 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
         pspace = GradedSpace.new(charges1, [1 1 1 1], false);
         trivspace = GradedSpace.new(trivcharge, 1, false);
         prodspace = GradedSpace.new(charges2, [1 1 1 1 1 1 1 1 1], false);
-
-        U1_values = @(x) [mod(x-1, 2*Q) + 1 mod(x-1, 2*Q) + 1 - 2*Q];
-        if mod(P, 2) == 1
-            length_vspaces = 2*Q;
-        else
-            length_vspaces = Q;
-        end
-
-        vspace = repmat(trivspace, 1, length_vspaces);
-        for ind = 1:length_vspaces
-            vspace(ind) = GradedSpace.new(get_asymm(U1_values(2*Q - ind*P), U1_values(Q - ind*P)), ones(1, 10), false);
+        %{
+        vspace1 = GradedSpace.new(d, 1, false);
+        vspace2 = GradedSpace.new(h, 1, false);
+        vspace3 = GradedSpace.new(new, 1, false);
+        vspace4 = GradedSpace.new(trivcharge, 1, false);
+        %}
+        %vspace1 = GradedSpace.new(ProductCharge(U1(5), U1(0), fZ2(0)), 1, false);
+        fun = @(x) [mod(x-1, 2*Q) + 1 mod(x-1, 2*Q) + 1 - 2*Q];
+        space_fun = @(k) GradedSpace.new(get_asymm(fun(k), fun(k+Q)), ones(1, 10), false);
+        %space_fun = @(k) [fun(k), fun(k+Q)];
+        %vspace = zeros(1, 2*Q);
+        vspace = repmat(trivspace, 1, 2*Q);
+        for ind = 1:2*Q
+            vspace(ind) = GradedSpace.new(get_asymm(fun(2*Q - ind*P), fun(Q - ind*P)), ones(1, 10), false);
         end
         return
+        vspace = space_fun(1:2*Q);
+        vspace0 = GradedSpace.new(get_asymm2(0, 6, 3, -3), ones(1, 10), false);
+        vspace1 = GradedSpace.new(get_asymm2(5, -1, 2, -4), ones(1, 10), false);
+        vspace2 = GradedSpace.new(get_asymm2(4, -2, 1, -5), ones(1, 10), false);
+        vspace3 = GradedSpace.new(get_asymm2(3, -3, 0, 6), ones(1, 10), false);
+        vspace4 = GradedSpace.new(get_asymm2(2, -4, 5, -1), ones(1, 10), false);
+        vspace5 = GradedSpace.new(get_asymm2(1, -5, 4, -2), ones(1, 10), false);
+        vspace = [vspace0 vspace1 vspace2 vspace3 vspace4 vspace5];
+        return
+
     elseif strcmp('Hubbard_asymmetric_with_weird_conjugation', type)
         warning('This is probably wrong')
         warning('Working with U1 x U1 x fZ2')
@@ -253,7 +266,7 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
         fusion_trees = FusionTree.new([2 2], charges, false, charges, false, charges, false, charges, false);
         pspace = GradedSpace.new(charges, [1 1], false);
         trivspace = GradedSpace.new(U1(0), 1, false);
-        prodspace = 0;
+
         vspace1 = GradedSpace.new(U1([-1 1]), D1, false);
         vspace2 = GradedSpace.new(U1([2, 0, -2]), D2, false);
         vspace = [vspace1 vspace2];
@@ -282,3 +295,13 @@ function [pspace, vspace, trivspace, prodspace, fusion_trees] = get_spaces(type,
     end
 
 end
+
+
+%%
+%{
+vL = vspace(4);
+vR = vspace(1);
+disp(vL * pspace < vR);
+disp(vL > pspace' * vR);
+%}
+

@@ -88,9 +88,6 @@ RMS2 = sqrt(mean((pol-epsilon1s).^2));
 %%
 p3 = polyfit(variances, epsilon1s, 1);
 
-
-
-
 function y = polynomial(x, a, b)
     y = a*x+b;
 end

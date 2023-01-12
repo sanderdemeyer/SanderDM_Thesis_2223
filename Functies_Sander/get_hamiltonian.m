@@ -149,6 +149,7 @@ function H = get_hamiltonian(type, varargin)
         U = varargin{3};
         tens_one_site = Tensor([pspace trivspace], [trivspace pspace]);
         
+        
         tblocks = num2cell([0 0 0 1]*U);
         
         H = fill_tensor(tens_one_site, tblocks);
