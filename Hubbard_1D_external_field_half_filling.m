@@ -1,9 +1,12 @@
-function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trunc, maxiter, tol, vumps_way, redefined, stag_h_field, starting_name, finalized)
+function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
     disp('Code started running');
     P = 2;
     Q = 5;
-    %[pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
-    [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard_asymmetric_again', P, Q);
+
+    %[pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard_asymmetric_again', P, Q);
+    D1 = 1;
+    D2 = 2;
+    [pspace, vspaces, trivspace] = get_spaces_Hubbard_asymmetric(P, Q, D1, D2);
         
     trunc_tot = ~iscell(trunc);
     if trunc_tot
@@ -20,22 +23,9 @@ function [gs_mps, gs_energy] = Hubbard_1D_external_field_half_filling(t, U, trun
     h_field = 0;
     N = 0;
 
-    %H = get_hamiltonian('Hubbard_external_field', fusion_trees, pspace, t, 0, 0, 0);
-    %H = get_hamiltonian('Hubbard_two_site', fusion_trees, pspace, t, mu, true);
-    %H = Hubbard_operators(t);
-    %{
-    ttest = Tensor([pspace', pspace'], [pspace', pspace']);
-    %var = num2cell(1:36);
-    var = num2cell(-(t)*[0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);
-    H_old = fill_tensor(ttest, var);
-    %}
     H = Hubbard_Hamiltonian(t, P, Q);
-    %H = tpermute(H, [3 4 1 2], [2 2]);
-    if redefined
-        H_one_site = get_hamiltonian('Hubbard_one_site_redefined', pspace, trivspace, U);
-    else
-        H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
-    end
+    H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
+
     mpo = get_mpo(H, 0, 'Helix');
     %mpo_joint = {mpo mpo};
     mpo_joint = cell(1, length(vspaces));

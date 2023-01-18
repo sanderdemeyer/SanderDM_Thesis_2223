@@ -1,8 +1,8 @@
 function [gs_mps, gs_energy] = Hubbard_helix_half_filling(N, t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
     disp('Code started running');
     P = 1;
-    Q = 2;
-    [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard_asymmetric', false, P, Q, 12, 3);
+    Q = 1;
+    [pspace, vspaces, trivspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
         
     trunc_tot = ~iscell(trunc);
     if trunc_tot
@@ -13,7 +13,7 @@ function [gs_mps, gs_energy] = Hubbard_helix_half_filling(N, t, U, trunc, maxite
 
     mu = 0;
 
-    H = Hubbard_Hamiltonian(t);
+    H = Hubbard_Hamiltonian(t, P, Q);
     H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
 
     mpo = get_mpo(H, N, 'Helix');

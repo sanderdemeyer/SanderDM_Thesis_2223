@@ -52,23 +52,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
             args{2,i} = vspaces((mod(i-1,2)+1));
         end
         mps = UniformMps.randnc(args{:});
-        %{
-        if length(vspaces) == 1
-            mps = UniformMps.randnc(pspace, vspaces);
-        elseif length(vspaces) == 2
-            if N == 2
-                mps = UniformMps.randnc(pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2));                
-            elseif N == 4
-                mps = UniformMps.randnc(pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2));
-            elseif N == 6
-                mps = UniformMps.randnc(pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2), pspace, vspaces(1), pspace, vspaces(2));
-            else
-                error('TBA');
-            end
-        else
-            error('check length of vspaces');
-        end
-        %}
+
     end
     disp('initialization correct');
     
@@ -84,6 +68,11 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_half_filling(N, t, U, trunc, max
     elseif vumps_way == 2
         alg2 = Vumps2('which', 'smallestreal', 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(name, '.mat'), 'tol', 10^(-6), 'doplot', true);
         [gs_mps, gs_energy] = fixedpoint(alg2, H1, mps);
+    elseif vumps_way == 3
+        cut = 5;
+        maxdim = 70;
+        alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', {'TruncBelow', 10^(-cut), 'TruncDim', maxdim}, 'tol', 10^(-tol), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', strcat(name, '.mat'), 'doSave', true, 'saveIterations', 1);
+        [gs_mps, gs_energy] = fixedpoint(alg, H1, mps);
     else
         [gs_mps, gs_energy, eta] = doVumps(H1, mps, name, maxiter, tol, trunc_way);
     end

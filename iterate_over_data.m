@@ -1,9 +1,10 @@
 folder = 'Data structures/Hubbard_t_1_24_dec/';
 folder = 'Data structures/Hubbard_1D_U_6_new/';
+%folder = 'Data structures/Hubbard_1D_U_8_doping/';
 
 files = dir((folder));
 l = length(files);
-
+doPath;
 disp('started');
 %{
 deltas = zeros(1, l-2);
@@ -15,6 +16,7 @@ stag_magn = zeros(1, l-2);
 inv_corr = zeros(1, l-2);
 Us = zeros(1, l-2);
 %}
+
 k = 1;
 for i = 3:l
     file = files(i);
@@ -24,24 +26,42 @@ for i = 3:l
         naam = naam{1};
         name_l = length(naam);
     end
-    disp(name);
+    disp(naam);
     U = str2double(naam(31:length(naam)-38));
     disp(U);
-    load(strcat(folder, naam))%, 'gs_mps', 'gs_energy');
     disp(length(naam));
-    if ~strcmp(naam(name_l-9:name_l), '_final.mat')
-        gs_mps = canonicalize(mps, 'Order', 'rl');
-    end
-    if 0 == 0
+    if strcmp(naam(name_l-9:name_l), '_final.mat')
+%        gs_mps = canonicalize(mps, 'Order', 'rl');
+%    end
+%    if 0 == 0
+        load(strcat(folder, naam))%, 'gs_mps', 'gs_energy');
         disp(naam);
         disp(naam(length(naam)-8:length(naam)));
         %load(name);
         dimensions = dims(gs_mps.AL(1).var);
         bond_dim = dimensions(1) + dimensions(3);
         bond_dims{k} = bond_dim;
-        energies{k} = lambda; % gs_energy;
+        energies{k} = gs_energy;
         disp(U);
         Us{k} = U;
+        etas{k} = eta;
+
+        %{
+        filling{k} = P/Q;
+        if mod(P,2) == 0
+            unit_cell{k} = Q;
+        else
+            unit_cell{k} = 2*Q;
+        end
+        U = 8;
+        H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
+        single_site_energies = zeros(1, unit_cell{k});
+        for site = 1:unit_cell{k}
+            AC = gs_mps.AC(site);
+            single_site_energies(site) = contract(AC, [1 2 3], H_one_site, [-1 4 -2 2], twist(conj(AC),3), [1 4 3]).var.var;
+        end
+        self_interaction_energies{k} = mean(single_site_energies);
+        %}
 
         [V, D] = transfereigs(gs_mps, gs_mps, 3);
         epsilons = zeros(1,3);
@@ -51,16 +71,20 @@ for i = 3:l
         all_sectors{k} = D;
         deltas{k} = epsilons(3) - epsilons(2);
         epsilon1s{k} = epsilons(2);
-
-        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2), U1(0), fZ2(0)));
+        disp('0 sector done');
+        %{
+        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2*Q), U1(0), fZ2(0)));
         epsilons = zeros(1,3);
         for j = 1:3
             epsilons(j) = -log(norm(D(j,j)));
         end
+        disp(epsilons(1));
         charge_sector{k} = D;
         deltas_charge{k} = epsilons(2) - epsilons(1);
         epsilon1s_charge{k} = epsilons(1);
-
+        disp('charge sector done');
+        %}
+        %{
         [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
         epsilons = zeros(1,3);
         for j = 1:3
@@ -69,6 +93,8 @@ for i = 3:l
         spin_sector{k} = D;
         deltas_spin{k} = epsilons(2) - epsilons(1);
         epsilon1s_spin{k} = epsilons(1);
+        disp('Spin sector done');
+        %}
 
         %{
         stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);

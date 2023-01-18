@@ -192,7 +192,7 @@ function O = get_mpo(H, N, type)
 
             % Underlying code implements 'D' type mpo
             mpoD(2, 1, sz, 1) = R;
-            mpoD(N+1, 1, sz, 1) = R;
+            mpoD(N+1, 1, sz, 1) = twist(R,1);
             
             mpo_full{2*N} = mpoD;
             mpo_full{N} = mpoD;
