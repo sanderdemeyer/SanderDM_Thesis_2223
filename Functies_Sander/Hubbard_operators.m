@@ -1,5 +1,10 @@
 function O = Hubbard_operators(type, P, Q)
-    [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
+    if P == 1
+        [pspace] = get_spaces_Hubbard_symmetric(P, Q);
+    else
+        [pspace] = get_spaces_Hubbard_asymmetric(P, Q);
+    end
+
     up_charge = ProductCharge(U1(2*Q-P), U1(1), fZ2(1));
     down_charge = ProductCharge(U1(2*Q-P), U1(-1), fZ2(1));
     up_flip_charge = ProductCharge(U1(Q-P), U1(2), fZ2(0));

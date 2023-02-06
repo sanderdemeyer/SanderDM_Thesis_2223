@@ -1,6 +1,7 @@
-function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol, vumps_way, starting_name, finalized)
+function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized)
     disp('Code started running');
-        
+    P = 1;
+    Q = 1;
     mu = 0;
 
     H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Helix', N});
@@ -12,7 +13,7 @@ function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol,
         load(starting_name, 'mps');
         mps = canonicalize(mps, 'Order', 'rl');
     else
-        mps = get_Hubbard_mps(P, Q);
+        mps = get_Hubbard_mps(P, Q, 'system', {'Helix', N});
     end
     disp('initialization correct');
     

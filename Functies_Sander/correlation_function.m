@@ -89,8 +89,10 @@ function corr_list = correlation_function(O, gs_mps, max_dist, varargin)
         corr_list = zeros(1,max_dist);
         x = num2cell(zeros(1, w));
         for b = 1:w
+            %zero_dist{b} = contract(AC(b), [1 2 3], O_alpha, [2 4], O_beta, [4 5], conj(AC(b)), [1 5 3]);
             x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O_alpha, [2 3]);
         end
+        %zero_dist = cell2mat(zero_dist);
         for i = 1:max_dist
             x_final = num2cell(zeros(1, w));
             for b = 1:w
@@ -113,8 +115,10 @@ function corr_list = correlation_function(O, gs_mps, max_dist, varargin)
         corr_list = zeros(1,max_dist);
         x = num2cell(zeros(1, w));
         for b = 1:w
+            %zero_dist{b} = contract(AC(b), [1 2 3], conj(AC(b)), [1 5 3], O, [2 4 4 5]);
             x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O, [2 -3 3 -4]);
         end
+        %zero_dist = mean(cell2mat(zero_dist));
         for i = 1:max_dist
             x_final = num2cell(zeros(1, w));
             for b = 1:w

@@ -62,8 +62,8 @@ function mpo = get_mpo_cylinder(H2, H1, N, rungs)
         % Underlying code implements 'D' type mpo
         % for which X: L, R, 1. Y: R. B: R.
         mpoD(2, 1, sz, 1) = R;
-       % mpoD(3, 1, sz, 1) = twist(R,1);
-        mpoD(3, 1, sz, 1) = twist(tpermute(conj(L), [3 4 1 2]),1);
+       % mpoD(3, 1, sz, 1) = R;
+        mpoD(3, 1, sz, 1) = tpermute(conj(L), [3 4 1 2]); % No twist needed
                 
         % Underlying code implements one-site interaction
         mpoA(1, 1, sz, 1) = H1;

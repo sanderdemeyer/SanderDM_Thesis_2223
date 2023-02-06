@@ -1,21 +1,31 @@
 folder = 'Data structures/Hubbard_t_1_24_dec/';
-folder = 'Data structures/Hubbard_1D_U_6_new/';
+folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
-
+folder = 'Data structures/Hubbard Helix/t_1_U_8/N_6/';
 files = dir((folder));
 l = length(files);
 doPath;
 disp('started');
-%{
-deltas = zeros(1, l-2);
-epsilon1s = zeros(1, l-2);
-variances = zeros(1, l-2);
-bond_dims = zeros(1, l-2);
-energies = zeros(1, l-2);
-stag_magn = zeros(1, l-2);
-inv_corr = zeros(1, l-2);
-Us = zeros(1, l-2);
-%}
+
+check_energies = false;
+check_transfereigs = true;
+check_transfereigs_charge = true;
+check_transfereigs_spin = true;
+check_stag_magn = false;
+check_variances = false;
+
+self_interaction_energies = cell(0,0);
+deltas = cell(0,0);
+epsilon1s = cell(0,0);
+deltas_charge = cell(0,0);
+epsilon1s_charge = cell(0,0);
+deltas_spin = cell(0,0);
+epsilon1s_spin = cell(0,0);
+stag_magn = cell(0,0);
+variances = cell(0,0);
+
+P = 1;
+Q = 1;
 
 k = 1;
 for i = 3:l
@@ -31,9 +41,11 @@ for i = 3:l
     disp(U);
     disp(length(naam));
     if strcmp(naam(name_l-9:name_l), '_final.mat')
-%        gs_mps = canonicalize(mps, 'Order', 'rl');
-%    end
-%    if 0 == 0
+        %{
+        gs_mps = canonicalize(mps, 'Order', 'rl');
+    end
+    if 0 == 0
+        %}
         load(strcat(folder, naam))%, 'gs_mps', 'gs_energy');
         disp(naam);
         disp(naam(length(naam)-8:length(naam)));
@@ -46,86 +58,112 @@ for i = 3:l
         Us{k} = U;
         etas{k} = eta;
 
-        %{
-        filling{k} = P/Q;
-        if mod(P,2) == 0
-            unit_cell{k} = Q;
-        else
-            unit_cell{k} = 2*Q;
+        if check_energies
+            filling{k} = P/Q;
+            if mod(P,2) == 0
+                unit_cell{k} = Q;
+            else
+                unit_cell{k} = 2*Q;
+            end
+            U = 8;
+            H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
+            single_site_energies = zeros(1, unit_cell{k});
+            for site = 1:unit_cell{k}
+                AC = gs_mps.AC(site);
+                single_site_energies(site) = contract(AC, [1 2 3], H_one_site, [-1 4 -2 2], twist(conj(AC),3), [1 4 3]).var.var;
+            end
+            self_interaction_energies{k} = mean(single_site_energies);
         end
-        U = 8;
-        H_one_site = get_hamiltonian('Hubbard_one_site', pspace, trivspace, U);
-        single_site_energies = zeros(1, unit_cell{k});
-        for site = 1:unit_cell{k}
-            AC = gs_mps.AC(site);
-            single_site_energies(site) = contract(AC, [1 2 3], H_one_site, [-1 4 -2 2], twist(conj(AC),3), [1 4 3]).var.var;
+        if check_transfereigs
+            [V, D] = transfereigs(gs_mps, gs_mps, 5);
+            epsilons = zeros(1,5);
+            for j = 1:5
+                epsilons(j) = -log(norm(D(j,j)));
+            end
+            all_sectors{k} = D;
+            deltas{k} = epsilons(3) - epsilons(2);
+            deltas_42{k} = epsilons(4) - epsilons(2);
+            epsilon1s{k} = epsilons(2);
+            disp('0 sector done');
         end
-        self_interaction_energies{k} = mean(single_site_energies);
-        %}
-
-        [V, D] = transfereigs(gs_mps, gs_mps, 3);
-        epsilons = zeros(1,3);
-        for j = 1:3
-            epsilons(j) = -log(norm(D(j,j)));
+        if check_transfereigs_charge
+            [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2*Q), U1(0), fZ2(0)));
+            epsilons = zeros(1,3);
+            for j = 1:3
+                epsilons(j) = -log(norm(D(j,j)));
+            end
+            disp(epsilons(1));
+            charge_sector{k} = D;
+            deltas_charge{k} = epsilons(2) - epsilons(1);
+            deltas_charge_31{k} = epsilons(3) - epsilons(1);
+            epsilon1s_charge{k} = epsilons(1);
+            disp('charge sector done');
         end
-        all_sectors{k} = D;
-        deltas{k} = epsilons(3) - epsilons(2);
-        epsilon1s{k} = epsilons(2);
-        disp('0 sector done');
-        %{
-        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2*Q), U1(0), fZ2(0)));
-        epsilons = zeros(1,3);
-        for j = 1:3
-            epsilons(j) = -log(norm(D(j,j)));
+        if check_transfereigs_spin
+            [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
+            epsilons = zeros(1,3);
+            for j = 1:3
+                epsilons(j) = -log(norm(D(j,j)));
+            end
+            spin_sector{k} = D;
+            deltas_spin{k} = epsilons(2) - epsilons(1);
+            deltas_spin_31{k} = epsilons(3) - epsilons(1);
+            epsilon1s_spin{k} = epsilons(1);
+            disp('Spin sector done');
         end
-        disp(epsilons(1));
-        charge_sector{k} = D;
-        deltas_charge{k} = epsilons(2) - epsilons(1);
-        epsilon1s_charge{k} = epsilons(1);
-        disp('charge sector done');
-        %}
-        %{
-        [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
-        epsilons = zeros(1,3);
-        for j = 1:3
-            epsilons(j) = -log(norm(D(j,j)));
+        if check_stag_magn
+            stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
+            fprintf('Staggered magnetisation is %s \n', stag_m)
+            stag_magn{k} = stag_m;
         end
-        spin_sector{k} = D;
-        deltas_spin{k} = epsilons(2) - epsilons(1);
-        epsilon1s_spin{k} = epsilons(1);
-        disp('Spin sector done');
-        %}
-
-        %{
-        stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
-        fprintf('Staggered magnetisation is %s \n', stag_m)
-        stag_magn(k) = stag_m;
-        %}
-        %{
-        AL1 = gs_mps.AL(1);
-        AC2 = gs_mps.AC(2);
-        W1 = mpo_joint{1};
-        W2 = mpo_joint{2};
-        [GL, GR] = environments(H1, gs_mps, gs_mps);
-        [P, ~, Q] = size(W1);
-
-        %exp = expectation_value(gs_mps, H1, gs_mps);
-        top_str = contract(AL1, [-1 -2 2], AC2, [2 -3 -4]);
-        hoera = contract(top_str, [1 3 5 -5], GL{1}, [-1 2 1], W1, [2 -2 4 3], W2(:,:,Q,:), [4 -3 -4 5]);
-        exp = contract(hoera, [1 2 3 -1 4], conj(AL1), [1 2 5], conj(AC2), [5 3 4]);
-        disp(exp);
-        energies(k) = exp.var.var;
-
-        top_str = contract(AL1, [-1 1 2], AC2, [2 3 -4], H, [1 3 -2 -3]);
-        hoera = contract(top_str, [1 3 5 -5], GL{1}, [-1 2 1], W1, [2 -2 4 3], W2(:,:,Q,:), [4 -3 -4 5]);
-        var_A = contract(hoera, [1 2 3 -1 4], conj(AL1), [1 2 5], conj(AC2), [5 3 4]);
-        disp(var_A.var.var);
-        variances(k) = var_A.var.var;
-        %}
-
+        if check_variances
+            AL1 = gs_mps.AL(1);
+            AC2 = gs_mps.AC(2);
+            W1 = mpo_joint{1};
+            W2 = mpo_joint{2};
+            [GL, GR] = environments(H1, gs_mps, gs_mps);
+            [P, ~, Q] = size(W1);
+    
+            %exp = expectation_value(gs_mps, H1, gs_mps);
+            top_str = contract(AL1, [-1 -2 2], AC2, [2 -3 -4]);
+            hoera = contract(top_str, [1 3 5 -5], GL{1}, [-1 2 1], W1, [2 -2 4 3], W2(:,:,Q,:), [4 -3 -4 5]);
+            exp = contract(hoera, [1 2 3 -1 4], conj(AL1), [1 2 5], conj(AC2), [5 3 4]);
+            disp(exp);
+            energies(k) = exp.var.var;
+    
+            top_str = contract(AL1, [-1 1 2], AC2, [2 3 -4], H, [1 3 -2 -3]);
+            hoera = contract(top_str, [1 3 5 -5], GL{1}, [-1 2 1], W1, [2 -2 4 3], W2(:,:,Q,:), [4 -3 -4 5]);
+            var_A = contract(hoera, [1 2 3 -1 4], conj(AL1), [1 2 5], conj(AC2), [5 3 4]);
+            disp(var_A.var.var);
+            variances{k} = var_A.var.var;
+        end
         k = k+1;
     end
 end
+
+assert(k ~= 1, 'Must contain at least one file');
+
+bond_dims = cell2mat(bond_dims);
+energies = cell2mat(energies);
+Us = cell2mat(Us);
+etas = cell2mat(etas);
+
+self_interaction_energies = cell2mat(self_interaction_energies);
+deltas = cell2mat(deltas);
+deltas_42 = cell2mat(deltas_42);
+epsilon1s = cell2mat(epsilon1s);
+deltas_charge = cell2mat(deltas_charge);
+deltas_charge_31 = cell2mat(deltas_charge_31);
+epsilon1s_charge = cell2mat(epsilon1s_charge);
+deltas_spin = cell2mat(deltas_spin);
+deltas_spin_31 = cell2mat(deltas_spin_31);
+epsilon1s_spin = cell2mat(epsilon1s_spin);
+stag_magn = cell2mat(stag_magn);
+variances = cell2mat(variances);
+
+
+
+
 
 %%
 x_data = cell2mat(deltas_charge);
