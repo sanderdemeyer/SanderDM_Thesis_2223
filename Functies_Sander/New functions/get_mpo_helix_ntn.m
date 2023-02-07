@@ -13,6 +13,8 @@ function mpo = get_mpo_helix_ntn(Hopping_t1, Hopping_t2, H_onesite, N, kwargs)
     assert(floor(N) == N, 'Radius (N) should be an integer.')
     sz = 3*N+5;
 
+    % dom_spaces based on the 'L'
+    % cod_spaces based on the 'R'
     cod_spaces = repmat(one(vspace), 1, sz);
     dom_spaces = repmat(one(vspace), 1, sz);
     cod_spaces(2) = vspace;
