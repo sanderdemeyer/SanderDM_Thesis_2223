@@ -1,16 +1,15 @@
 folder = 'Data structures/Hubbard_t_1_24_dec/';
 folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
-folder = 'Data structures/Hubbard Helix/t_1_U_8/N_6/';
+folder = 'Data structures/Hubbard Helix/t_1_U_8/N_9/';
 files = dir((folder));
 l = length(files);
-doPath;
 disp('started');
 
 check_energies = false;
 check_transfereigs = true;
-check_transfereigs_charge = true;
-check_transfereigs_spin = true;
+check_transfereigs_charge = false;
+check_transfereigs_spin = false;
 check_stag_magn = false;
 check_variances = false;
 
@@ -36,16 +35,13 @@ for i = 3:l
         naam = naam{1};
         name_l = length(naam);
     end
-    disp(naam);
     U = str2double(naam(31:length(naam)-38));
-    disp(U);
-    disp(length(naam));
-    if strcmp(naam(name_l-9:name_l), '_final.mat')
-        %{
+    if ~strcmp(naam(name_l-9:name_l), '_final.mat')
+        load(strcat(folder, naam))%, 'gs_mps', 'gs_energy');
         gs_mps = canonicalize(mps, 'Order', 'rl');
+        gs_energy = lambda;
     end
     if 0 == 0
-        %}
         load(strcat(folder, naam))%, 'gs_mps', 'gs_energy');
         disp(naam);
         disp(naam(length(naam)-8:length(naam)));
@@ -143,6 +139,8 @@ end
 
 assert(k ~= 1, 'Must contain at least one file');
 
+%%
+
 bond_dims = cell2mat(bond_dims);
 energies = cell2mat(energies);
 Us = cell2mat(Us);
@@ -160,7 +158,6 @@ deltas_spin_31 = cell2mat(deltas_spin_31);
 epsilon1s_spin = cell2mat(epsilon1s_spin);
 stag_magn = cell2mat(stag_magn);
 variances = cell2mat(variances);
-
 
 
 

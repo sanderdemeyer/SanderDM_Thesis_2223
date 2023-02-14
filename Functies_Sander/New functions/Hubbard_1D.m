@@ -10,7 +10,10 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         vumps_way
         starting_name
         finalized
-        kwargs.t2 = 0;
+        kwargs.t2 = 0
+        kwargs.V = 0
+        kwargs.U1 = true
+        kwargs.mu = 0
     end
     disp('Code started running');
         
@@ -19,7 +22,6 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
     %t = 1.5;
     %U = 9;
 
-    mu = 0;
     h_field = 0;
     N = 0;
 
@@ -29,8 +31,8 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         len = 2*Q;
     end
 
-    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'len', len);
-
+    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'U1', kwargs.U1, 'mu', kwargs.mu);
+        
     if finalized == 2
         load(starting_name, 'gs_mps');
         mps = gs_mps;
@@ -38,7 +40,11 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         load(starting_name, 'mps');
         mps = canonicalize(mps, 'Order', 'rl');
     else
-        mps = get_Hubbard_mps(P, Q);
+        if kwargs.U1
+            mps = get_Hubbard_mps(P, Q);
+        else
+            mps = get_Hubbard_mps_without_U1();
+        end
     end
     disp('initialization correct');
 

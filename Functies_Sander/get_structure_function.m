@@ -28,12 +28,13 @@ function s = get_structure_function(O, gs_mps, q_list, range, N, type)
             for q_ind = 1:length(q_list)
 
                 qx = q_list(q_ind);
-                if strcmp('Helix', type)
+                if strcmp('Helix', type) || strcmp('helix', type)
                     qy = (2*pi/N)*(ny_i + qx/(2*pi));
-                elseif strcmp('Cylinder', type)
+                elseif strcmp('Cylinder', type) || strcmp('cylinder', type)
                     qy = (2*pi/N)*ny_i;
+                else
+                    error('Type must be either Helix or Cylinder')
                 end
-
                 for n = 1:range
                     s{ny_i+1}(q_ind) = s{ny_i+1}(q_ind) + exp(1i * (qx * floor(n/N) + qy * mod(n,N)))*corr_list(n);
                 end

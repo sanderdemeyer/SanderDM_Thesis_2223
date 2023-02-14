@@ -10,7 +10,7 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q)
     c_dagger_up = Tensor(pspace, [pspace up_space]);
     c_dagger_down = Tensor(pspace, [pspace down_space]);
 
-    c_dagger_up = fill_tensor(c_dagger_up, num2cell([1 1]));
+    c_dagger_up = fill_tensor(c_dagger_up, num2cell([1 5]));
     c_dagger_down = fill_tensor(c_dagger_down, num2cell([1 -1]));
     
     c_up = conj(c_dagger_up);

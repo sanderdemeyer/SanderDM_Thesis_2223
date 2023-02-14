@@ -1,10 +1,8 @@
-function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol, vumps_way, starting_name, finalized, kwargs)
+function [gs_mps, gs_energy] = Hubbard_1D_without_U1(t, U, trunc, maxiter, tol, vumps_way, starting_name, finalized, kwargs)
     arguments
-        N
         t
         U
-        P
-        Q
+        mu
         trunc
         maxiter
         tol
@@ -14,9 +12,16 @@ function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol,
         kwargs.t2 = 0;
         kwargs.V = 0;
     end
-
     disp('Code started running');
+        
+    % For atomic separation = 2å of 1D hydrogen chain: 
+    % t = 1.5 en abs(U/t) = 6
+    %t = 1.5;
+    %U = 9;
+
     mu = 0;
+    h_field = 0;
+    N = 0;
 
     if mod(P, 2) == 0
         len = Q;
@@ -24,7 +29,7 @@ function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol,
         len = 2*Q;
     end
 
-    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Helix', N}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len);
+    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len);
 
     if finalized == 2
         load(starting_name, 'gs_mps');
@@ -33,10 +38,13 @@ function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol,
         load(starting_name, 'mps');
         mps = canonicalize(mps, 'Order', 'rl');
     else
-        mps = get_Hubbard_mps(P, Q, 'system', {'Helix', N});
+        if kwargs.U1
+            mps = get_Hubbard_mps(P, Q);
+        else
+            mps = get_H
     end
     disp('initialization correct');
-    
-    name = 'Hubbard_helix_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_filling_' + string(P) + '_' + string(Q);
+
+    name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + '_filling_' + string(P) + '_' + string(Q);
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name);
 end

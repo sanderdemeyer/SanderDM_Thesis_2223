@@ -1,14 +1,10 @@
-function mps = get_Hubbard_mps(P, Q, kwargs)
+function mps = get_Hubbard_mps_without_U1(kwargs)
     arguments
-        P
-        Q
         kwargs.system = {'1D'}
-        kwargs.D = 1
+        kwargs.D1 = 1
+        kwargs.D2 = 1
     end
-    %if P == 153488856512544475
-    %    [pspace, vspaces, ~] = get_spaces_Hubbard_symmetric(P, Q, 'D1', kwargs.D, 'D2', kwargs.D);
-    %else
-    [pspace, vspaces, ~] = get_spaces_Hubbard_asymmetric(P, Q, 'D', kwargs.D);
+    [pspace, vspaces, ~] = get_spaces_Hubbard_without_U1('D1', kwargs.D1, 'D2', kwargs.D2);
 
     if strcmp(kwargs.system{1}, 'Cylinder')
         if P ~= 1 || Q ~= 1

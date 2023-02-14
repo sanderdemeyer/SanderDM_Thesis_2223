@@ -1,8 +1,8 @@
-function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q)
+function cdc = Hubbard_Hopping_Hamiltonian_without_U1(t)
     %[pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
-    [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard_asymmetric', P, Q);
-    up_charge = ProductCharge(U1(Q), U1(1), fZ2(1));
-    down_charge = ProductCharge(U1(Q), U1(-1), fZ2(1));
+    [pspace, ~, trivspace] = get_spaces_Hubbard_without_U1();
+    up_charge = ProductCharge(U1(1), fZ2(1));
+    down_charge = ProductCharge(U1(-1), fZ2(1));
 
     up_space = GradedSpace.new(up_charge, 1, false);
     down_space = GradedSpace.new(down_charge, 1, false);
@@ -10,8 +10,8 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q)
     c_dagger_up = Tensor(pspace, [pspace up_space]);
     c_dagger_down = Tensor(pspace, [pspace down_space]);
 
-    c_dagger_up = fill_tensor(c_dagger_up, num2cell([1 1]));
-    c_dagger_down = fill_tensor(c_dagger_down, num2cell([1 -1]));
+    c_dagger_up = fill_tensor(c_dagger_up, {[0;1];reshape([1 0], 1, 1, 2)});
+    c_dagger_down = fill_tensor(c_dagger_down, {[1;5];reshape([7 1.1], 1, 1, 2)});
     
     c_up = conj(c_dagger_up);
     c_up = tpermute(c_up, [3 2 1]);
@@ -26,6 +26,7 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q)
     cdc = -t*cdc;
     return
 
+    %{
     ttest = Tensor([pspace', pspace'], [pspace', pspace']);
     var = num2cell([0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);
     H = fill_tensor(ttest, var);
@@ -38,8 +39,6 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q)
     testje = Tensor([space1', space2'], [space4', space3']);
     testje_conj = conj(testje);
 
-
-    %{
     %prodspace = pspace * pspace;
     c_dagger = Tensor(pspace, [prodspace pspace]);
     c = Tensor([prodspace pspace], pspace);
