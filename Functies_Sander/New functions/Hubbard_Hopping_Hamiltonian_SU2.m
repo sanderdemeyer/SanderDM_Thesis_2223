@@ -44,12 +44,12 @@ function cdc = Hubbard_Hopping_Hamiltonian_SU2(t, P, Q, kwargs)
     %}
 
 
-    cdc_old = Tensor([pspace' pspace'], [pspace' pspace']);
+    %cdc_old = Tensor([pspace' pspace'], [pspace' pspace']);
     cdc = Tensor([pspace' pspace' pspace pspace], []);
 
 
-    cdc = fill_tensor(cdc, num2cell([2 1 4 3 5 6 7 8 9 10 11 12 13 14 16 15 18 20 17 22]));
-    cdc = fill_tensor(cdc, num2cell(sqrt(2)*[0 -1 0 0 1 0 0 -1 -1 0 -1 0 1 0 0 1 0 0 1 0]));
+    %cdc = fill_tensor(cdc, num2cell([2 1 4 3 5 6 7 8 9 10 11 12 13 14 16 15 18 20 17 22]));
+    cdc = fill_tensor(cdc, num2cell(t*sqrt(2)*[0 -1 0 0 1 0 0 -1 -1 0 -1 0 1 0 0 1 0 0 1 0]));
 
     %cdc = fill_tensor(cdc, num2cell(-t*[0 1 0 0 1 0 -sqrt(2) 0 -sqrt(2) 0 -sqrt(2) 0 -sqrt(2) 0 0 -1 0 0 -1 0]));
     %cdc = fill_tensor(cdc, num2cell(-t*[0 1 0 0 1 0 -sqrt(2) 0 -sqrt(2) 0 -sqrt(2) 0 -sqrt(2) 0 0 -1 0 0 -1 0]));

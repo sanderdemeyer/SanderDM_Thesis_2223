@@ -55,7 +55,7 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q, kwargs)
     cdc_correct = -t*cdc_correct;
     %}
     return
-
+    %{
     ttest = Tensor([pspace', pspace'], [pspace', pspace']);
     var = num2cell([0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);
     H = fill_tensor(ttest, var);
@@ -67,7 +67,7 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q, kwargs)
     space4 = GradedSpace.new(up_charge, 4, false);
     testje = Tensor([space1', space2'], [space4', space3']);
     testje_conj = conj(testje);
-
+    %}
 
     %{
     %prodspace = pspace * pspace;
