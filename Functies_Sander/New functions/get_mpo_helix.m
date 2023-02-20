@@ -4,9 +4,16 @@ function mpo = get_mpo_helix(H2, H1, N, kwargs)
         H1
         N
         kwargs.len = 2;
+        kwargs.convention = 'first'
     end
 
-    [L, R, pspace, vspace] = tsvd_twosite(H2);
+    if strcmp(kwargs.convention, 'first')
+        [L, R, pspace, vspace] = tsvd_twosite(H2);
+    elseif strcmp(kwargs.convention, 'conventional')
+        [L, R, pspace, vspace] = tsvd_twosite_conventional(H2);
+    else
+        error('convention does not exist.')
+    end
 
     assert(floor(N) == N, 'Radius (N) should be an integer.')
     sz = N+3;

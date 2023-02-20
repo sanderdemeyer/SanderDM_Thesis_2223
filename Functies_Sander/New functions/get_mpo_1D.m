@@ -3,8 +3,15 @@ function mpo = get_mpo_1D(H2, H1, kwargs)
         H2
         H1
         kwargs.len = 2;
+        kwargs.convention = 'conventional' % first was used prior to 16 february 2023. Conventional is what is should be
     end
-    [L, R, pspace, vspace] = tsvd_twosite(H2);
+    if strcmp(kwargs.convention, 'first')
+        [L, R, pspace, vspace] = tsvd_twosite(H2);
+    elseif strcmp(kwargs.convention, 'conventional')
+        [L, R, pspace, vspace] = tsvd_twosite_conventional(H2);
+    else
+        error('convention does not exist.')
+    end
 
     cod = SumSpace([one(vspace) vspace one(vspace)], pspace);
     dom = SumSpace(pspace, [one(vspace), vspace, one(vspace)]);

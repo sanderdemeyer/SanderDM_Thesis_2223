@@ -13,7 +13,7 @@ function [gs_mps, gs_energy] = Hubbard_1D_without_U1(t, U, trunc, maxiter, tol, 
         kwargs.V = 0;
     end
     disp('Code started running');
-        
+    error('Use Hubbard_1D with argument symmetries instead of this');
     % For atomic separation = 2å of 1D hydrogen chain: 
     % t = 1.5 en abs(U/t) = 6
     %t = 1.5;
@@ -41,7 +41,8 @@ function [gs_mps, gs_energy] = Hubbard_1D_without_U1(t, U, trunc, maxiter, tol, 
         if kwargs.U1
             mps = get_Hubbard_mps(P, Q);
         else
-            mps = get_H
+            mps = get_H;
+        end
     end
     disp('initialization correct');
 

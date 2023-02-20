@@ -1,6 +1,18 @@
-function mpo = get_mpo_cylinder(H2, H1, N, rungs)
-    % double is boolean. If true, 2 rungs are included.
-    [L, R, pspace, vspace] = tsvd_twosite(H2);
+function mpo = get_mpo_cylinder(H2, H1, N, rungs, kwargs)
+    arguments
+        H2
+        H1
+        N
+        rungs
+        kwargs.convention = 'conventional' % first was used prior to 16 february 2023. Conventional is what is should be
+    end
+    if strcmp(kwargs.convention, 'first')
+        [L, R, pspace, vspace] = tsvd_twosite(H2);
+    elseif strcmp(kwargs.convention, 'conventional')
+        [L, R, pspace, vspace] = tsvd_twosite_conventional(H2);
+    else
+        error('convention does not exist.')
+    end
     
     sz = N+4;
         cod_spacesA = repmat(vspace, 1, sz);
@@ -51,6 +63,7 @@ function mpo = get_mpo_cylinder(H2, H1, N, rungs)
         % for which X: L, R, 1. Y: L. B: L.
         mpoA(1, 1, 2, 1) = L;
         %mpoA(1, 1, 3, 1) = L;
+       % first line of the convention argument
         mpoA(1, 1, 3, 1) = tpermute(conj(R), [3 4 1 2]);
         
         % Underlying code implements 'B' type mpo
@@ -63,13 +76,24 @@ function mpo = get_mpo_cylinder(H2, H1, N, rungs)
         % for which X: L, R, 1. Y: R. B: R.
         mpoD(2, 1, sz, 1) = R;
        % mpoD(3, 1, sz, 1) = R;
+       % second line of the convention argument
         mpoD(3, 1, sz, 1) = tpermute(conj(L), [3 4 1 2]); % No twist needed
                 
+    
+
         % Underlying code implements one-site interaction
         mpoA(1, 1, sz, 1) = H1;
         mpoB(1, 1, sz, 1) = H1;
         mpoD(1, 1, sz, 1) = H1;
-
+        
+        for j = rungs:-1:1
+            mpo{j*N} = mpoD;
+            mpo{(j-1)*N+1} = mpoA;
+            for i = 2:N-1
+                mpo{(j-1)*N+i} = mpoB;
+            end
+        end
+        %{
         if rungs == 2
             mpo{2*N} = mpoD;
             mpo{N} = mpoD;
@@ -88,4 +112,5 @@ function mpo = get_mpo_cylinder(H2, H1, N, rungs)
         else
             error('TBA')
         end
+        %}
 end

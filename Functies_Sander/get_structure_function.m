@@ -20,6 +20,7 @@ function s = get_structure_function(O, gs_mps, q_list, range, N, type)
         % This returns a cell, index i of the cell contains a list 
         % with the same size as q_lijst, this corresponds to the structure
         % factor with qy = 2pi/N * (i-1) and qx = q_list
+        
         corr_list = correlation_function(O, gs_mps, range);
         %corr_list = [zero_dist corr_list];
         %corr_list = [1.5 corr_list];

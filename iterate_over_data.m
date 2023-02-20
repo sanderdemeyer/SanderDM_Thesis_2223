@@ -1,7 +1,7 @@
 folder = 'Data structures/Hubbard_t_1_24_dec/';
 folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
-folder = 'Data structures/Hubbard Helix/t_1_U_8/N_9/';
+folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
 files = dir((folder));
 l = length(files);
 disp('started');

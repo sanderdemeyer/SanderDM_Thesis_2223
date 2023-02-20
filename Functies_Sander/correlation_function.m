@@ -1,4 +1,4 @@
-function corr_list = correlation_function(O, gs_mps, max_dist, varargin)
+function corr_list = correlation_function(O, gs_mps, max_dist, convention, varargin)
 % Takes an 2-site operator O_{ij}, together with the properties of an
 % optimized MPS (AC1, AC2, AR1, AR2), which is thus a 2-site MPS
 % It returns a list, where the expectation value of H_{i,i+dist} is
@@ -17,7 +17,14 @@ function corr_list = correlation_function(O, gs_mps, max_dist, varargin)
         assert(nspaces(O) == 4, 'O should have 4 legs')
     end
 
-    if nargin == 4
+    if strcmp(convention, 'first')
+        disp('');
+    elseif strcmp(convention, 'conventional')
+        assert(~separate, 'not implemented')
+        O = tpermute(O, [4 3 1 2]);
+    end
+    
+    if nargin == 5
         tol_check = true;
         tol = varargin{1};
     else
