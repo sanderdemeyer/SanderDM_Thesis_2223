@@ -47,6 +47,7 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q, kwargs)
     else
         error('Convention must be either first or conventional.')
     end
+    return
     %{
     cdc_up_correct = contract(c_dagger_up, [-1 1 -4], c_up, [-2 1 -3]);
     cdc_down_correct = contract(c_dagger_down, [-1 1 -4], c_down, [-2 1 -3]);
@@ -54,7 +55,6 @@ function cdc = Hubbard_Hopping_Hamiltonian(t, P, Q, kwargs)
     cdc_correct = cdc_base_correct + tpermute(conj(cdc_base_correct), [4 3 2 1]);
     cdc_correct = -t*cdc_correct;
     %}
-    return
     %{
     ttest = Tensor([pspace', pspace'], [pspace', pspace']);
     var = num2cell([0 1 0 0 1 1 0 0 1 0 0 1 -1 0 -1 0 0 -1 1 0 0 1 0 1 -1 0 0 -1 0 0 -1 -1 0 0 -1 0]);

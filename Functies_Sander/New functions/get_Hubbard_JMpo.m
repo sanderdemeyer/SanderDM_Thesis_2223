@@ -32,6 +32,7 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
             Hopping_t2 = Hubbard_Hopping_Hamiltonian_SU2(kwargs.t2, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
         end
     elseif strcmp(kwargs.symmetries, 'None_U1')
+        error('Probably wrong.');
         [pspace, ~, trivspace] = get_spaces_Hubbard_without_U1('D1', kwargs.D, 'D2', kwargs.D);
         Hopping_t = Hubbard_Hopping_Hamiltonian_without_U1(t, 'convention', kwargs.convention);
         H_onesite = Hubbard_Onesite_Hamiltonian_without_U1(pspace, trivspace, U, kwargs.mu);
@@ -43,8 +44,7 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
     end
 
     if kwargs.V ~= 0
-        %neighbour_interaction = kwargs.V*Hubbard_operators('nn', kwargs.P, kwargs.Q);
-        neighbour_interaction = kwargs.V*Hubbard_V_Hamiltonian(pspace, trivspace, kwargs.V, 'symmetries', kwargs.symmetries);
+        neighbour_interaction = Hubbard_V_Hamiltonian(kwargs.V, kwargs.P, kwargs.Q, 'symmetries', kwargs.symmetries, 'convention', kwargs.convention);
         Hopping_t = Hopping_t + neighbour_interaction;
     end
     

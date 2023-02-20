@@ -12,6 +12,7 @@ function [s, rel_error, rel_error_transpose] = get_2D_structure_factor(O, gs_mps
         kwargs.check_XY_symmetry = false
         kwargs.check_XY_symmetry_transpose = false
     end
+    warning('Not sure about physical meaning');
     if ~isempty(kwargs.corr)
         corr_list = kwargs.corr;
         max_dist = length(corr_list);

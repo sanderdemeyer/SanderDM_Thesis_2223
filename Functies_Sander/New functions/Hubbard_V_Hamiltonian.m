@@ -1,12 +1,40 @@
-function nn = Hubbard_V_Hamiltonian(pspace, trivspace, V, kwargs)
+function nn = Hubbard_V_Hamiltonian(V, P, Q, kwargs)
     arguments
-        pspace
-        trivspace
         V
+        P
+        Q
         kwargs.symmetries = 'U1_U1'
-        kwargs.convention = 'first'
+        kwargs.convention = 'conventional'
 
     end
+
+    if strcmp(kwargs.symmetries, 'U1_U1')
+        [pspace, ~, trivspace] = get_spaces_Hubbard_asymmetric(P, Q);
+        number_data = num2cell(V*[0 1 1 2]);
+    elseif strcmp(kwargs.symmetries, 'U1_SU2')
+        [pspace, ~, trivspace] = get_spaces_Hubbard_SU2(P, Q);
+        number_data = num2cell(V*[0 1 2]);
+    else
+        error('Invalid symmetry')
+    end
+
+    number_L = Tensor(pspace, [pspace trivspace]);
+    number_R = Tensor([pspace trivspace], pspace);
+    
+    number_L = fill_tensor(number_L, number_data);
+    number_R = fill_tensor(number_R, number_data);
+
+    if strcmp(kwargs.convention, 'first')
+        nn = contract(number_L, [-3 1 -1], number_R, [-4 1 -2]);
+    elseif strcmp(kwargs.convention, 'conventional')
+        nn = contract(number_L, [-1 1 -4], number_R, [-2 1 -3]);
+    else
+        error('Convention must be either first or conventional.')
+    end
+
+
+    
+    %{
 
     if strcmp(kwargs.symmetries, 'U1_U1')
         if strcmp(kwargs.convention, 'first')
@@ -42,4 +70,6 @@ function nn = Hubbard_V_Hamiltonian(pspace, trivspace, V, kwargs)
     else
         error('Invalid symmetry')
     end
+
+    %}
 end
