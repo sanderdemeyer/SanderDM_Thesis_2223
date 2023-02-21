@@ -2,6 +2,7 @@ function mps = get_Hubbard_mps(P, Q, kwargs)
     arguments
         P
         Q
+        kwargs.len = []
         kwargs.system = {'1D'}
         kwargs.D = 1
         kwargs.symmetries = 'U1_U1'
@@ -34,10 +35,16 @@ function mps = get_Hubbard_mps(P, Q, kwargs)
         end
         mps = UniformMps.randnc(args{:});
     elseif strcmp(kwargs.system{1}, '1D') || strcmp(kwargs.system{1}, 'Helix')
+        if isempty(kwargs.len)
+            len = length(vspaces);
+        else
+            len = kwargs.len;
+        end
         args = cell(2, length(vspaces));
-        for i = 1:length(vspaces)
+        for i = 1:len
             args{1,i} = pspace;
-            args{2,i} = vspaces(i);
+            %args{2,i} = vspaces(i);
+            args{2,i} = vspaces((mod(i-1,length(vspaces))+1));
         end
         mps = UniformMps.randnc(args{:});
     else

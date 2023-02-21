@@ -21,7 +21,8 @@ function Pd = get_SC_order_parameter(mps, N, max_dist, kwargs)
         for k = [1, -1, N, -N]
             min_i = min([N, N + j, N + k]);
             indices = [N-min_i 4; N-min_i 3; N + j-min_i 2; N + k-min_i 1;];
-            corr = get_4_site_correlation_function(cdc_up, cdc_down, AL, AC, AR, N, indices, max_dist);
+            warning('might not be using the correct 4-points correlation functions');
+            corr = get_4_site_correlation_function_new(cdc_up, cdc_down, AL, AC, AR, N, indices, max_dist);
             factor_j = 1*(abs(j) == 1) - 2*(abs(j) == N);
             factor_k = 1*(abs(k) == 1) - 2*(abs(k) == N);
             summation = summation - 2*factor_j*factor_k*sum(corr); % Change, this is wrong
