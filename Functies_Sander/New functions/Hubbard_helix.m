@@ -51,6 +51,6 @@ function [gs_mps, gs_energy] = Hubbard_helix(N, t, U, P, Q, trunc, maxiter, tol,
         end
     end
     disp('initialization correct');
-    name = 'Hubbard_Helix_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_trunc_' + string(trunc) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
+    name = 'Hubbard_Helix_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name);
 end
