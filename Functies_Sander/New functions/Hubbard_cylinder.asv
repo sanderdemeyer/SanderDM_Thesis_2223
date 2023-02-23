@@ -31,14 +31,10 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
     H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
     if finalized == 4
         load(starting_name, 'gs_mps');
-        w = period(gs_mps);
-        assert(mod(w, N) == 0)
-        mps = multiply_mps(gs_mps, rungs*N/w);
+        mps = multiply_mps(gs_mps, rungs);
     elseif finalized == 3
         load(starting_name, 'mps');
-        w = period(mps);
-        assert(mod(w, N) == 0)
-        mps = multiply_mps(canonicalize(mps, 'Order', 'rl'), rungs*N/w);
+        mps = multiply_mps(canonicalize(mps, 'Order', 'rl'), rungs);
     elseif finalized == 2
         load(starting_name, 'gs_mps');
         mps = gs_mps;

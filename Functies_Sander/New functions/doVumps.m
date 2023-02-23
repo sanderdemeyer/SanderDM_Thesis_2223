@@ -23,7 +23,7 @@ function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, 
         for i = 1:iterations
             if mod(i,2) == 1
                 fprintf('Big iteration %d of %d \n', i, iterations);
-                alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(name, '.mat'), 'tol', 10^(-tol), 'doplot', true);
+                alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(name, '.mat'), 'tol', 10^(-tol), 'doplot', true, 'notrunc', true);
                 [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg2, H1, gs_mps);
             else
                 fprintf('Big iteration %d of %d \n', i, iterations);

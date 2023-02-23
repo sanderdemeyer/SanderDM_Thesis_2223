@@ -64,8 +64,9 @@ function mpo = get_mpo_cylinder(H2, H1, N, rungs, kwargs)
         mpoA(1, 1, 2, 1) = L;
         %mpoA(1, 1, 3, 1) = L;
        % first line of the convention argument
-        mpoA(1, 1, 3, 1) = tpermute(conj(R), [3 4 1 2]);
-        
+     %   mpoA(1, 1, 3, 1) = tpermute(conj(R), [3 4 1 2]);
+        mpoA(1, 1, 3, 1) = L;
+
         % Underlying code implements 'B' type mpo
         % for which X: L, R, 1. Y: L, R. B: 1.
         mpoB(1, 1, 2, 1) = L;
@@ -77,8 +78,8 @@ function mpo = get_mpo_cylinder(H2, H1, N, rungs, kwargs)
         mpoD(2, 1, sz, 1) = R;
        % mpoD(3, 1, sz, 1) = R;
        % second line of the convention argument
-        mpoD(3, 1, sz, 1) = tpermute(conj(L), [3 4 1 2]); % No twist needed
-                
+        %mpoD(3, 1, sz, 1) = tpermute(conj(L), [3 4 1 2]); % No twist needed
+        mpoD(3, 1, sz, 1) = R;        
     
 
         % Underlying code implements one-site interaction

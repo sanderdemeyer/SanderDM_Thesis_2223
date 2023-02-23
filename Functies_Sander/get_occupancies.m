@@ -31,7 +31,7 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
         X = [X{:}];
         Y = repmat(1:N, 1, rungs);
         figure
-        scatter(X, Y, (1 - charge_occupancies)*500, repmat(-1, 1, length(charge_occupancies)));
+        scatter(X, Y, (charge_occupancies)*500, repmat(-1, 1, length(charge_occupancies)));
         if ~SU2
             figure
             X = arrayfun(@(x) repmat(x, 1, N), 1:rungs, 'UniformOutput', false);
