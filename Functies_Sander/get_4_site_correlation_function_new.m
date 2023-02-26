@@ -10,9 +10,14 @@ function summation = get_4_site_correlation_function_new(O1, O2, mps, N, max_dis
         kwargs.ri = [2 4] % in a more general implementation, this can be used.
         kwargs.P = 1
         kwargs.Q = 1
+        kwargs.SU2
     end
     summation = 0;
-    [O1, O2] = Hubbard_operators('cdc_both', kwargs.P, kwargs.Q);
+    if kwargs.SU2
+        [O1, O2] = Hubbard_operators('cdc_both', kwargs.P, kwargs.Q);
+    else
+        [O1, O2] = Hubbard_operators('cdc_both', kwargs.P, kwargs.Q);
+    end
     assert(sum(O1.var.rank) == 4, 'O1 must have 4 physical legs');
     assert(sum(O2.var.rank) == 4, 'O2 must have 4 physical legs');
 

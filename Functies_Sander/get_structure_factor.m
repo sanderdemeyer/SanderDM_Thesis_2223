@@ -16,6 +16,11 @@ function s = get_structure_factor(O, gs_mps, max_dist, operator_type, kwargs)
     % or when the correlations drop below a certain treshold.
     % O is the operator, gotten from the contraction of O_alpha
     % and O_beta.
+    % operator_type is either separate, joint, or twosite
+    % separate means that 2 one-site operators are given, not connected with a
+    % joint means that 2 one-site operators are given, connected with a virtual leg
+    % twosite means a two-site operator is given
+    % virtual leg.
     qx_list = linspace(0, 2*pi, kwargs.qx_size);
 
     if ~isempty(kwargs.corr)
@@ -53,9 +58,9 @@ function s = get_structure_factor(O, gs_mps, max_dist, operator_type, kwargs)
             for q_ind = 1:kwargs.qx_size
 
                 qx = qx_list(q_ind);
-                if strcmp('Helix', type) || strcmp('helix', type)
+                if strcmp('Helix', kwargs.system{1}) || strcmp('helix', kwargs.system{1})
                     qy = (2*pi/N)*(ny_i + qx/(2*pi));
-                elseif strcmp('Cylinder', type) || strcmp('cylinder', type)
+                elseif strcmp('Cylinder', kwargs.system{1}) || strcmp('cylinder', kwargs.system{1})
                     qy = (2*pi/N)*ny_i;
                 else
                     error('kwargs.system{1} must be either Helix, Cylinder or 1D')

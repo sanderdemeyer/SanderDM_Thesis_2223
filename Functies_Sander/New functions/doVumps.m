@@ -31,6 +31,8 @@ function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, 
                 [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg1, H1, gs_mps);
             end
             if eta < 10^(-tol)
+                save(strcat(name, '_final.mat'));
+                disp('Done, Hooray!');
                 return
             end
         end

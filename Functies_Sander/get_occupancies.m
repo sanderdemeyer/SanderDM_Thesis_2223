@@ -1,4 +1,15 @@
-function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, SU2, plot, N, rungs)
+function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, SU2, plot, N, rungs, kwargs)
+    arguments
+        gs_mps
+        P
+        Q
+        SU2
+        plot
+        N
+        rungs
+        kwargs.scale1 = 500
+        kwargs.scale2 = 200
+    end
     % Using convention = conventional
     spin_occupancies = 0;
     if SU2
@@ -31,23 +42,36 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
         X = [X{:}];
         Y = repmat(1:N, 1, rungs);
         figure
-        scatter(X, Y, (charge_occupancies)*500, repmat(-1, 1, length(charge_occupancies)));
+        colors = zeros(length(X), 3);
+        for i = 1:length(X)
+            if sign(real(1-charge_occupancies(i))) == -1
+                colors(i,:) = [0 1 0];
+            elseif sign(real(1-charge_occupancies(i))) == 1
+                colors(i,:) = [1 0 0];
+            else
+                error('neither 1 or -1');
+            end
+        end
+        scatter(X, Y, abs(1-charge_occupancies)*kwargs.scale1, colors);
+        title('Charge occupancies');
+        xlabel('X');
+        ylabel('Y');
         if ~SU2
             figure
-            X = arrayfun(@(x) repmat(x, 1, N), 1:rungs, 'UniformOutput', false);
-            X = [X{:}];
-            Y = repmat(1:N, 1, rungs);
             colors = zeros(length(X), 3);
             for i = 1:length(X)
-                if sign(spin_occupancies(i)) == 1
+                if sign(real(spin_occupancies(i))) == 1
                     colors(i,:) = [0 1 0];
-                elseif sign(spin_occupancies(i)) == -1
+                elseif sign(real(spin_occupancies(i))) == -1
                     colors(i,:) = [1 0 0];
                 else
                     error('neither 1 or -1');
                 end
             end
-            scatter(X, Y, (abs(spin_occupancies))*200, colors);
+            scatter(X, Y, (abs(spin_occupancies))*kwargs.scale2, colors);
+            title('Spin occupancies');
+            xlabel('X');
+            ylabel('Y');
         end
     end
 end

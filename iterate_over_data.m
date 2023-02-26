@@ -2,6 +2,7 @@ folder = 'Data structures/Hubbard_t_1_24_dec/';
 folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
 folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
+folder = 'Data structures/Superconductivity\N_2_P_7_Q_8_rungs_8/';
 files = dir((folder));
 l = length(files);
 disp('started');
@@ -10,6 +11,7 @@ check_energies = false;
 check_transfereigs = true;
 check_transfereigs_charge = false;
 check_transfereigs_spin = false;
+check_occupancies = true;
 check_stag_magn = false;
 check_variances = false;
 
@@ -20,11 +22,14 @@ deltas_charge = cell(0,0);
 epsilon1s_charge = cell(0,0);
 deltas_spin = cell(0,0);
 epsilon1s_spin = cell(0,0);
+occupancies = cell(0,0);
 stag_magn = cell(0,0);
 variances = cell(0,0);
 
-P = 1;
-Q = 1;
+P = 7;
+Q = 8;
+N = 2;
+rungs = 8;
 
 k = 1;
 for i = 3:l
@@ -106,6 +111,10 @@ for i = 3:l
             deltas_spin_31{k} = epsilons(3) - epsilons(1);
             epsilon1s_spin{k} = epsilons(1);
             disp('Spin sector done');
+        end
+        if check_occupancies
+            occupancies{k} = get_occupancies(gs_mps, 7, 8, true, false, N, rungs);
+
         end
         if check_stag_magn
             stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);
