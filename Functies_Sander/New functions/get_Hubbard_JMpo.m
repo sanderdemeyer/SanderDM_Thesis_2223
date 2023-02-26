@@ -65,7 +65,11 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
     elseif strcmp(kwargs.system{1}, 'Cylinder')
         warning('convention not fixed');
         mpo = get_mpo_cylinder(Hopping_t, H_onesite, kwargs.system{2}, 1);
+    elseif strcmp(kwargs.system{1}, 'Helix_multiple_rungs')
+        assert(kwargs.t2 == 0, 't2 != 0 to be added');
+        mpo = get_mpo_helix(Hopping_t, H_onesite, kwargs.system{2}, kwargs.system{3}, 'convention', kwargs.convention);
     elseif strcmp(kwargs.system{1}, 'Cylinder_multiple_rungs')
+        assert(kwargs.t2 == 0, 't2 != 0 to be added');
         mpo = get_mpo_cylinder(Hopping_t, H_onesite, kwargs.system{2}, kwargs.system{3}, 'convention', kwargs.convention);
     elseif strcmp(kwargs.system{1}, 'DoubleCylinder')
         warning('convention not fixed');

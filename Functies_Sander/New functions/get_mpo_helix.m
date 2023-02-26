@@ -1,9 +1,9 @@
-function mpo = get_mpo_helix(H2, H1, N, kwargs)
+function mpo = get_mpo_helix(H2, H1, N, rungs, kwargs)
     arguments
         H2
         H1
         N
-        kwargs.len = 2;
+        rungs
         kwargs.convention = 'first'
     end
 
@@ -41,8 +41,8 @@ function mpo = get_mpo_helix(H2, H1, N, kwargs)
 
     O(1, 1, sz, 1) = H1;
     
-    mpo = cell(1, kwargs.len);
-    for i = 1:kwargs.len
+    mpo = cell(1, rungs*N);
+    for i = 1:rungs*N
         mpo{i} = O;
     end
 end
