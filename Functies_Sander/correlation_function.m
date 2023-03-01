@@ -10,6 +10,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
     % over their second index.
     % If O is a cell, it consists of 2 elements, O_alpha and O_beta
     % O_alpha is put on the 1st site, O_beta on the n^th site.
+    % Extra argument denotes a tolerance check.
     
     if strcmp(operator_type, 'separate')
         assert(length(O) == 2, 'Length of O should be 2')
@@ -176,6 +177,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O, [3 -4 -3 2]);
             end
             for i = 1:max_dist
+                disp(i);
                 x_final = num2cell(zeros(1, w));
                 for b = 1:w
                     x_final{b} = contract(x{b}, [1 3 2 4], AR(loop(b,i,w)), [1 2 5], conj(twist(AR(loop(b,i,w)),3)), [3 4 5]);

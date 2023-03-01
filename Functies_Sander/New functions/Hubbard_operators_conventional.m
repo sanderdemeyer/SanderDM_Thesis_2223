@@ -54,6 +54,8 @@ function O = Hubbard_operators_conventional(type, P, Q)
     number_down = fill_tensor(onesite, num2cell([0 1 0 1]));
     number_tot = fill_tensor(onesite, num2cell([0 1 1 2]));
 
+    tens = Tensor([pspace pspace], [pspace pspace]);
+
     if strcmp('c_dagger_up', type)
         O = c_dagger_up;
     elseif strcmp('c_dagger_down', type)

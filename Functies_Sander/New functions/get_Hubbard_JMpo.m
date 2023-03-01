@@ -44,7 +44,7 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
     end
 
     if kwargs.V ~= 0
-        neighbour_interaction = Hubbard_V_Hamiltonian(kwargs.V, kwargs.P, kwargs.Q, 'symmetries', kwargs.symmetries, 'convention', kwargs.convention);
+        neighbour_interaction = Hubbard_V_Hamiltonian(pspace, trivspace, kwargs.V, 'convention', kwargs.convention);
         Hopping_t = Hopping_t + neighbour_interaction;
     end
     
