@@ -1,8 +1,32 @@
-function O = Hubbard_operators_conventional(type, P, Q)
+function [O, O2, O3, O4] = Hubbard_operators_conventional(type, P, Q)
+    O2 = 0;
+    O3 = 0;
+    O4 = 0;
+    
     [pspace, ~, trivspace] = get_spaces_Hubbard_asymmetric(P, Q);
 
-    up_charge = ProductCharge(U1(2*Q-P), U1(1), fZ2(1));
-    down_charge = ProductCharge(U1(2*Q-P), U1(-1), fZ2(1));
+    if strcmp('cdc_both', type)
+        up_charge = ProductCharge(U1(Q), U1(1), fZ2(1));
+        down_charge = ProductCharge(U1(Q), U1(-1), fZ2(1));
+        up_space = GradedSpace.new(up_charge, 1, false);
+        down_space = GradedSpace.new(down_charge, 1, false);
+        c_dagger_up = Tensor(pspace, [pspace up_space]);
+        c_dagger_down = Tensor(pspace, [pspace down_space]);
+        c_dagger_up = fill_tensor(c_dagger_up, num2cell([1 1]));
+        c_dagger_down = fill_tensor(c_dagger_down, num2cell([1 -1]));
+        c_up = conj(c_dagger_up);
+        c_up = tpermute(c_up, [3 2 1]);
+        c_down = conj(c_dagger_down);
+        c_down = tpermute(c_down, [3 2 1]);
+        cdc_up = contract(c_dagger_up, [-1 1 -4], c_up, [-2 1 -3]);
+        cdc_down = contract(c_dagger_down, [-1 1 -4], c_down, [-2 1 -3]);
+        O = cdc_up;
+        O2 = cdc_down;
+        return
+    end    
+
+    up_charge = ProductCharge(U1(Q), U1(1), fZ2(1));
+    down_charge = ProductCharge(U1(Q), U1(-1), fZ2(1));
     up_flip_charge = ProductCharge(U1(Q-P), U1(2), fZ2(0));
     down_flip_charge = ProductCharge(U1(Q-P), U1(-2), fZ2(0));
     updown_charge = ProductCharge(U1(4*Q-2*P), U1(0), fZ2(0));

@@ -1,22 +1,21 @@
-function summation = get_4_site_correlation_function_new(O1, O2, mps, N, max_dist, kwargs)
+function summation = get_4_site_correlation_function_new(mps, N, max_dist, kwargs)
     % This function was written for the function get_SC_order_parameter.
     % This is consequently not the most general implementation.
     arguments
-        O1
-        O2
         mps
         N
         max_dist
         kwargs.ri = [2 4] % in a more general implementation, this can be used.
         kwargs.P = 1
         kwargs.Q = 1
-        kwargs.SU2
+        kwargs.SU2 = false
     end
     summation = 0;
     if kwargs.SU2
-        [O1, O2] = Hubbard_operators('cdc_both', kwargs.P, kwargs.Q);
+        error('Doesnt work');
+        [O1, O2] = Hubbard_operators_SU2('cdc_both', kwargs.P, kwargs.Q);
     else
-        [O1, O2] = Hubbard_operators('cdc_both', kwargs.P, kwargs.Q);
+        [O1, O2] = Hubbard_operators_conventional('cdc_both', kwargs.P, kwargs.Q);
     end
     assert(sum(O1.var.rank) == 4, 'O1 must have 4 physical legs');
     assert(sum(O2.var.rank) == 4, 'O2 must have 4 physical legs');
@@ -30,8 +29,11 @@ function summation = get_4_site_correlation_function_new(O1, O2, mps, N, max_dis
     w = period(mps);
     T = cell(w, max_dist);
     for b = 1:period(mps)
+        fprintf('In initial contraction loop, b = %d \n', b);
         x = contract(AR(b), [-1 1 -3], conj(AR(b)), [-2 1 -4]);
         for i = 1:max_dist
+            fprintf('In initial contraction loop, b = %d, i = %d \n', b, i);
+
             T{b, i} = x;
             x = contract(x, [-1 -2 1 2], AR(loop(b,i,w)), [1 3 -3], conj(AR(loop(b,i,w))), [2 3 -4]);
         end
@@ -41,8 +43,9 @@ function summation = get_4_site_correlation_function_new(O1, O2, mps, N, max_dis
             factor_j = 1*(abs(j) == 1) - 2*(abs(j) == N);
             factor_k = 1*(abs(k) == 1) - 2*(abs(k) == N);
 
-            fprintf('j == %d and k == %d', j, k);
+            fprintf('j = %d and k = %d \n', j, k);
             for i = 0:max_dist
+            fprintf('j = %d and k = %d, i = %d \n', j, k, i);
                 min_i = min([N, N + i, N + j, N + i + k]);
                 index_list = [N - min_i 4; N + i - min_i 3; N + j - min_i 2; N + i + k - min_i 1] + 1;
                 index_list_sorted = sortrows(index_list);

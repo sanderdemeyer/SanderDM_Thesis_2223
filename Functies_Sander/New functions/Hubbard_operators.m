@@ -1,5 +1,6 @@
 function [O, O2, O3, O4] = Hubbard_operators(type, P, Q)
     warning('convention = first');
+    
     O2 = 0;
     O3 = 0;
     O4 = 0;
@@ -8,8 +9,8 @@ function [O, O2, O3, O4] = Hubbard_operators(type, P, Q)
     %else
     [pspace, ~, trivspace] = get_spaces_Hubbard_asymmetric(P, Q);
 
-    up_charge = ProductCharge(U1(2*Q-P), U1(1), fZ2(1));
-    down_charge = ProductCharge(U1(2*Q-P), U1(-1), fZ2(1));
+    up_charge = ProductCharge(U1(Q), U1(1), fZ2(1));
+    down_charge = ProductCharge(U1(Q), U1(-1), fZ2(1));
     up_flip_charge = ProductCharge(U1(Q-P), U1(2), fZ2(0));
     down_flip_charge = ProductCharge(U1(Q-P), U1(-2), fZ2(0));
     updown_charge = ProductCharge(U1(4*Q-2*P), U1(0), fZ2(0));
