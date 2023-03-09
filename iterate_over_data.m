@@ -2,7 +2,7 @@ folder = 'Data structures/Hubbard_t_1_24_dec/';
 folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
 folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
-folder = 'Data structures/Superconductivity\N_2_P_7_Q_8_rungs_8/';
+folder = 'Data structures/Superconductivity\N_4\extrapolation_34/';
 files = dir((folder));
 l = length(files);
 disp('started');
@@ -11,7 +11,7 @@ check_energies = false;
 check_transfereigs = true;
 check_transfereigs_charge = false;
 check_transfereigs_spin = false;
-check_occupancies = true;
+check_occupancies = false;
 check_stag_magn = false;
 check_variances = false;
 

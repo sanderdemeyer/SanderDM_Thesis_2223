@@ -1,11 +1,23 @@
-function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name_base)
-    trunc_tot = ~iscell(trunc);
-    if trunc_tot
+function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name_base, kwargs)
+    arguments
+        H1
+        mps
+        vumps_way
+        maxiter
+        trunc
+        tol
+        name_base
+        kwargs.trunc_method = 'TruncTotalDim'
+    end
+
+    if strcmp('TruncTotalDim', kwargs.trunc_method)
         trunc_way = {'TruncTotalDim', trunc};
         name = name_base + '_trunctotdim_' + string(trunc);
+    elseif strcmp('TruncBelow', kwargs.trunc_method)
+        trunc_way = {'TruncBelow', 10^(-trunc)};
+        name = name_base + '_cut_' + string(trunc);
     else
-        trunc_way = {'TruncBelow', 10^(-trunc{2}), 'TruncDim', trunc{1}};
-        name = name_base + '_truncbond_' + string(trunc{1}) + '_cut_' + string(trunc{2});
+        error('TBA');
     end
 
     if vumps_way == 1

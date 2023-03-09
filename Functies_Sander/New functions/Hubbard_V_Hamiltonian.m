@@ -4,7 +4,6 @@ function nn = Hubbard_V_Hamiltonian(pspace, trivspace, V, kwargs)
         trivspace
         V
         kwargs.convention = 'conventional'
-
     end
     number_data = num2cell([0 1 2]);
     number_L = Tensor(pspace, [pspace trivspace]);

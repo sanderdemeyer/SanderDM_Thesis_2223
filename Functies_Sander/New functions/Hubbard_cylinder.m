@@ -18,6 +18,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
         kwargs.mu = 0
         kwargs.convention = 'conventional'
         kwargs.oneband = false
+        kwargs.trunc_method = 'TruncTotalDim'
     end
 
     if mod(P, 2) == 0
@@ -70,5 +71,5 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
     else
         name = 'Hubbard_FullCylinder_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
     end
-    [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name);
+    [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name, 'trunc_method', kwargs.trunc_method);
 end
