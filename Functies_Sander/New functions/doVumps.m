@@ -11,9 +11,11 @@ function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, 
     end
 
     if strcmp('TruncTotalDim', kwargs.trunc_method)
+        no_trunc_value = true;
         trunc_way = {'TruncTotalDim', trunc};
         name = name_base + '_trunctotdim_' + string(trunc);
     elseif strcmp('TruncBelow', kwargs.trunc_method)
+        no_trunc_value = false;
         trunc_way = {'TruncBelow', 10^(-trunc)};
         name = name_base + '_cut_' + string(trunc);
     else
@@ -35,7 +37,7 @@ function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, 
         for i = 1:iterations
             if mod(i,2) == 1
                 fprintf('Big iteration %d of %d \n', i, iterations);
-                alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(name, '.mat'), 'tol', 10^(-tol), 'doplot', true, 'notrunc', true);
+                alg2 = Vumps2('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'trunc', trunc_way, 'name', strcat(name, '.mat'), 'tol', 10^(-tol), 'doplot', true, 'notrunc', no_trunc_value);
                 [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg2, H1, gs_mps);
             else
                 fprintf('Big iteration %d of %d \n', i, iterations);
