@@ -1,8 +1,7 @@
-function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, maxiter, tol, vumps_way, starting_name, finalized, kwargs)
+function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs, trunc, maxiter, tol, vumps_way, starting_name, finalized, kwargs)
     arguments
         N
-        t
-        U
+        model
         P
         Q
         rungs
@@ -14,28 +13,38 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
         finalized
         kwargs.t2 = 0
         kwargs.V = 0
-        kwargs.symmetries = 'U1_U1' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
+        kwargs.symmetries = 'U1_SU2' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
         kwargs.mu = 0
         kwargs.convention = 'conventional'
-        kwargs.oneband = false
         kwargs.trunc_method = 'TruncTotalDim'
     end
+    warning('Minus signs not fixed!!! See From Real Materials to Model Hamiltonians With Density Matrix Downfolding');
+    if strcmp(model, 'Hg1')
+        disp('Model is HgBa2CuO4_Hirayama_2018');
+        scale = 1.257;
+        param.t_dp = 1;
+        param.t_pp = 0.751/scale;
+        param.delta_dp = 2.416/scale;
+        param.U_dd = 8.84/scale;
+        param.U_pp = 5.31/scale;
+        param.V_dd = 0.8/scale;
+        param.V_pp = 1.21/scale;
+        param.V_dp = 1.99/scale;
+    else
+        error('model %s not implemented', model);
+    end
 
+    assert(param.t_dp == 1, 'work with t_dp = 1 as normalisation. The real value of t_dp can be used as energy scale')
     if mod(P, 2) == 0
         len = Q;
     else
         len = 2*Q;
     end
-    assert(kwargs.oneband || kwargs.t2 == 0, 'For t2 != 0, oneband needs to be set to true');
 
     assert(mod(rungs*N, len) == 0, 'Trying to create a unit cell of %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d \n', N, rungs, N*rungs, len);
     disp('Code started running');
 
-    if kwargs.oneband
-        H1 = get_Hubbard_JMpo_oneband(t, kwargs.t2, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
-    else
-        H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
-    end
+    H1 = get_Hubbard_JMpo_threeband(param, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
 
     if finalized == 4
         load(starting_name, 'gs_mps');
@@ -55,9 +64,9 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
         mps = canonicalize(mps, 'Order', 'rl');
     else
         if strcmp(kwargs.symmetries, 'U1_U1')
-            mps = get_Hubbard_mps(P, Q, 'system', {'Cylinder_multiple_rungs', N, rungs});
+            mps = get_Hubbard_mps(P, Q, 'system', {'Cylinder_multiple_rungs', 3*N, rungs});
         elseif strcmp(kwargs.symmetries, 'U1_SU2')
-            mps = get_Hubbard_mps(P, Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'symmetries', 'U1_SU2');
+            mps = get_Hubbard_mps(P, Q, 'system', {'Cylinder_multiple_rungs', 3*N, rungs}, 'symmetries', 'U1_SU2');
         elseif strcmp(kwargs.symmetries, 'None_U1')
             error('Using None_U1');
             mps = get_Hubbard_mps_without_U1();
@@ -67,10 +76,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
     end
     disp('initialization correct');
 
-    if kwargs.oneband
-        name = 'Hubbard_FullCylinder_oneband_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
-    else
-        name = 'Hubbard_FullCylinder_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
-    end
+    name = 'Hubbard_FullCylinder_threeband_N_' + string(N) + '_model_' + string(model) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
+
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name, 'trunc_method', kwargs.trunc_method);
 end

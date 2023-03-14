@@ -1,12 +1,12 @@
-function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, SU2, plot, N, rungs, kwargs)
+function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, N, rungs, SU2, plot, kwargs)
     arguments
         gs_mps
         P
         Q
-        SU2
-        plot
         N
         rungs
+        SU2 = true
+        plot = true
         kwargs.scale1 = 500
         kwargs.scale2 = 200
     end

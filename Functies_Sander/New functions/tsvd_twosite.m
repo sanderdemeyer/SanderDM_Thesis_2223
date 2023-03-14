@@ -1,5 +1,7 @@
 function [L, R, pspace, vspace] = tsvd_twosite(H)
-% Split a two-site Hamiltonian in a contraction of L and R using svd
+    % Split a two-site Hamiltonian in a contraction of L and R using svd
+    
+    warning('This holds for convention = first. This is not recommended.');
     [U, S, V] = tsvd(H, [1 3], [2 4], 'TruncBelow', 1e-12);
     U = insert_onespace(U, 4, false);
     L = contract(U, [-1 -3 1 -4], S, [1 -2], 'Rank', [2 2]);
