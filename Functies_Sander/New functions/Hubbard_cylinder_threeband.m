@@ -1,4 +1,5 @@
 function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs, trunc, maxiter, tol, vumps_way, starting_name, finalized, kwargs)
+    % N is the number of 3-site unit cells that is used. The radius is thus equal to 3N
     arguments
         N
         model
@@ -41,7 +42,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         len = 2*Q;
     end
 
-    assert(mod(rungs*N, len) == 0, 'Trying to create a unit cell of %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d \n', N, rungs, N*rungs, len);
+    assert(mod(3*rungs*N, len) == 0, 'Trying to create a unit cell of 3 x %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d \n', N, rungs, 3*N*rungs, len);
     disp('Code started running');
 
     H1 = get_Hubbard_JMpo_threeband(param, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
