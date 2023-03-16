@@ -11,6 +11,8 @@ function [O_alpha, O_beta] = get_number_number_operators(P, Q, kwargs)
         [pspace, ~, trivspace] = get_spaces_Hubbard_SU2(P, Q);
     elseif strcmp(kwargs.symmetries, 'U1_U1')
         [pspace, ~, trivspace] = get_spaces_Hubbard_asymmetric(P, Q);
+    else
+        error('invalid symmetry %s \n', kwargs.symmetries);
     end
 
     number_data = num2cell([0 1 2]);
