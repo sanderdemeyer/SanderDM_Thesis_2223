@@ -25,7 +25,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         scale = 1.257;
         param.t_dp = 1;
         param.t_pp = 0.751/scale;
-        param.delta_dp = 2.416/scale;
+        param.delta_dp = -2.416/scale;
         param.U_dd = 8.84/scale;
         param.U_pp = 5.31/scale;
         param.V_dd = 0.8/scale;
@@ -42,7 +42,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         len = 2*Q;
     end
 
-    assert(mod(3*rungs*N, len) == 0, 'Trying to create a unit cell of 3 x %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d \n', N, rungs, 3*N*rungs, len);
+    assert(mod(3*rungs*N, len) == 0, 'Trying to create a unit cell of 3 x %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d due to filling %d / %d \n', N, rungs, 3*N*rungs, len, P, Q);
     disp('Code started running');
 
     H1 = get_Hubbard_JMpo_threeband(param, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
