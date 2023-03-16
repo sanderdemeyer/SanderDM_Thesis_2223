@@ -8,7 +8,7 @@ function nn = Hubbard_V_Hamiltonian(pspace, trivspace, V, kwargs)
     number_data = num2cell([0 1 2]);
     number_L = Tensor(pspace, [pspace trivspace]);
     number_R = Tensor([pspace trivspace], pspace);
-    number_R2 = Tensor([trivspace pspace], pspace);
+    %number_R2 = Tensor([trivspace pspace], pspace);
 
     number_L = fill_tensor(number_L, number_data);
     number_R = fill_tensor(number_R, number_data);

@@ -1,18 +1,18 @@
-function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, N, rungs, SU2, plot, kwargs)
+function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, N, rungs, kwargs)
     arguments
         gs_mps
         P
         Q
         N
         rungs
-        SU2 = true
-        plot = true
+        kwargs.SU2 = true
+        kwargs.plot = true
         kwargs.scale1 = 500
         kwargs.scale2 = 200
     end
     % Using convention = conventional
     spin_occupancies = 0;
-    if SU2
+    if kwargs.SU2
         [pspace, ~, trivspace] = get_spaces_Hubbard_SU2(P, Q);
         onesite = Tensor(pspace, pspace);
         number_tot = fill_tensor(onesite, num2cell([0 1 2]));
@@ -30,14 +30,14 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
         charge_occupancies(b) = contract(AC(b), [1 2 3], number_tot, [4 2], twist(conj(AC(b)),3), [1 4 3]);
     end
     
-    if ~SU2
+    if ~kwargs.SU2
         spin_occupancies = zeros(1, w);
         for b = 1:w
             spin_occupancies(b) = contract(AC(b), [1 2 3], spin_tot, [4 2], twist(conj(AC(b)),3), [1 4 3]);
         end
     end
 
-    if plot
+    if kwargs.plot
         X = arrayfun(@(x) repmat(x, 1, N), 1:rungs, 'UniformOutput', false);
         X = [X{:}];
         Y = repmat(1:N, 1, rungs);
@@ -56,7 +56,7 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
         title('Charge occupancies');
         xlabel('X');
         ylabel('Y');
-        if ~SU2
+        if ~kwargs.SU2
             figure
             colors = zeros(length(X), 3);
             for i = 1:length(X)

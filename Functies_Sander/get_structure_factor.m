@@ -18,7 +18,8 @@ function s = get_structure_factor(O, gs_mps, max_dist, operator_type, kwargs)
     % and O_beta.
     % operator_type is either separate, joint, or twosite
     % separate means that 2 one-site operators are given, not connected with a
-    % joint means that 2 one-site operators are given, connected with a virtual leg
+    % joint means that 2 one-site operators are given, connected with a
+    % virtual leg on position 2.
     % twosite means a two-site operator is given
     % virtual leg.
     qx_list = linspace(0, 2*pi, kwargs.qx_size);
