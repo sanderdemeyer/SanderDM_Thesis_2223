@@ -23,9 +23,8 @@ function [O_alpha, O_beta] = get_number_number_operators(P, Q, kwargs)
         number_R = Tensor([pspace trivspace], pspace);
     elseif strcmp(kwargs.operator_type, 'separate')
         number_L = Tensor(pspace, pspace);
-        number_R = Tensor(pspace, pspace);
+        number_R = Tensor([pspace, pspace);
     end
-    
     O_alpha = fill_tensor(number_L, number_data);
     O_beta = fill_tensor(number_R, number_data);
 end
