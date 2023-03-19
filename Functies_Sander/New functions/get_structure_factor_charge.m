@@ -12,7 +12,7 @@ function s = get_structure_factor_charge(gs_mps, P, Q, max_dist, kwargs)
         kwargs.qx_size = 500
         kwargs.tol_check = false
     end
-    if strcmp(operator_type, 'joint')
+    if strcmp(kwargs.operator_type, 'joint')
         warning('This might be more efficient if the 2 number operators are given separately');
     end
 
