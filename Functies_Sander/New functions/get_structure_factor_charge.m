@@ -1,11 +1,11 @@
-function s = get_structure_factor_charge(gs_mps, P, Q, max_dist, symmetries, operator_type, kwargs)
+function s = get_structure_factor_charge(gs_mps, P, Q, max_dist, kwargs)
     arguments
         gs_mps
         P
         Q
         max_dist
-        symmetries = 'U1_SU2'
-        operator_type = 'separate'
+        kwargs.symmetries = 'U1_SU2'
+        kwargs.operator_type = 'separate'
         kwargs.corr = []
         kwargs.convention = 'conventional'
         kwargs.system = {'1D'}
@@ -16,10 +16,10 @@ function s = get_structure_factor_charge(gs_mps, P, Q, max_dist, symmetries, ope
         warning('This might be more efficient if the 2 number operators are given separately');
     end
 
-    [O_alpha, O_beta] = get_number_number_operators(P, Q, 'convention', kwargs.convention, 'symmetries', symmetries, 'operator_type', operator_type);
+    [O_alpha, O_beta] = get_number_number_operators(P, Q, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries, 'operator_type', kwargs.operator_type);
 
 
-    corr = correlation_function({O_alpha, O_beta}, gs_mps, max_dist, operator_type, kwargs.convention, kwargs.tol_check);
+    corr = correlation_function({O_alpha, O_beta}, gs_mps, max_dist, kwargs.operator_type, kwargs.convention, kwargs.tol_check);
     save('corr_list', 'corr');
     disp('corr_list saved!')
 
