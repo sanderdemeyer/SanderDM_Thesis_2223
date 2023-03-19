@@ -41,7 +41,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, kw
 
     if ~kwargs.tol
         tol_check = true;
-        tol = kwargs.tol
+        tol = kwargs.tol;
     else
         tol_check = false;
     end

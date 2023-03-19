@@ -19,7 +19,7 @@ function s = get_structure_factor_charge(gs_mps, P, Q, max_dist, kwargs)
     [O_alpha, O_beta] = get_number_number_operators(P, Q, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries, 'operator_type', kwargs.operator_type);
 
 
-    corr = correlation_function({O_alpha, O_beta}, gs_mps, max_dist, kwargs.operator_type, kwargs.convention, kwargs.tol_check);
+    corr = correlation_function({O_alpha, O_beta}, gs_mps, max_dist, kwargs.operator_type, 'convention', kwargs.convention, 'tol', kwargs.tol_check);
     save('corr_list', 'corr');
     disp('corr_list saved!')
 
