@@ -1,4 +1,12 @@
-function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, convention, varargin)
+function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, kwargs)
+    arguments
+        O
+        gs_mps
+        max_dist
+        operator_type
+        kwargs.convention = 'conventional'
+        kwargs.tol = false
+    end
     % operator_type is either separate, joint, or twosite
     % separate means that 2 one-site operators are given, not connected with a
     % joint means that 2 one-site operators are given, connected with a virtual leg
@@ -26,19 +34,14 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
         error('Invalid operator_type');
     end
 
+    if ~strcmp(kwargs.convention, 'conventional')
+        warning('You are using convention = %s. This is strongly discouraged!', kwargs.convention);
+    end
     assert(xor(strcmp(operator_type, 'twosite'),iscell(O)), 'Not a valid combination of operator type and O');
 
-    %{
-    if strcmp(convention, 'first')
-        disp('');
-    elseif strcmp(convention, 'conventional')
-        assert(~separate, 'not implemented')
-        O = tpermute(O, [4 3 1 2]);
-    end
-    %}
-    if nargin == 6
+    if ~kwargs.tol
         tol_check = true;
-        tol = varargin{1};
+        tol = kwargs.tol
     else
         tol_check = false;
     end
@@ -53,7 +56,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
         corr_list = zeros(1,max_dist);
         x = num2cell(zeros(1, w));
 
-        if strcmp(convention, 'first')
+        if strcmp(kwargs.convention, 'first')
             for b = 1:w
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O_alpha, [2 3]);
             end
@@ -74,7 +77,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
                     end
                 end
             end
-        elseif strcmp(convention, 'conventional')
+        elseif strcmp(kwargs.convention, 'conventional')
             for b = 1:w
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O_alpha, [3 2]);
             end
@@ -103,7 +106,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
         corr_list = zeros(1,max_dist);
         x = num2cell(zeros(1, w));
 
-        if strcmp(convention, 'first')
+        if strcmp(kwargs.convention, 'first')
             for b = 1:w
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O_alpha, [2 -3 3]);
             end
@@ -124,7 +127,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
                     end
                 end
             end
-        elseif strcmp(convention, 'conventional')
+        elseif strcmp(kwargs.convention, 'conventional')
             for b = 1:w
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O_alpha, [3 -3 2]);
             end
@@ -151,7 +154,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
         corr_list = zeros(1,max_dist);
         x = num2cell(zeros(1, w));
 
-        if strcmp(convention, 'first')
+        if strcmp(kwargs.convention, 'first')
             for b = 1:w
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O, [2 -3 3 -4]);
             end
@@ -172,7 +175,7 @@ function corr_list = correlation_function(O, gs_mps, max_dist, operator_type, co
                     end
                 end
             end
-        elseif strcmp(convention, 'conventional')
+        elseif strcmp(kwargs.convention, 'conventional')
             for b = 1:w
                 x{b} = contract(AC(b), [1 2 -1], conj(AC(b)), [1 3 -2], O, [3 -4 -3 2]);
             end

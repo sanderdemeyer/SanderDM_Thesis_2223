@@ -34,8 +34,13 @@ function s = get_structure_factor(O, gs_mps, max_dist, operator_type, kwargs)
             corr_list = correlation_function(O, gs_mps, max_dist, operator_type, kwargs.convention);
         end
     end
+
+    % Swap = true due to the definition.
     zero_dist = zero_distance_correlation_function(O, gs_mps, operator_type, kwargs.convention, 'swap', true);
     
+    corr_list = corr_list - corr_list(end);
+    zero_dist = zero_dist - corr_list(end);
+
     if strcmp(kwargs.system{1}, '1D')
         % Implements 1D system
         s = repmat(zero_dist, 1, kwargs.qx_size);

@@ -10,13 +10,13 @@ function [O_alpha, O_beta] = get_number_number_operators(P, Q, kwargs)
 
     if strcmp(kwargs.symmetries, 'U1_SU2')
         [pspace, ~, trivspace] = get_spaces_Hubbard_SU2(P, Q);
+        number_data = num2cell([0 1 2]);
     elseif strcmp(kwargs.symmetries, 'U1_U1')
         [pspace, ~, trivspace] = get_spaces_Hubbard_asymmetric(P, Q);
+        number_data = num2cell([0 1 1 2]);
     else
         error('invalid symmetry %s \n', kwargs.symmetries);
     end
-
-    number_data = num2cell([0 1 2]);
 
     if strcmp(kwargs.operator_type, 'joint')
         number_L = Tensor(pspace, [pspace trivspace]);
