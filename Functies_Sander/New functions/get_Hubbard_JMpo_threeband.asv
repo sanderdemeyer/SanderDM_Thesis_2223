@@ -41,7 +41,7 @@ function H = get_Hubbard_JMpo_threeband(param, kwargs)
         H2_OO_neg = -Hopping_t_pp + V_pp_term;
         H2_CuCu = V_dd_term;
         H2_CuO_pos = Hopping_t_dp + V_dp_term;
-        H2_CuO_neg = -Hopping_t_dp + V_dp_term;
+        H2_CUO_neg = -Hopping_t_dp + V_dp_term;
         
     else
         error('Invalid symmetry')

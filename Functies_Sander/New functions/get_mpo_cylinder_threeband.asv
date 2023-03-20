@@ -19,10 +19,8 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
         [L_OO_neg, R_OO_neg, ~, ~] = tsvd_twosite(H2_OO_neg);
     elseif strcmp(kwargs.convention, 'conventional')
         [L_CuCu, R_CuCu, pspace, vspace] = tsvd_twosite_conventional(H2_CuCu);
-        [L_CuO_pos, R_CuO_pos, ~, ~] = tsvd_twosite_conventional(H2_CuO_pos);
-        [L_CuO_neg, R_CuO_neg, ~, ~] = tsvd_twosite_conventional(H2_CuO_neg);
-        [L_OO_pos, R_OO_pos, ~, ~] = tsvd_twosite_conventional(H2_OO_pos);
-        [L_OO_neg, R_OO_neg, ~, ~] = tsvd_twosite_conventional(H2_OO_neg);
+        [L_CuO, R_CuO, ~, ~] = tsvd_twosite_conventional(H2_CuO);
+        [L_OO, R_OO, ~, ~] = tsvd_twosite_conventional(H2_OO);
     else
         error('convention does not exist.')
     end
@@ -35,6 +33,32 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
         cod_spaces(sz) = one(vspace);
         dom_spaces(1) = one(vspace);
         dom_spaces(sz) = one(vspace);
+
+        %{
+        cod_spacesA = repmat(vspace, 1, sz);
+        dom_spacesA = repmat(vspace, 1, sz);
+        cod_spacesB = repmat(vspace, 1, sz);
+        dom_spacesB = repmat(vspace, 1, sz);
+        cod_spacesD = repmat(vspace, 1, sz);
+        dom_spacesD = repmat(vspace, 1, sz);
+
+        cod_spacesA(1) = one(vspace);
+        cod_spacesB(1) = one(vspace);
+        cod_spacesD(1) = one(vspace);
+        cod_spacesA(sz) = one(vspace);
+        cod_spacesB(sz) = one(vspace);
+        cod_spacesD(sz) = one(vspace);
+        dom_spacesA(1) = one(vspace);
+        dom_spacesB(1) = one(vspace);
+        dom_spacesD(1) = one(vspace);
+        dom_spacesA(sz) = one(vspace);
+        dom_spacesB(sz) = one(vspace);
+        dom_spacesD(sz) = one(vspace);
+        
+        mpoA = MpoTensor.zeros(SumSpace(cod_spacesA, pspace), SumSpace(pspace, dom_spacesA));
+        mpoB = MpoTensor.zeros(SumSpace(cod_spacesB, pspace), SumSpace(pspace, dom_spacesB));
+        mpoD = MpoTensor.zeros(SumSpace(cod_spacesD, pspace), SumSpace(pspace, dom_spacesD));
+        %}
 
         mpoCuA = MpoTensor.zeros(SumSpace(cod_spaces, pspace), SumSpace(pspace, dom_spaces));
         mpoCuB = MpoTensor.zeros(SumSpace(cod_spaces, pspace), SumSpace(pspace, dom_spaces));
@@ -100,21 +124,21 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
 
         % implements Cu-Ox-Oy interaction (y direction, within unit cell)
         % (positive)
-        mpoCuA(1, 1, N+3, 1) = L_CuO_pos;
-        mpoCuB(1, 1, N+3, 1) = L_CuO_pos;
-        mpoCuD(1, 1, N+3, 1) = L_CuO_pos;
+        mpoCuA(1, 1, N+3, 1) = L_CuO;
+        mpoCuB(1, 1, N+3, 1) = L_CuO;
+        mpoCuD(1, 1, N+3, 1) = L_CuO;
 
-        mpoOxA(N+3, 1, sz, 1) = R_CuO_pos;
+        mpoOxA(N+3, 1, sz, 1) = R_CuO;
         mpoOxA(N+3, 1, N+3, 1) = 1;
-        mpoOx(N+3, 1, sz, 1) = R_CuO_pos;
+        mpoOx(N+3, 1, sz, 1) = R_CuO;
         mpoOx(N+3, 1, N+3, 1) = 1;
         
-        mpoOy(N+3, 1, sz, 1) = R_CuO_pos;
-        mpoOyD(N+3, 1, sz, 1) = R_CuO_pos;
+        mpoOy(N+3, 1, sz, 1) = R_CuO;
+        mpoOyD(N+3, 1, sz, 1) = R_CuO;
 
         % implements Ox-Cu to other rung (negative)
-        mpoOxA(1, 1, N+4, 1) = L_CuO_neg;
-        mpoOx(1, 1, N+4, 1) = L_CuO_neg;
+        mpoOxA(1, 1, N+4, 1) = -L_CuO;
+        mpoOx(1, 1, N+4, 1) = -L_CuO;
 
         mpoOxA(N+4, 1, N+4, 1) = 1;
         mpoOx(N+4, 1, N+4, 1) = 1;
@@ -131,20 +155,20 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
             mpoOyD(i+1, 1, i+1, 1) = 1;
         end
 
-        mpoCuA(2*N+3, 1, sz, 1) = R_CuO_neg;
-        mpoCuB(2*N+3, 1, sz, 1) = R_CuO_neg;
-        mpoCuD(2*N+3, 1, sz, 1) = R_CuO_neg;
+        mpoCuA(2*N+3, 1, sz, 1) = R_CuO;
+        mpoCuB(2*N+3, 1, sz, 1) = R_CuO;
+        mpoCuD(2*N+3, 1, sz, 1) = R_CuO;
 
         % implements Oy-Cu interaction to other unit cell (negative)
-        mpoOy(1, 1, 2*N+4, 1) = L_CuO_neg;
-        mpoCuB(2*N+4, 1, sz, 1) = R_CuO_neg;
-        mpoCuD(2*N+4, 1, sz, 1) = R_CuO_neg;
+        mpoOy(1, 1, 2*N+4, 1) = -L_CuO;
+        mpoCuB(2*N+4, 1, sz, 1) = R_CuO;
+        mpoCuD(2*N+4, 1, sz, 1) = R_CuO;
 
         % implements Oy-Cu interaction that loops around the cylinder
         % (negative)
 
-        mpoCuA(1, 1, 2*N+5, 1) = L_CuO_neg;
-        mpoOyD(2*N+5, 1, sz, 1) = R_CuO_neg;
+        mpoCuA(1, 1, 2*N+5, 1) = -L_CuO;
+        mpoOyD(2*N+5, 1, sz, 1) = R_CuO;
 
         mpoCuB(2*N+5, 1, 2*N+5, 1) = 1;
         mpoCuD(2*N+5, 1, 2*N+5, 1) = 1;
@@ -165,23 +189,23 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
 
         % implements Ox-Oy interaction within same unit cell (negative)
 
-        mpoOxA(1, 1, 2*N+7, 1) = L_OO_neg;
-        mpoOx(1, 1, 2*N+7, 1) = L_OO_neg;
-        mpoOy(2*N+7, 1, sz, 1) = R_OO_neg;
-        mpoOyD(2*N+7, 1, sz, 1) = R_OO_neg;
+        mpoOxA(1, 1, 2*N+7, 1) = -L_OO;
+        mpoOx(1, 1, 2*N+7, 1) = -L_OO;
+        mpoOy(2*N+7, 1, sz, 1) = R_OO;
+        mpoOyD(2*N+7, 1, sz, 1) = R_OO;
 
         % implements Oy-Ox interaction to further unit cell (positive)
 
-        mpoOy(1, 1, 2*N+8, 1) = L_OO_pos;
-        mpoOx(2*N+8, 1, sz, 1) = R_OO_pos;
+        mpoOy(1, 1, 2*N+8, 1) = L_OO;
+        mpoOx(2*N+8, 1, sz, 1) = R_OO;
 
         mpoCuB(2*N+8, 1, 2*N+8, 1) = 1;
         mpoCuD(2*N+8, 1, 2*N+8, 1) = 1;
 
         % implements Ox-Oy interaction that loops around the cylinder
         % (positive)
-        mpoOxA(1, 1, 2*N+9, 1) = L_OO_pos;
-        mpoOyD(2*N+9, 1, sz, 1) = R_OO_pos;
+        mpoOxA(1, 1, 2*N+9, 1) = L_OO;
+        mpoOyD(2*N+9, 1, sz, 1) = R_OO;
 
         mpoCuB(2*N+9, 1, 2*N+9, 1) = 1;
         mpoCuD(2*N+9, 1, 2*N+9, 1) = 1;
@@ -191,8 +215,8 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
         % implements Ox-Oy interaction to further rung on same height.
         % (positive)
 
-        mpoOxA(1, 1, 2*N+10, 1) = L_OO_pos;
-        mpoOx(1, 1, 2*N+10, 1) = L_OO_pos;
+        mpoOxA(1, 1, 2*N+10, 1) = L_OO;
+        mpoOx(1, 1, 2*N+10, 1) = L_OO;
 
         mpoOxA(2*N+10, 1, 2*N+10, 1) = 1;
         mpoOx(2*N+10, 1, 2*N+10, 1) = 1;
@@ -210,13 +234,13 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
             mpoCuD(i+1, 1, i+1, 1) = 1;
         end
 
-        mpoOy(3*N+10, 1, sz, 1) = R_OO_pos;
-        mpoOyD(3*N+10, 1, sz, 1) = R_OO_pos;
+        mpoOy(3*N+10, 1, sz, 1) = R_OO;
+        mpoOyD(3*N+10, 1, sz, 1) = R_OO;
 
         % implements Ox-Oy interaction to further rung 1 unit cell above.
         % (negative)
 
-        mpoOx(1, 1, 3*N+11, 1) = L_OO_neg;
+        mpoOx(1, 1, 3*N+11, 1) = -L_OO;
 
         mpoOxA(3*N+11, 1, 3*N+11, 1) = 1;
         mpoOx(3*N+11, 1, 3*N+11, 1) = 1;
@@ -234,14 +258,14 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
             mpoCuD(i+1, 1, i+1, 1) = 1;
         end
 
-        mpoOy(4*N+10, 1, sz, 1) = R_OO_neg;
+        mpoOy(4*N+10, 1, sz, 1) = R_OO;
 
         % implements the above Ox-Oy interaction to further rung that 
         % loops around the cylinder (negative)
 
-        mpoOxA(1, 1, 4*N+11, 1) = L_OO_neg;
+        mpoOxA(1, 1, 4*N+11, 1) = -L_OO;
         mpoOyD(4*N+11, 1, 4*N+12, 1) = 1;
-        mpoOyD(4*N+12, 1, sz, 1) = R_OO_neg;
+        mpoOyD(4*N+12, 1, sz, 1) = R_OO;
 
         mpoOxA(4*N+11, 1, 4*N+11, 1) = 1;
         mpoOx(4*N+11, 1, 4*N+11, 1) = 1;

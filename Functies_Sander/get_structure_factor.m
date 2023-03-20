@@ -29,9 +29,9 @@ function s = get_structure_factor(O, gs_mps, max_dist, operator_type, kwargs)
         max_dist = length(corr_list);
     else
         if kwargs.tol_check
-            corr_list = correlation_function(O, gs_mps, max_dist, operator_type, kwargs.convention, tol_check);
+            corr_list = correlation_function(O, gs_mps, max_dist, operator_type, 'convention', kwargs.convention, 'tol', tol_check);
         else
-            corr_list = correlation_function(O, gs_mps, max_dist, operator_type, kwargs.convention);
+            corr_list = correlation_function(O, gs_mps, max_dist, operator_type, 'convention', kwargs.convention);
         end
     end
 
