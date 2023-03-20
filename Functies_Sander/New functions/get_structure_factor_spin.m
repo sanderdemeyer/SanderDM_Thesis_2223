@@ -1,10 +1,10 @@
-function s = get_structure_factor_spin(gs_mps, P, Q, max_dist, symmetries, kwargs)
+function s = get_structure_factor_spin(gs_mps, P, Q, max_dist, kwargs)
     arguments
         gs_mps
         P
         Q
         max_dist
-        symmetries = 'U1_SU2'
+        kwargs.symmetries = 'U1_SU2'
         kwargs.corr = []
         kwargs.convention = 'conventional'
         kwargs.system = {'1D'}
@@ -12,8 +12,8 @@ function s = get_structure_factor_spin(gs_mps, P, Q, max_dist, symmetries, kwarg
         kwargs.tol_check = false
     end
 
-    O = get_spin_spin_operator(P, Q, 'convention', kwargs.convention, 'symmetries', symmetries);
+    O = get_spin_spin_operator(P, Q, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
 
     struct = namedargs2cell(kwargs);
-    s = get_structure_factor(O, gs_mps, max_dist, 'twosite', struct{:});
+    s = get_structure_factor(O, gs_mps, max_dist, 'twosite', struct{3:end});
 end
