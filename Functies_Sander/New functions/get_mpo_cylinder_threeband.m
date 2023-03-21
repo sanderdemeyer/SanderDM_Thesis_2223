@@ -154,8 +154,8 @@ function mpo = get_mpo_cylinder_threeband(H1_Cu, H1_O, H2_CuCu, H2_CuO_pos, H2_C
 
         % implements Cu-Cu interaction that loops around the cylinder
 
-        mpoCuA(1, 1, 2*N+6, 1) = L_CuO;
-        mpoCuD(2*N+6, 1, sz, 1) = R_CuO;
+        mpoCuA(1, 1, 2*N+6, 1) = L_CuCu;
+        mpoCuD(2*N+6, 1, sz, 1) = R_CuCu;
 
         mpoCuB(2*N+6, 1, 2*N+6, 1) = 1;
         mpoOxA(2*N+6, 1, 2*N+6, 1) = 1;

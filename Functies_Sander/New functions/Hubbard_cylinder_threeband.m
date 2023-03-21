@@ -12,10 +12,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         vumps_way
         starting_name
         finalized
-        kwargs.t2 = 0
-        kwargs.V = 0
         kwargs.symmetries = 'U1_SU2' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
-        kwargs.mu = 0
         kwargs.convention = 'conventional'
         kwargs.trunc_method = 'TruncTotalDim'
     end
@@ -25,7 +22,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         scale = 1.257;
         param.t_dp = 1;
         param.t_pp = 0.751/scale;
-        param.delta_dp = -2.416/scale;
+        param.delta_dp = 2.416/scale;
         param.U_dd = 8.84/scale;
         param.U_pp = 5.31/scale;
         param.V_dd = 0.8/scale;
@@ -77,7 +74,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
     end
     disp('initialization correct');
 
-    name = 'Hubbard_FullCylinder_threeband_N_' + string(N) + '_model_' + string(model) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
+    name = 'Hubbard_FullCylinder_threeband_N_' + string(N) + '_model_' + string(model) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs);
 
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name, 'trunc_method', kwargs.trunc_method);
 end
