@@ -73,7 +73,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_oneband(N, model, P, Q, rungs, t
     end
     disp('initialization correct');
 
-    name = 'Hubbard_FullCylinder_oneband_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(t2) + '_V_' + string(V);
+    name = 'Hubbard_FullCylinder_' + string(model) + '_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(t2) + '_V_' + string(V);
     
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name, 'trunc_method', kwargs.trunc_method);
 end
