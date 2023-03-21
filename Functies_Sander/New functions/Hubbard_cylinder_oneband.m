@@ -38,16 +38,10 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_oneband(N, model, P, Q, rungs, t
         error('Model %s not implemented', model);
     end
 
-
-
     assert(mod(rungs*N, len) == 0, 'Trying to create a unit cell of %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d due to filling %d / %d \n', N, rungs, N*rungs, len, P, Q);
     disp('Code started running');
 
-    if kwargs.oneband
-        H1 = get_Hubbard_JMpo_oneband(t, kwargs.t2, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
-    else
-        H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 't2', t2, 'V', V, 'len', len, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
-    end
+    H1 = get_Hubbard_JMpo_oneband(t, kwargs.t2, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
 
     if finalized == 4
         load(starting_name, 'gs_mps');
