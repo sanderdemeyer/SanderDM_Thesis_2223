@@ -2,16 +2,24 @@ folder = 'Data structures/Hubbard_t_1_24_dec/';
 folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
 folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
-folder = 'Data structures/Superconductivity\N_4\extrapolation_34/';
+
+folder = 'Data structures\Superconductivity\test_entanglement_spectra\nice\N_2_P_7_Q_8_extrapolation/';
 files = dir((folder));
 l = length(files);
 disp('started');
 
-check_energies = false;
+
+P = 7;
+Q = 8;
+N = 2;
+rungs = 8;
+
+check_separate_energies = false;
 check_transfereigs = true;
-check_transfereigs_charge = false;
+check_transfereigs_charge = true;
 check_transfereigs_spin = false;
-check_occupancies = false;
+SU2 = true;
+check_occupancies = true;
 check_stag_magn = false;
 check_variances = false;
 
@@ -23,13 +31,9 @@ epsilon1s_charge = cell(0,0);
 deltas_spin = cell(0,0);
 epsilon1s_spin = cell(0,0);
 occupancies = cell(0,0);
+matr_occ = cell(0,0);
 stag_magn = cell(0,0);
 variances = cell(0,0);
-
-P = 7;
-Q = 8;
-N = 2;
-rungs = 8;
 
 k = 1;
 for i = 3:l
@@ -59,7 +63,7 @@ for i = 3:l
         Us{k} = U;
         etas{k} = eta;
 
-        if check_energies
+        if check_separate_energies
             filling{k} = P/Q;
             if mod(P,2) == 0
                 unit_cell{k} = Q;
@@ -88,7 +92,17 @@ for i = 3:l
             disp('0 sector done');
         end
         if check_transfereigs_charge
-            [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2*Q), U1(0), fZ2(0)));
+            try
+                [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(2*Q), U1(0), fZ2(0)));
+                disp('Done for charge sector 2Q');
+            catch
+                try
+                    [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(Q), U1(0), fZ2(0)));
+                    disp('Done for charge sector Q');
+                catch
+                    disp('Charge sector: not possible for either Q or 2Q')
+                end
+            end
             epsilons = zeros(1,3);
             for j = 1:3
                 epsilons(j) = -log(norm(D(j,j)));
@@ -101,7 +115,12 @@ for i = 3:l
             disp('charge sector done');
         end
         if check_transfereigs_spin
-            [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
+            if SU2
+                error('not well defined');
+                [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), SU2(2), fZ2(0)));
+            else
+                [V, D] = transfereigs(gs_mps, gs_mps, 3, 'Charge', ProductCharge(U1(0), U1(2), fZ2(0)));
+            end
             epsilons = zeros(1,3);
             for j = 1:3
                 epsilons(j) = -log(norm(D(j,j)));
@@ -113,8 +132,8 @@ for i = 3:l
             disp('Spin sector done');
         end
         if check_occupancies
-            occupancies{k} = get_occupancies(gs_mps, 7, 8, true, false, N, rungs);
-
+            occupancies{k} = get_occupancies(gs_mps, P, Q, N, rungs, 'SU2', SU2, 'plot', false);
+            matr_occ{k} = reshape(real(1-occupancies{k}), N, rungs);
         end
         if check_stag_magn
             stag_m = get_magnetisation('XXZ', gs_mps, pspace, trivspace, 1.5, false, true);

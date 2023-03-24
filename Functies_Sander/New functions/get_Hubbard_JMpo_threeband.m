@@ -26,8 +26,8 @@ function H = get_Hubbard_JMpo_threeband(param, kwargs)
         % from density matrix embedding theory - Zhi-Hao Cui 2020.
 
         [pspace, ~, trivspace] = get_spaces_Hubbard_SU2(kwargs.P, kwargs.Q, 'D', kwargs.D);
-        Hopping_t_dp = Hubbard_Hopping_Hamiltonian_SU2(-param.t_dp, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
-        Hopping_t_pp = Hubbard_Hopping_Hamiltonian_SU2(-param.t_pp, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
+        Hopping_t_dp = Hubbard_Hopping_Hamiltonian_SU2(param.t_dp, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
+        Hopping_t_pp = Hubbard_Hopping_Hamiltonian_SU2(param.t_pp, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
 
         %delta dp term will be put with a positive sign on the d-orbitals.
         delta_dp_term = Hubbard_delta_Hamiltonian(pspace, trivspace, param.delta_dp); 
