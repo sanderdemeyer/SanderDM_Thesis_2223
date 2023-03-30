@@ -31,7 +31,7 @@ function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, 
     elseif vumps_way == 3
          alg = IDmrg2('dynamical_tols', true, 'which', 'smallestreal', 'trunc', trunc_way, 'tol', 10^(-tol), 'maxiter', maxiter, 'verbosity', Verbosity.iter, 'name', strcat(name, '.mat'), 'doSave', true, 'saveIterations', 1, 'doplot', true);
         [gs_mps, gs_energy] = fixedpoint(alg, H1, mps);
-    else
+    elseif vumps_way == -1
         iterations = length(maxiter);
         gs_mps = mps;
         for i = 1:iterations
@@ -50,6 +50,25 @@ function [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, 
                 return
             end
         end
+    elseif vumps_way == -2
+        fprintf('Assuming schmidt-cut = 10^(-trunc). Here, trunc = %d \n', trunc);
+        iterations = length(maxiter);
+        gs_mps = mps;
+        for i = 1:iterations
+            fprintf('Expand step of iteration %d of %d \n', i, iterations);
+            alg2 = Expand('which', 'smallestreal', 'schmidtcut', 10^(-trunc), 'bondsmethod', 'twosite', 'chargesmethod', 'twosite');
+            gs_mps = changebonds(alg2, H1, gs_mps);
+            fprintf('Vumps iteration %d of %d \n', i, iterations);
+            alg1 = Vumps('which', 'smallestreal', 'miniter', 1, 'maxiter', maxiter(i), 'verbosity', Verbosity.iter, 'doSave', true, 'name', strcat(name, '.mat'), 'tol', 10^(-tol), 'doplot', true);
+            [gs_mps, gs_energy, ~, ~, eta] = fixedpoint(alg1, H1, gs_mps);
+        end
+        if eta < 10^(-tol)
+            save(strcat(name, '_final.mat'));
+            disp('Done, Hooray!');
+            return
+        end
+    else
+        error('Invalid vumps_way');
     end
     save(strcat(name, '_final.mat'));
     disp('Done, Hooray!');

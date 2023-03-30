@@ -3,7 +3,9 @@ folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 %folder = 'Data structures/Hubbard_1D_U_8_doping/';
 folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
 
-folder = 'Data structures\Superconductivity\test_entanglement_spectra\nice\N_2_P_7_Q_8_extrapolation/';
+folder = 'Data structures\Superconductivity\HgBa2CuO4_oneband\N_2_P_7_Q_8/';
+
+%    'test_entanglement_spectra\nice\N_2_P_7_Q_8_extrapolation/'];
 files = dir((folder));
 l = length(files);
 disp('started');
@@ -16,7 +18,7 @@ rungs = 8;
 
 check_separate_energies = false;
 check_transfereigs = true;
-check_transfereigs_charge = true;
+check_transfereigs_charge = false;
 check_transfereigs_spin = false;
 SU2 = true;
 check_occupancies = true;
@@ -167,6 +169,35 @@ end
 
 assert(k ~= 1, 'Must contain at least one file');
 
+
+%%
+for i = 1:4
+    figure;
+    matr = reshape(real(1-occupancies{i}), 2, 8);
+    disp(bond_dims{i});
+    disp(matr);
+    scatter(1:8, matr);
+    legend(join(['2 x D = ' mat2str(bond_dims{i})]));
+    title('Cuprate HgBaCuO4, N = 2, P = 7, Q = 8');
+    xlabel('X');
+    ylabel('hole occupancy');
+end
+
+
+%%
+for x = 1:8
+    for y = 1:2
+        for i = 1:4
+            c = reshape(real(1-occupancies{i}), 2, 8);
+            lijst{i} = c(y,x);
+        end
+        figure;
+ %       disp(deltas);
+%        disp(lijst);
+        scatter(cell2mat(deltas), cell2mat(lijst));
+        legend(join([mat2str(x) mat2str(y)]));
+    end
+end
 %%
 
 bond_dims = cell2mat(bond_dims);
