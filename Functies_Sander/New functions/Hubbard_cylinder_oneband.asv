@@ -44,31 +44,20 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_oneband(N, model, P, Q, rungs, t
     H1 = get_Hubbard_JMpo_oneband(t, t2, U, V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
 
     if iscell(finalized)
-        if strcmp(finalized{1}, 'multiply')
-            if finalized{2} == 2
-                load(starting_name, 'gs_mps');
-                w = period(gs_mps);
-                assert(mod(w, N) == 0);
-                mps = multiply_mps(gs_mps, rungs*N/w);
-            elseif finalized{2} == 1
-                load(starting_name, 'mps');
-                w = period(mps);
-                assert(mod(w, N) == 0);
-                mps = multiply_mps(canonicalize(mps, 'Order', 'rl'), rungs*N/w);
-            end
-        elseif strcmp(finalized{1}, 'divide')
-            if finalized{2} == 2
-                load(starting_name, 'gs_mps');
-                w = period(gs_mps);
-                assert(w >= rungs*N);
-                mps = divide_mps(gs_mps, rungs*N);
-            elseif finalized{2} == 1
-                load(starting_name, 'mps');
-                w = period(mps);
-                assert(w >= rungs*N);
-                mps = divide_mps(canonicalize(mps, 'Order', 'rl'), rungs*N);
-            end
-        end
+    if strcmp(finalized, 'multiply')
+        load(starting_name, 'gs_mps');
+        w = period(gs_mps);
+        assert(mod(w, N) == 0)
+        mps = multiply_mps(gs_mps, rungs*N/w);
+    elseif strcmp(finalized, 'divide')
+        load(starting_name, 'gs_mps');
+        assert()
+        mps = multiply_mps(gs_mps, rungs*N);
+    elseif finalized == 3
+        load(starting_name, 'mps');
+        w = period(mps);
+        assert(mod(w, N) == 0)
+        mps = multiply_mps(canonicalize(mps, 'Order', 'rl'), rungs*N/w);
     elseif finalized == 2
         load(starting_name, 'gs_mps');
         mps = gs_mps;
