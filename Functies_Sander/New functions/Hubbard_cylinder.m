@@ -13,12 +13,14 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
         starting_name
         finalized
         kwargs.t2 = 0
+        kwargs.t3 = 0
         kwargs.V = 0
-        kwargs.symmetries = 'U1_U1' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
+        kwargs.symmetries = 'U1_SU2' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
         kwargs.mu = 0
         kwargs.convention = 'conventional'
         kwargs.oneband = false
         kwargs.trunc_method = 'TruncTotalDim'
+        kwargs.nntn = false
     end
 
     if mod(P, 2) == 0
@@ -26,13 +28,15 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
     else
         len = 2*Q;
     end
-    assert(kwargs.oneband || kwargs.t2 == 0, 'For t2 != 0, oneband needs to be set to true');
+    assert(kwargs.oneband || kwargs.nntn || kwargs.t2 == 0, 'For t2 != 0, oneband needs to be set to true');
 
     assert(mod(rungs*N, len) == 0, 'Trying to create a unit cell of %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d due to filling %d / %d \n', N, rungs, N*rungs, len, P, Q);
     disp('Code started running');
 
     if kwargs.oneband
         H1 = get_Hubbard_JMpo_oneband(t, kwargs.t2, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
+    elseif kwargs.nntn
+        H1 = get_Hubbard_JMpo_oneband_nntn(t, kwargs.t2, kwargs.t3, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
     else
         H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
     end
@@ -69,6 +73,8 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
 
     if kwargs.oneband
         name = 'Hubbard_FullCylinder_oneband_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
+    elseif kwargs.nntn
+        name = 'Hubbard_FullCylinder_oneband_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_t3_' + string(kwargs.t3) + '_V_' + string(kwargs.V);
     else
         name = 'Hubbard_FullCylinder_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(kwargs.t2) + '_V_' + string(kwargs.V);
     end
