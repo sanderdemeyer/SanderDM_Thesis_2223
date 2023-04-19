@@ -7,13 +7,12 @@ function mps = get_Hubbard_mps(P, Q, kwargs)
         kwargs.D = 1
         kwargs.symmetries = 'U1_U1'
     end
-    %if P == 153488856512544475
-    %    [pspace, vspaces, ~] = get_spaces_Hubbard_symmetric(P, Q, 'D1', kwargs.D, 'D2', kwargs.D);
-    %else
     if strcmp(kwargs.symmetries, 'U1_U1')
         [pspace, vspaces, ~] = get_spaces_Hubbard_asymmetric(P, Q, 'D', kwargs.D);
     elseif strcmp(kwargs.symmetries, 'U1_SU2')
         [pspace, vspaces, ~] = get_spaces_Hubbard_SU2(P, Q, 'D', kwargs.D);
+    elseif strcmp(kwargs.symmetries, 'None_SU2')
+        [pspace, vspaces, ~] = get_spaces_Hubbard_None_SU2('D1', kwargs.D, 'D2', kwargs.D);
     else
         error('TBA');
     end

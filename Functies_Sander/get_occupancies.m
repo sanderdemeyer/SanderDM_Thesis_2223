@@ -1,4 +1,4 @@
-function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, N, rungs, kwargs)
+function [charge_occupancies_matrix, spin_occupancies, Cu_occupancies] = get_occupancies(gs_mps, P, Q, N, rungs, kwargs)
     arguments
         gs_mps
         P
@@ -9,6 +9,7 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
         kwargs.plot = true
         kwargs.scale1 = 500
         kwargs.scale2 = 200
+        kwargs.Cu = false
     end
     % Using convention = conventional
     spin_occupancies = 0;
@@ -29,6 +30,8 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
     for b = 1:w
         charge_occupancies(b) = contract(AC(b), [1 2 3], number_tot, [4 2], twist(conj(AC(b)),3), [1 4 3]);
     end
+    
+    charge_occupancies_matrix = reshape(real(charge_occupancies), N, rungs);
     
     if ~kwargs.SU2
         spin_occupancies = zeros(1, w);
@@ -72,6 +75,13 @@ function [charge_occupancies, spin_occupancies] = get_occupancies(gs_mps, P, Q, 
             title('Spin occupancies');
             xlabel('X');
             ylabel('Y');
+        end
+    end
+    if kwargs.Cu
+        assert(mod(N, 3) == 0, 'N should be a multiple of 3 to be interpreted as a threeband model');
+        Cu_occupancies = zeros(N/3, rungs);
+        for i = 0:N/3-1
+            Cu_occupancies(i+1,:) = charge_occupancies_matrix(3*i + 1,:);
         end
     end
 end

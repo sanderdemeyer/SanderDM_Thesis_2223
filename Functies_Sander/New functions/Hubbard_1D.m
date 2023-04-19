@@ -15,6 +15,7 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         kwargs.symmetries = 'U1_U1' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
         kwargs.mu = 0
         kwargs.convention = 'conventional'
+        kwargs.bitstring = none
     end
     disp('Code started running');
 
@@ -33,7 +34,11 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         len = 2*Q;
     end
 
-    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'symmetries', kwargs.symmetries, 'mu', kwargs.mu, 'convention', kwargs.convention);
+    if strcmp(kwargs.symmetries, 'None_SU2')
+        len = 2;
+    end
+
+    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'symmetries', kwargs.symmetries, 'mu', kwargs.mu, 'convention', kwargs.convention, 'bitstring', kwargs.bitstring);
         
     if finalized == 2
         load(starting_name, 'gs_mps');
@@ -42,17 +47,7 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         load(starting_name, 'mps');
         mps = canonicalize(mps, 'Order', 'rl');
     else
-        if strcmp(kwargs.symmetries, 'U1_U1')
-            mps = get_Hubbard_mps(P, Q);
-        elseif strcmp(kwargs.symmetries, 'U1_SU2')
-            %pspace = get_spaces_Hubbard_SU2(P, Q);
-%            mps = UniformMps.randnc(pspace, pspace, pspace, pspace*pspace);
-            mps = get_Hubbard_mps(P, Q, 'symmetries', 'U1_SU2');
-        elseif strcmp(kwargs.symmetries, 'None_U1')
-            mps = get_Hubbard_mps_without_U1();
-        else
-            error('Invalid symmetry')
-        end
+        mps = get_Hubbard_mps(P, Q, 'symmetries', kwargs.symmetries);
     end
     disp('initialization correct');
 

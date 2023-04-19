@@ -12,11 +12,9 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
         kwargs.symmetries = 'U1_U1'
         kwargs.mu = 0
         kwargs.convention = 'conventional'
+        kwargs.bitstring = none
     end
 
-   % if kwargs.P == 1000 % change!
-   %     [pspace, ~, trivspace] = get_spaces_Hubbard_symmetric(kwargs.P, kwargs.Q, 'D1', kwargs.D, 'D2', kwargs.D);
-   % else
     if strcmp(kwargs.symmetries, 'U1_U1')
         [pspace, ~, trivspace] = get_spaces_Hubbard_asymmetric(kwargs.P, kwargs.Q, 'D', kwargs.D);
         Hopping_t = Hubbard_Hopping_Hamiltonian(t, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
@@ -30,6 +28,14 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
         H_onesite = Hubbard_Onesite_Hamiltonian_SU2(pspace, trivspace, U);
         if kwargs.t2 ~= 0
             Hopping_t2 = Hubbard_Hopping_Hamiltonian_SU2(kwargs.t2, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
+        end
+    elseif strcmp(kwargs.symmetries, 'None_SU2')
+        warning('not checked!!')
+        [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D1', kwargs.D, 'D2', kwargs.D);
+        Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, 'convention', kwargs.convention, 'bitstring', kwargs.bitstring);
+        H_onesite = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, U);
+        if kwargs.t2 ~= 0
+            Hopping_t2 = Hubbard_Hopping_Hamiltonian_None_SU2(kwargs.t2, 'convention', kwargs.convention);
         end
     elseif strcmp(kwargs.symmetries, 'None_U1')
         error('Probably wrong.');

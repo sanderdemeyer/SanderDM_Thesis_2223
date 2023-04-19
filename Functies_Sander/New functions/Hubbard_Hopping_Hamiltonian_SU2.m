@@ -7,7 +7,7 @@ function cdc = Hubbard_Hopping_Hamiltonian_SU2(t, P, Q, kwargs)
     end
         
     %[pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
-    [pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces_Hubbard_SU2(P, Q);
+    pspace = get_spaces_Hubbard_SU2(P, Q);
 
     %{
     one_charge = ProductCharge(U1(Q), SU2(3), fZ2(1));

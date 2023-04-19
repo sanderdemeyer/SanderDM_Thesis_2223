@@ -22,6 +22,12 @@ function H = get_Hubbard_JMpo_oneband(t, t2, U, V, kwargs)
         Hopping_t2 = Hubbard_Hopping_Hamiltonian_SU2(t2, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
         V_term = Hubbard_V_Hamiltonian(pspace, trivspace, V, 'convention', kwargs.convention);
         U_term = Hubbard_Onesite_Hamiltonian_SU2(pspace, trivspace, U);
+    elseif strcmp(kwargs.symmetries, 'None_SU2')
+        [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D', kwargs.D);
+        Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
+        Hopping_t2 = Hubbard_Hopping_Hamiltonian_None_SU2(t2, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
+        ?? V_term = Hubbard_V_Hamiltonian(pspace, trivspace, V, 'convention', kwargs.convention);
+        U_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, U);
     else
         error('Invalid symmetry')
     end
