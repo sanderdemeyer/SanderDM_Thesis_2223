@@ -28,6 +28,17 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         param.V_dd = 0.8/scale;
         param.V_pp = 1.21/scale;
         param.V_dp = 1.99/scale;
+    elseif strcmp(model, 'La1')
+        disp('Model is La2CuO4_Hirayama_2018');
+        scale = 1.369;
+        param.t_dp = 1;
+        param.t_pp = 0.754/scale;
+        param.delta_dp = 3.699/scale;
+        param.U_dd = 9.61/scale;
+        param.U_pp = 6.13/scale;
+        param.V_dd = 1.51/scale;
+        param.V_pp = 1.86/scale;
+        param.V_dp = 2.68/scale;
     else
         error('model %s not implemented', model);
     end
