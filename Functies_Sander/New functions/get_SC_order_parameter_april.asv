@@ -1,10 +1,11 @@
-function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, L1, L2, L3, L4)
+function [list_tot] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, L1, L2, L3, L4)
     %[L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
 %    load('operators.mat');
     disp('Operators are defined');
     AC = gs_mps.AC;
     AR = gs_mps.AR;
     w = period(gs_mps);
+    b = 1;
 
     warning('fix minus signs!!');
 
@@ -14,7 +15,7 @@ function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P,
         vspaces(j) = space(1);
     end
 
-    all_lists = cell(1, w);
+    all_lists
     for b = 1:w
 
         option_l = -contract(AC(loop(b,-N,w)), [1 2 -1], L2, [-3 3 -4 2], conj(AC(loop(b,-N,w))), [1 3 -2]);
@@ -87,16 +88,8 @@ function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P,
             left_side = few_steps(left_side, AR, loop(b,N+N*i,w), N, w);
         end
 
-        all_lists{b} = list_tot;
-    end
 
-    lists_average = zeros(1, max_dist);
-    for i = 1:max_dist
-       som = 0;
-       for b = 1:w
-           som = som + all_lists{b}(i);
-       end
-       lists_average(i) = som;
+
     end
     
     function O_next = further(O, AR, i)
