@@ -12,7 +12,7 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
         kwargs.symmetries = 'U1_U1'
         kwargs.mu = 0
         kwargs.convention = 'conventional'
-        kwargs.bitstring = none
+        kwargs.bitstring = 0
     end
 
     if strcmp(kwargs.symmetries, 'U1_U1')
