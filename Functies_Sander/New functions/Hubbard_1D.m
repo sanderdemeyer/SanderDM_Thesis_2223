@@ -15,7 +15,7 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         kwargs.symmetries = 'U1_U1' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
         kwargs.mu = 0
         kwargs.convention = 'conventional'
-        kwargs.bitstring = none
+        kwargs.bitstring = 0
     end
     disp('Code started running');
 

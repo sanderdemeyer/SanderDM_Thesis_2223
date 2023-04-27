@@ -21,7 +21,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         disp('Model is HgBa2CuO4_Hirayama_2018');
         scale = 1.257;
         param.t_dp = 1;
-        param.t_pp = 0.751/scale;
+        param.t_pp = 0.751/scale; % 0.59745
         param.delta_dp = 2.416/scale;
         param.U_dd = 8.84/scale;
         param.U_pp = 5.31/scale;

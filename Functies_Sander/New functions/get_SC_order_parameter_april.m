@@ -56,31 +56,31 @@ function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P,
             
             option_l = -contract(left_side, [1  2 -4], AC(loop(b,N+N*i,w)), [1 3 -1], L4, [-3 4 3], conj(AC(loop(b,N+N*i,w))), [2 4 -2]);
             option_l = few_steps_4(option_l, AR, loop(b, N+1+N*i, w), N-1, w);
-            option_l = contract(option_l, [1 6 4 3], AC(loop(b,2*N+N*i,w)), [1 2 7], L3, [3 5 4 2], conj(AC(loop(b,2*N+N*i,w))), [6 5 7]);
+            option_l = contract(option_l, [1 6 4 3], AC(loop(b,2*N+N*i,w)), [1 2 7], L3, [3 5 4 2], twist(conj(AC(loop(b,2*N+N*i,w))),3), [6 5 7]);
     
             base = few_steps(left_side, AR, loop(b,N+N*i,w), N, w);
             base = contract(base, [1 5 3], AC(loop(b,2*N+N*i,w)), [1 2 -1], L3, [3 4 -3 2], conj(AC(loop(b,2*N+N*i,w))), [5 4 -2]);
     
             if mod(b,N) == 1
                 option_t = few_steps(base, AR, loop(b, 2*N+1 + N*i, w), N-2, w);
-                option_t = contract(option_t, [1 5 3], AC(loop(b,3*N-1+N*i,w)), [1 2 6], L4, [3 4 2], conj(AC(loop(b,3*N-1+N*i,w))), [5 4 6]);
+                option_t = contract(option_t, [1 5 3], AC(loop(b,3*N-1+N*i,w)), [1 2 6], L4, [3 4 2], twist(conj(AC(loop(b,3*N-1+N*i,w))),3), [5 4 6]);
             else
                 option_t = few_steps(left_side, AR, loop(b, N + N*i, w), N-2, w);
                 option_t = contract(option_t, [1 2 -4], AC(loop(b,2*N-2+N*i,w)), [1 3 -1], L4, [-3 4 3], conj(AC(loop(b,2*N-2+N*i,w))), [2 4 -2]);
-                option_t = contract(option_t, [1 5 4 3], AC(loop(b,2*N-1+N*i,w)), [1 2 7], L3, [3 6 4 2], conj(AC(loop(b,2*N-1+N*i,w))), [5 6 7]);
+                option_t = contract(option_t, [1 5 4 3], AC(loop(b,2*N-1+N*i,w)), [1 2 7], L3, [3 6 4 2], twist(conj(AC(loop(b,2*N-1+N*i,w))),3), [5 6 7]);
             end
     
     
             if mod(b,N) == 0
                 option_b = contract(left_side, [1  2 -4], AC(loop(b,N+N*i,w)), [1 3 -1], L4, [-3 4 3], conj(AC(loop(b,N+N*i,w))), [2 4 -2]);
                 option_b = few_steps_4(option_b, AR, loop(b,N+1+N*i,w), N-2, w);
-                option_b = contract(option_b, [1 6 4 3], AC(loop(b,2*N-1+N*i,w)), [1 2 7], L3, [3 5 4 2], conj(AC(loop(b,2*N-1+N*i,w))), [6 5 7]);
+                option_b = contract(option_b, [1 6 4 3], AC(loop(b,2*N-1+N*i,w)), [1 2 7], L3, [3 5 4 2], twist(conj(AC(loop(b,2*N-1+N*i,w))),3), [6 5 7]);
             else
-                option_b = contract(base, [1 5 3], AC(loop(b,2*N+1+N*i,w)), [1 2 6], L4, [3 4 2], conj(AC(loop(b,2*N+1+N*i,w))), [5 4 6]);
+                option_b = contract(base, [1 5 3], AC(loop(b,2*N+1+N*i,w)), [1 2 6], L4, [3 4 2], twist(conj(AC(loop(b,2*N+1+N*i,w))),3), [5 4 6]);
             end
     
             option_r = few_steps(base, AR, loop(b,2*N+1+N*i,w), N-2, w);
-            option_r = -contract(option_r, [1 5 3], AC(loop(b,3*N-1+N*i,w)), [1 2 6], L4, [3 4 2], conj(AC(loop(b,3*N-1+N*i,w))), [5 4 6]);
+            option_r = -contract(option_r, [1 5 3], AC(loop(b,3*N-1+N*i,w)), [1 2 6], L4, [3 4 2], twist(conj(AC(loop(b,3*N-1+N*i,w))),3), [5 4 6]);
     
             list_tot(i) = option_l + option_t + option_b + option_r;
     
