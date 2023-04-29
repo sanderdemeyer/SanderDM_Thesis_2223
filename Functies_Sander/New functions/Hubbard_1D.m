@@ -50,7 +50,7 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
     end
     disp('initialization correct');
     if strcmp(kwargs.symmetries, 'None_SU2')
-        name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + 'None_SU2_mu' + string(mu);
+        name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + 'None_SU2_mu' + string(kwargs.mu);
     else
         name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + '_filling_' + string(P) + '_' + string(Q);
     end
