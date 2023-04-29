@@ -49,7 +49,10 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         mps = get_Hubbard_mps(P, Q, 'symmetries', kwargs.symmetries);
     end
     disp('initialization correct');
-
-    name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + '_filling_' + string(P) + '_' + string(Q);
+    if strcmp(kwargs.symmetries, 'None_SU2')
+        name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + 'None_SU2_mu' + string(mu);
+    else
+        name = 'Hubbard_1D_t_' + string(t) + '_U_' + string(U) + '_filling_' + string(P) + '_' + string(Q);
+    end
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name);
 end
