@@ -12,7 +12,6 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
         kwargs.symmetries = 'U1_U1'
         kwargs.mu = 0
         kwargs.convention = 'conventional'
-        kwargs.bitstring = 0
     end
 
     if strcmp(kwargs.symmetries, 'U1_U1')
@@ -32,13 +31,15 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
     elseif strcmp(kwargs.symmetries, 'None_SU2')
         warning('None_SU2 not yet correct!!')
         [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D1', kwargs.D, 'D2', kwargs.D);
-        Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, 'convention', kwargs.convention, 'bitstring', kwargs.bitstring);
-        H_onesite = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, U);
+        Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, 'convention', kwargs.convention);
+        H_U_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, U);
+        H_mu_term = Hubbard_chemical_potential(pspace, trivspace, kwargs.mu);
+        H_onesite = H_U_term + H_mu_term;
         if kwargs.t2 ~= 0
             Hopping_t2 = Hubbard_Hopping_Hamiltonian_None_SU2(kwargs.t2, 'convention', kwargs.convention);
         end
     elseif strcmp(kwargs.symmetries, 'None_U1')
-        error('Probably wrong.');
+        % warning('None_U1 is probably wrong.');
         [pspace, ~, trivspace] = get_spaces_Hubbard_without_U1('D1', kwargs.D, 'D2', kwargs.D);
         Hopping_t = Hubbard_Hopping_Hamiltonian_without_U1(t, 'convention', kwargs.convention);
         H_onesite = Hubbard_Onesite_Hamiltonian_without_U1(pspace, trivspace, U, kwargs.mu);

@@ -15,7 +15,6 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         kwargs.symmetries = 'U1_U1' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
         kwargs.mu = 0
         kwargs.convention = 'conventional'
-        kwargs.bitstring = 0
     end
     disp('Code started running');
 
@@ -38,7 +37,7 @@ function [gs_mps, gs_energy] = Hubbard_1D(t, U, P, Q, trunc, maxiter, tol, vumps
         len = 2;
     end
 
-    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'symmetries', kwargs.symmetries, 'mu', kwargs.mu, 'convention', kwargs.convention, 'bitstring', kwargs.bitstring);
+    H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'1D'}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'symmetries', kwargs.symmetries, 'mu', kwargs.mu, 'convention', kwargs.convention);
         
     if finalized == 2
         load(starting_name, 'gs_mps');
