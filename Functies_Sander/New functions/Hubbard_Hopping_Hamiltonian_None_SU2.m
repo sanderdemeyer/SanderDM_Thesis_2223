@@ -18,7 +18,7 @@ function cdc = Hubbard_Hopping_Hamiltonian_None_SU2(t, kwargs)
     c = Tensor([singlet_space pspace], pspace);
 
     c_dagger_data = {reshape([0 sqrt(2)], 2, 1), reshape([1 0], 1, 1, 2)};
-    c_data = {reshape([0 -sqrt(2)], 1, 1, 2), [1 0]};
+    c_data = {reshape([0 sqrt(2)], 1, 1, 2), [1 0]};
 
     c_dagger = fill_tensor(c_dagger, c_dagger_data);
     c = fill_tensor(c, c_data);

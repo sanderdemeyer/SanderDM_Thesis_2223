@@ -29,7 +29,6 @@ function H = get_Hubbard_JMpo(t, U, kwargs)
             Hopping_t2 = Hubbard_Hopping_Hamiltonian_SU2(kwargs.t2, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
         end
     elseif strcmp(kwargs.symmetries, 'None_SU2')
-        warning('None_SU2 not yet correct!!')
         [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D1', kwargs.D, 'D2', kwargs.D);
         Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, 'convention', kwargs.convention);
         H_U_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, U);
