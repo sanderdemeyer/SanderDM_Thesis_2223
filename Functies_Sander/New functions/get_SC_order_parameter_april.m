@@ -1,7 +1,5 @@
-function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist)
+function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, file, bonddim)
     [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
-    % This gives the operators in the order c^dagger, c^dagger, c, c
-
 %    load('operators.mat');
     disp('Operators are defined');
     AC = gs_mps.AC;
@@ -54,7 +52,7 @@ function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P,
         left_side = option_l + option_t + option_b + option_r;
     
         for i = 1:max_dist
-            fprintf('Started with iteration %d of %d for b = %d \n', i, max_dist, b);
+            fprintf('Started with iteration %d of %d for b = %d. For file %d, bonddim %d \n', i, max_dist, b, file, bonddim);
             
             option_l = -contract(left_side, [1  2 -4], AC(loop(b,N+N*i,w)), [1 3 -1], L4, [-3 4 3], conj(AC(loop(b,N+N*i,w))), [2 4 -2]);
             option_l = few_steps_4(option_l, AR, loop(b, N+1+N*i, w), N-1, w);
