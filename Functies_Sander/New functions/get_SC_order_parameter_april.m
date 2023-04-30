@@ -1,5 +1,7 @@
 function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist)
     [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
+    % This gives the operators in the order c^dagger, c^dagger, c, c
+
 %    load('operators.mat');
     disp('Operators are defined');
     AC = gs_mps.AC;

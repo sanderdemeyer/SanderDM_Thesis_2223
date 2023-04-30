@@ -28,6 +28,10 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
     else
         len = 2*Q;
     end
+    
+    if strcmp(kwargs.symmetries, 'None_SU2')
+        len = 2;
+    end
     assert(kwargs.oneband || kwargs.nntn || kwargs.t2 == 0, 'For t2 != 0, oneband needs to be set to true');
 
     assert(mod(rungs*N, len) == 0, 'Trying to create a unit cell of %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d due to filling %d / %d \n', N, rungs, N*rungs, len, P, Q);
