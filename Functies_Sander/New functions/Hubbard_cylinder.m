@@ -38,11 +38,11 @@ function [gs_mps, gs_energy] = Hubbard_cylinder(N, t, U, P, Q, rungs, trunc, max
     disp('Code started running');
 
     if kwargs.oneband
-        H1 = get_Hubbard_JMpo_oneband(t, kwargs.t2, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
+        H1 = get_Hubbard_JMpo_oneband(t, kwargs.t2, U, kwargs.V, 'P', P, 'Q', Q, 'mu', kwargs.mu, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
     elseif kwargs.nntn
-        H1 = get_Hubbard_JMpo_oneband_nntn(t, kwargs.t2, kwargs.t3, U, kwargs.V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
+        H1 = get_Hubbard_JMpo_oneband_nntn(t, kwargs.t2, kwargs.t3, U, kwargs.V, 'P', P, 'Q', Q, 'mu', kwargs.mu, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
     else
-        H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 't2', kwargs.t2, 'V', kwargs.V, 'len', len, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
+        H1 = get_Hubbard_JMpo(t, U, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 't2', kwargs.t2, 'V', kwargs.V, 'mu', kwargs.mu, 'len', len, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
     end
 
     if finalized == 4
