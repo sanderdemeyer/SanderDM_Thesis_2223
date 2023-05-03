@@ -31,12 +31,12 @@ function [charge_occupancies_matrix, spin_occupancies, Cu_occupancies] = get_occ
     AC = gs_mps.AC;
     w = period(gs_mps);
 
-    charge_occupancies = zeros(1, w);
-    for b = 1:w
-        charge_occupancies(b) = contract(AC(b), [1 2 3], number_tot, [4 2], twist(conj(AC(b)),3), [1 4 3]);
+        charge_occupancies = zeros(1, w);
+        for b = 1:w
+            charge_occupancies(b) = contract(AC(b), [1 2 3], number_tot, [4 2], twist(conj(AC(b)),3), [1 4 3]);
+        end
     end
-
-        charge_occupancies_matrix = reshape(real(charge_occupancies), N, rungs);
+    charge_occupancies_matrix = reshape(real(charge_occupancies), N, rungs);
     
     if strcmp(kwargs.symmetries, 'U1_U1')
         spin_occupancies = zeros(1, w);
