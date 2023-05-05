@@ -54,8 +54,9 @@ function H = get_Hubbard_JMpo_threeband(param, kwargs)
         V_pp_term = Hubbard_V_Hamiltonian_None_SU2(pspace, trivspace, param.V_pp, 'convention', kwargs.convention);
         V_dp_term = Hubbard_V_Hamiltonian_None_SU2(pspace, trivspace, param.V_dp, 'convention', kwargs.convention);
         V_dd_term = Hubbard_V_Hamiltonian_None_SU2(pspace, trivspace, param.V_dd, 'convention', kwargs.convention);
-        U_dd_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, param.U_dd);
-        U_pp_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, param.U_pp);
+        H_mu_term = Hubbard_chemical_potential(pspace, trivspace, kwargs.mu);
+        U_dd_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, param.U_dd) + H_mu_term;
+        U_pp_term = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, param.U_pp) + H_mu_term;
     else
         error('Invalid symmetry')
     end

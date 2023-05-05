@@ -99,6 +99,5 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         name = 'Hubbard_FullCylinder_threeband_N_' + string(N) + '_model_' + string(model) + '_mu_' + string(kwargs.mu) + '_rungs_' + string(rungs);
     end
 
-
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name, 'trunc_method', kwargs.trunc_method);
 end

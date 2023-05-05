@@ -21,7 +21,7 @@ function [list_D, list_angles, list_charges, list_charges_strings] = plot_transf
         disp(i);
         charge = ProductCharge(SU2(i), fZ2(mod(i+1,2)));
         list_charges{i} = charge;
-        [~, D] = transfereigs(gs_mps, gs_mps, kwargs.howmany(i), 'largestabs', 'Charge', charge);
+        [~, D] = transfereigs(gs_mps, gs_mps, kwargs.howmany(i), 'largestabs', 'Charge', charge); %, 'Type', 'l_LL');
         Diag = diag(D);
         list_D{i} = Diag;
         list_angles{i} = angle(Diag);
