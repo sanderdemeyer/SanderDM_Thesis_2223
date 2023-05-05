@@ -11,7 +11,6 @@ function H = get_Hubbard_JMpo_threeband(param, kwargs)
         kwargs.convention = 'conventional'
     end
     
-    assert(strcmp(kwargs.symmetries, 'U1_SU2'), 'TBA symmetry %s', kwargs.symmetries);
     assert(strcmp(kwargs.system{1}, 'Cylinder_multiple_rungs'), 'TBA system %s', kwargs.system{1});
     if ~strcmp(kwargs.convention, 'conventional')
         warning('It is strongly recommended to work with convention = conventional.');
