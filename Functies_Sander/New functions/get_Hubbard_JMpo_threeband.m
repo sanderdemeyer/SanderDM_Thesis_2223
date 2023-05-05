@@ -46,9 +46,9 @@ function H = get_Hubbard_JMpo_threeband(param, kwargs)
         
     elseif strcmp(kwargs.symmetries, 'None_SU2')
 
-        [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2(kwargs.P, kwargs.Q, 'D', kwargs.D);
-        Hopping_t_dp = Hubbard_Hopping_Hamiltonian_None_SU2(param.t_dp, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
-        Hopping_t_pp = Hubbard_Hopping_Hamiltonian_None_SU2(param.t_pp, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
+        [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D1', kwargs.D, 'D2', kwargs.D);
+        Hopping_t_dp = Hubbard_Hopping_Hamiltonian_None_SU2(param.t_dp, 'convention', kwargs.convention);
+        Hopping_t_pp = Hubbard_Hopping_Hamiltonian_None_SU2(param.t_pp, 'convention', kwargs.convention);
 
         delta_dp_term = Hubbard_delta_Hamiltonian_None_SU2(pspace, trivspace, param.delta_dp); 
         V_pp_term = Hubbard_V_Hamiltonian_None_SU2(pspace, trivspace, param.V_pp, 'convention', kwargs.convention);

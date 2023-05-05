@@ -82,6 +82,8 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
             mps = get_Hubbard_mps(P, Q, 'system', {'Cylinder_multiple_rungs', 3*N, rungs});
         elseif strcmp(kwargs.symmetries, 'U1_SU2')
             mps = get_Hubbard_mps(P, Q, 'system', {'Cylinder_multiple_rungs', 3*N, rungs}, 'symmetries', 'U1_SU2');
+        elseif strcmp(kwargs.symmetries, 'None_SU2')
+            mps = get_Hubbard_mps(0, 0, 'system', {'Cylinder_multiple_rungs', 3*N, rungs}, 'symmetries', 'None_SU2');
         elseif strcmp(kwargs.symmetries, 'None_U1')
             error('Using None_U1');
             mps = get_Hubbard_mps_without_U1();
