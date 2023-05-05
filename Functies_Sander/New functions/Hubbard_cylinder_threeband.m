@@ -12,6 +12,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         vumps_way
         starting_name
         finalized
+        kwargs.mu = 0
         kwargs.symmetries = 'U1_SU2' % Symmetry of the charge and spin sector. Fermionic parity is always implemented.
         kwargs.convention = 'conventional'
         kwargs.trunc_method = 'TruncTotalDim'
@@ -50,10 +51,15 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_threeband(N, model, P, Q, rungs,
         len = 2*Q;
     end
 
+    if strcmp(kwargs.symmetries, 'None_SU2')
+        len = 2;
+    end
+
+
     assert(mod(3*rungs*N, len) == 0, 'Trying to create a unit cell of 3 x %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d due to filling %d / %d \n', N, rungs, 3*N*rungs, len, P, Q);
     disp('Code started running');
 
-    H1 = get_Hubbard_JMpo_threeband(param, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
+    H1 = get_Hubbard_JMpo_threeband(param, 'P', P, 'Q', Q, 'mu', kwargs.mu, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
 
     if finalized == 4
         load(starting_name, 'gs_mps');

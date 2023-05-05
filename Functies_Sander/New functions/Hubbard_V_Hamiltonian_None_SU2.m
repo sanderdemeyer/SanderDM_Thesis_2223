@@ -1,11 +1,12 @@
-function nn = Hubbard_V_Hamiltonian(pspace, trivspace, V, kwargs)
+function nn = Hubbard_V_Hamiltonian_None_SU2(pspace, trivspace, V, kwargs)
     arguments
         pspace
         trivspace
         V
         kwargs.convention = 'conventional'
     end
-    number_data = num2cell([0 1 2]);
+    number_data = {reshape([0 0; 0 2], 2, 1, 2), 1};
+
     number_L = Tensor(pspace, [pspace trivspace]);
     number_R = Tensor([pspace trivspace], pspace);
 

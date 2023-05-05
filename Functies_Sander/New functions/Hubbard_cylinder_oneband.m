@@ -23,6 +23,10 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_oneband(N, model, P, Q, rungs, t
         len = 2*Q;
     end
 
+    if strcmp(kwargs.symmetries, 'None_SU2')
+        len = 2;
+    end
+
     if strcmp(model, 'Hg_oneband1')
         t = 1;
         U = 9.48;
