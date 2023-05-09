@@ -180,7 +180,7 @@ for i = 3:l
         else
             error('invalid symmetry');
         end
-        [all_lists, lists_average, total_sum] = get_SC_order_parameter_april(gs_mps, N, P, Q, 50, k, tot_bonddims{k}, 'symmetries', symmetries, 'operators', [L1 L2 L3 L4]);
+        [all_lists, lists_average, total_sum] = get_SC_order_parameter_april(gs_mps, N, P, Q, 50, k, tot_bonddims{k}, 'symmetries', symmetries, 'operators', {L1 L2 L3 L4});
         SC_all_lists{k} = all_lists;
         SC_lists_average{k} = lists_average;
         SC_total_sum{k} = total_sum;

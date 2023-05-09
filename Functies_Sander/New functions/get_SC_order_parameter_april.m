@@ -19,7 +19,11 @@ function [all_lists, lists_average, total_sum] = get_SC_order_parameter_april(gs
             error('invalid symmetry');
         end
     else
-        [L1, L2, L3, L4] = kwargs.operators();
+        operators = kwargs.operators();
+        L1 = operators{1};
+        L2 = operators{2};
+        L3 = operators{3};
+        L4 = operators{4};
     end
 
 %    load('operators.mat');
