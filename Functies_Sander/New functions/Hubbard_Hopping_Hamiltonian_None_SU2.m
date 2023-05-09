@@ -4,9 +4,7 @@ function cdc = Hubbard_Hopping_Hamiltonian_None_SU2(t, kwargs)
         kwargs.bitstring = 0
         kwargs.convention = 'conventional'
     end
-        
-    % based on comparison with H_double([1, 3, 4, 2], [1, 3, 4, 2])
-
+    
     assert(strcmp(kwargs.convention, 'conventional'), 'Only convention = conventional is implemented.');
 
     pspace = get_spaces_Hubbard_None_SU2();

@@ -1,5 +1,22 @@
-function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, file, bonddim)
-    [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
+function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, file, bonddim, kwargs)
+    arguments
+        gs_mps
+        N
+        P
+        Q
+        max_dist
+        file
+        bonddim
+        kwargs.symmetries = 'U1_SU2'
+    end
+    
+    if strcmp(kwargs.symmetries, 'U1_SU2')
+        [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
+    elseif strcmp(kwargs.symmetries, 'None_SU2')
+        [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered_None_SU2();
+    else
+        error('invalid symmetry');
+    end
 %    load('operators.mat');
     disp('Operators are defined');
     AC = gs_mps.AC;

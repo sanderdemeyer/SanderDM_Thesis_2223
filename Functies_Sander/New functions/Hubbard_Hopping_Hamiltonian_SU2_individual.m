@@ -1,4 +1,4 @@
-function cdc = Hubbard_Hopping_Hamiltonian_SU2_nogeenkeer(t, P, Q, kwargs)
+function cdc = Hubbard_Hopping_Hamiltonian_SU2_individual(t, P, Q, kwargs)
     arguments
         t
         P
