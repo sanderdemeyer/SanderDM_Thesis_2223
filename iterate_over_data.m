@@ -44,8 +44,9 @@ matr_occ = cell(1,number_of_files);
 stag_magn = cell(1,number_of_files);
 variances = cell(1,number_of_files);
 tot_bonddims = cell(1,number_of_files);
-SC_order_parameter_list = cell(1,number_of_files);
-SC_order_parameter_sums = cell(1,number_of_files);
+SC_all_lists{k} = cell(1,number_of_files);
+SC_lists_average{k} = cell(1,number_of_files);
+SC_total_sum{k} = cell(1,number_of_files);
 
 k = 1;
 for i = 3:l
@@ -57,11 +58,11 @@ for i = 3:l
         name_l = length(naam);
     end
     if ~strcmp(naam(name_l-9:name_l), '_final.mat')
-        load(strcat(folder, naam), 'mps', 'lambda');
+        load(strcat(folder, naam), 'mps', 'lambda', 'eta');
         gs_mps = canonicalize(mps, 'Order', 'rl');
         gs_energy = lambda;
     else
-        load(strcat(folder, naam), 'gs_mps', 'gs_energy');
+        load(strcat(folder, naam), 'gs_mps', 'gs_energy', 'eta');
     end
 
     disp(naam);
@@ -171,11 +172,20 @@ for i = 3:l
         variances{k} = var_A.var.var;
     end
     if check_SC
-        SC_list = get_SC_order_parameter_april(gs_mps, N, P, Q, 50, k, tot_bonddims{k}, 'symmetries', symmetries);
-        SC_order_parameter_list{k} = SC_list;
-        SC_order_parameter_sums{k} = sum(cell2mat(SC_list));
-        disp('ok');
+
+        if strcmp(symmetries, 'U1_SU2')
+            [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
+        elseif strcmp(symmetries, 'None_SU2')
+            [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered_None_SU2();
+        else
+            error('invalid symmetry');
+        end
+        [all_lists, lists_average, total_sum] = get_SC_order_parameter_april(gs_mps, N, P, Q, 50, k, tot_bonddims{k}, 'symmetries', symmetries, 'operators', [L1 L2 L3 L4]);
+        SC_all_lists{k} = all_lists;
+        SC_lists_average{k} = lists_average;
+        SC_total_sum{k} = total_sum;
     end
+    fprintf('Done for k = %i \n', k);
     k = k+1;
 end
 

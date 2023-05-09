@@ -1,4 +1,4 @@
-function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, file, bonddim, kwargs)
+function [all_lists, lists_average, total_sum] = get_SC_order_parameter_april(gs_mps, N, P, Q, max_dist, file, bonddim, kwargs)
     arguments
         gs_mps
         N
@@ -8,15 +8,20 @@ function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P,
         file
         bonddim
         kwargs.symmetries = 'U1_SU2'
+        kwargs.operators = []
     end
-    
-    if strcmp(kwargs.symmetries, 'U1_SU2')
-        [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
-    elseif strcmp(kwargs.symmetries, 'None_SU2')
-        [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered_None_SU2();
+    if isempty(kwargs.operators)
+        if strcmp(kwargs.symmetries, 'U1_SU2')
+            [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
+        elseif strcmp(kwargs.symmetries, 'None_SU2')
+            [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered_None_SU2();
+        else
+            error('invalid symmetry');
+        end
     else
-        error('invalid symmetry');
+        [L1, L2, L3, L4] = kwargs.operators();
     end
+
 %    load('operators.mat');
     disp('Operators are defined');
     AC = gs_mps.AC;
@@ -116,9 +121,13 @@ function [all_lists, lists_average] = get_SC_order_parameter_april(gs_mps, N, P,
        lists_average(i) = som;
     end
     
+    total_sum = sum(lists_average);
+
+    %{
     function O_next = further(O, AR, i)
         O_next = contract(O, [1 2 -3], AR(i), [1 3 -1], conj(AR(i)), [2 3 -2]);
     end
+    %}
 
     function O = few_steps(O, AR, i_start, steps, w)
         for step = 0:steps-1

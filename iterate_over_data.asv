@@ -27,8 +27,13 @@ check_stag_magn = false;
 check_variances = false;
 check_SC = true;
 
+all_sectors = cell(1,number_of_files);
+energies = cell(1,number_of_files);
+energies_per_site = cell(1,number_of_files);
+etas = cell(1,number_of_files);
 self_interaction_energies = cell(1,number_of_files);
 deltas = cell(1,number_of_files);
+deltas_42 = cell(1,number_of_files);
 epsilon1s = cell(1,number_of_files);
 deltas_charge = cell(1,number_of_files);
 epsilon1s_charge = cell(1,number_of_files);
@@ -52,23 +57,23 @@ for i = 3:l
         name_l = length(naam);
     end
     if ~strcmp(naam(name_l-9:name_l), '_final.mat')
-        load(strcat(folder, naam), 'mps', 'lambda');
+        load(strcat(folder, naam), 'mps', 'lambda', 'eta');
         gs_mps = canonicalize(mps, 'Order', 'rl');
         gs_energy = lambda;
     else
-        load(strcat(folder, naam), 'gs_mps', 'gs_energy');
+        load(strcat(folder, naam), 'gs_mps', 'gs_energy', 'eta');
     end
 
     disp(naam);
-    dimensions = dims(gs_mps.AL(1).var);
+    w = period(gs_mps);
     tot_bonddims{k} = get_tot_bonddim(gs_mps);
+
     energies{k} = gs_energy;
-    disp(U);
-    Us{k} = U;
+    energies_per_site{k} = gs_energy/w;
     etas{k} = eta;
 
     if check_separate_energies
-        filling{k} = P/Q;
+        fillings{k} = P/Q;
         if mod(P,2) == 0
             unit_cell{k} = Q;
         else
@@ -165,6 +170,20 @@ for i = 3:l
         disp(var_A.var.var);
         variances{k} = var_A.var.var;
     end
+    if check_SC
+
+        if strcmp(symmetries, 'U1_SU2')
+            [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered(P, Q);
+        elseif strcmp(symmetries, 'None_SU2')
+            [L1, L2, L3, L4] = Hubbard_operators_superconductivity_ordered_None_SU2();
+        else
+            error('invalid symmetry');
+        end
+        [all_lists, lists_average, total_sum] = get_SC_order_parameter_april(gs_mps, N, P, Q, 50, k, tot_bonddims{k}, 'symmetries', symmetries, 'operators', [L1 L2 L3 L4]);
+        SC_order_parameter_list{k} = SC_list;
+        SC_all_lists{k} = all_lists
+    end
+    fprintf('Done for k = %i \n', k);
     k = k+1;
 end
 
