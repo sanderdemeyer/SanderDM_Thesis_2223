@@ -13,6 +13,9 @@ function O = get_spin_spin_operator(P, Q, kwargs)
     elseif strcmp(kwargs.symmetries, 'U1_U1')
         pspace = get_spaces_Hubbard_asymmetric(P, Q);
         O_vars = num2cell([0 0 0 0 0 0 0 0 0 1/4 0 0 0 0 0 1/2 -1/4 0 0 -1/4 1/2 0 0 0 0 0 1/4 0 0 0 0 0 0 0 0 0]);
+    elseif strcmp(kwargs.symmetries, 'None_SU2')
+        error('TBA');
+        pspace = get_spaces_Hubbard_None_SU2();
     end
     O = Tensor([pspace pspace], [pspace pspace]);
     O = fill_tensor(O, O_vars);

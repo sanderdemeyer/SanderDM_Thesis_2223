@@ -45,7 +45,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_oneband(N, model, P, Q, rungs, t
     assert(mod(rungs*N, len) == 0, 'Trying to create a unit cell of %d (N) x %d (rungs) = %d, while the period of the mps has to be a multiple of %d due to filling %d / %d \n', N, rungs, N*rungs, len, P, Q);
     disp('Code started running');
 
-    H1 = get_Hubbard_JMpo_oneband(t, t2, U, V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries);
+    H1 = get_Hubbard_JMpo_oneband(t, t2, U, V, 'P', P, 'Q', Q, 'system', {'Cylinder_multiple_rungs', N, rungs}, 'convention', kwargs.convention, 'symmetries', kwargs.symmetries, 'mu', kwargs.mu);
 
     if iscell(finalized)
         if strcmp(finalized{1}, 'multiply')
@@ -93,7 +93,7 @@ function [gs_mps, gs_energy] = Hubbard_cylinder_oneband(N, model, P, Q, rungs, t
     end
     disp('initialization correct');
 
-    name = 'Hubbard_FullCylinder_' + string(model) + '_N_' + string(N) + '_t_' + string(t) + '_U_' + string(U) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_t2_' + string(t2) + '_V_' + string(V);
-    
+    name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(kwargs.mu);
+
     [gs_mps, gs_energy, eta] = doVumps(H1, mps, vumps_way, maxiter, trunc, tol, name, 'trunc_method', kwargs.trunc_method);
 end
