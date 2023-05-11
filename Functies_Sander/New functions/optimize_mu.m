@@ -8,10 +8,10 @@ function optimize_mu(starting_mu, second_mu, target_filling, error)
     gs_mps = Hubbard_cylinder_oneband(2, 'Hg_oneband1', 0, 0, 1, 4, [20 20 20 50], 7, -2, 0, 0, 'symmetries', 'None_SU2', 'mu', starting_mu);
     mus{1} = starting_mu;
     fillings{1} = get_filling(gs_mps);
-    prev_name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(starting_mu);
+    prev_name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(starting_mu) + '_trunctotdim_4_final.mat';
 
     gs_mps = Hubbard_cylinder_oneband(2, 'Hg_oneband1', 0, 0, 1, 4, [20 20 20 50], 7, -2, prev_name, 2, 'symmetries', 'None_SU2', 'mu', second_mu);
-    prev_name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(second_mu);
+    prev_name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(second_mu) + '_trunctotdim_4_final.mat';
     mus{2} = second_mu;
     fillings{2} = get_filling(gs_mps);
 
@@ -25,6 +25,6 @@ function optimize_mu(starting_mu, second_mu, target_filling, error)
         fillings{k} = get_filling(gs_mps);
         fprintf('For mu = %d, filling = %d \n', mu, fillings{k});
         k = k+1;
-        prev_name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(mu);
+        prev_name = 'Hubbard_FullCylinder_oneband_' + string(model) + '_N_' + string(N) + '_P_' + string(P) + '_Q_' + string(Q) + '_rungs_' + string(rungs) + '_mu_' + string(mu) + '_trunctotdim_4_final.mat';
     end
 end

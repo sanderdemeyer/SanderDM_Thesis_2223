@@ -13,7 +13,6 @@ function H = get_Hubbard_JMpo_oneband(t, t2, U, V, kwargs)
         kwargs.mu = 0
         kwargs.convention = 'conventional'
     end
-    assert(strcmp(kwargs.symmetries, 'U1_SU2'), 'TBA symmetry');
     assert(strcmp(kwargs.system{1}, 'Cylinder_multiple_rungs'), 'TBA system');
 
     if strcmp(kwargs.symmetries, 'U1_SU2')
@@ -23,10 +22,10 @@ function H = get_Hubbard_JMpo_oneband(t, t2, U, V, kwargs)
         V_term = Hubbard_V_Hamiltonian(pspace, trivspace, V, 'convention', kwargs.convention);
         U_term = Hubbard_Onesite_Hamiltonian_SU2(pspace, trivspace, U);
     elseif strcmp(kwargs.symmetries, 'None_SU2')
-        [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D', kwargs.D);
-        Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
-        Hopping_t2 = Hubbard_Hopping_Hamiltonian_None_SU2(t2, kwargs.P, kwargs.Q, 'convention', kwargs.convention);
-        V_term = Hubbard_V_Hamiltonian(pspace, trivspace, V, 'convention', kwargs.convention);
+        [pspace, ~, trivspace] = get_spaces_Hubbard_None_SU2('D1', kwargs.D, 'D2', kwargs.D);
+        Hopping_t = Hubbard_Hopping_Hamiltonian_None_SU2(t, 'convention', kwargs.convention);
+        Hopping_t2 = Hubbard_Hopping_Hamiltonian_None_SU2(t2, 'convention', kwargs.convention);
+        V_term = Hubbard_V_Hamiltonian_None_SU2(pspace, trivspace, V, 'convention', kwargs.convention);
         U_term_base = Hubbard_Onesite_Hamiltonian_None_SU2(pspace, trivspace, U);
         H_mu_term = Hubbard_chemical_potential(pspace, trivspace, kwargs.mu);
         U_term = U_term_base + H_mu_term;
