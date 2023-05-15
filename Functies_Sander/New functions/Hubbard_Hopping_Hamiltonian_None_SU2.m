@@ -8,7 +8,7 @@ function cdc = Hubbard_Hopping_Hamiltonian_None_SU2(t, kwargs)
     assert(strcmp(kwargs.convention, 'conventional'), 'Only convention = conventional is implemented.');
 
     pspace = get_spaces_Hubbard_None_SU2();
-tic
+
     singlet_charge = ProductCharge(SU2(2), fZ2(1));
     singlet_space = GradedSpace.new(singlet_charge, 1, false);
 
