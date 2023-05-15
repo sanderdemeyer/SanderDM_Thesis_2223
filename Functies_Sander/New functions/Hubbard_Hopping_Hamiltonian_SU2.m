@@ -6,7 +6,6 @@ function cdc = Hubbard_Hopping_Hamiltonian_SU2(t, P, Q, kwargs)
         kwargs.convention = 'conventional'
     end
         
-    %[pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
     pspace = get_spaces_Hubbard_SU2(P, Q);
 
     %{

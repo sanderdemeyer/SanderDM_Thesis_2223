@@ -6,7 +6,6 @@ function cdc = Hubbard_Hopping_Hamiltonian_SU2_individual(t, P, Q, kwargs)
         kwargs.convention = 'conventional'
     end
         
-    %[pspace, vspaces, trivspace, prodspace, fusion_trees] = get_spaces('Hubbard', false, P, Q, 12, 3);
     pspace = get_spaces_Hubbard_SU2(P, Q);
 
 
@@ -15,9 +14,6 @@ function cdc = Hubbard_Hopping_Hamiltonian_SU2_individual(t, P, Q, kwargs)
 
     c_dagger = Tensor(pspace, [pspace singlet_space]);
     c = Tensor([singlet_space pspace], pspace);
-
-    %c_dagger_data = {1 sqrt(2)};
-    %c_data = {1 -sqrt(2)};
 
     c_dagger_data = {1 sqrt(2)};
     c_data = {1 sqrt(2)};

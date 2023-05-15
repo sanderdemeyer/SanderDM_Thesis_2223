@@ -1,6 +1,7 @@
-function [corr_list_density, SC_lists_average] = order_parameters(gs_mps, kwargs)
+function [corr_list_density, SC_lists_average] = order_parameters(gs_mps, N, kwargs)
     arguments
         gs_mps
+        N
         kwargs.symmetries = 'None_SU2'
         kwargs.max_dist = 250
         kwargs.P = 0
@@ -10,7 +11,8 @@ function [corr_list_density, SC_lists_average] = order_parameters(gs_mps, kwargs
 
     O_hole = hole_density_operator();
     corr_list_density = correlation_function({O_hole O_hole}, gs_mps, kwargs.max_dist, 'separate');
-
+    disp('Density correlation function done');
+    
     [~, SC_lists_average, ~] = get_SC_order_parameter_april(gs_mps, N, kwargs.P, kwargs.Q, kwargs.max_dist, 0, 0, 'symmetries', kwargs.symmetries);
 
 end
