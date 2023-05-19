@@ -101,6 +101,9 @@ function [O, O2, O3, O4] = Hubbard_operators(type, P, Q)
         O = cdc;
     elseif strcmp('nn', type)
         O = nn2;
+    elseif strcmp('number_operators', type)
+        O = contract(c_up, [1 2 -2], c_dagger_up, [-1 2 1]);
+        O2 = contract(c_down, [1 2 -2], c_dagger_down, [-1 2 1]);
     else
         error('Type does not exist');
     end
