@@ -43,7 +43,7 @@ function phi_yy_list = get_SC_phi_yy(gs_mps, N, P, Q, max_dist, kwargs)
     L_values{N} = contract(L_N_value, [1 2 -3 4], AR(N), [1 3 -1], L1, [5 4 3], conj(AR(N)), [2 5 -2]);
 
     for i = 0:max_dist-1
-        fprintf('Started for distance i = %d \n', i+1);
+        %fprintf('Started for distance i = %d \n', i+1);
         phi_yy_list_i = zeros(1,N);
         
         for b = 1:N-1
