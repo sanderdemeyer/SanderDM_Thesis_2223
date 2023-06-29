@@ -95,7 +95,7 @@ legend(legend_bonddim);
 %% Using only the exponents
 figure;
 hold on;
-scatter(cell2mat(deltas_42), cell2mat(exp_SC_list));
+scatter(cell2mat(deltas_42), cell2mat(exp_SC_disconnected_list));
 scatter(cell2mat(deltas_42), cell2mat(exp_density_list));
 legend('SC', 'density');
 xlabel('$$ \delta_{42} $$', 'interpreter', 'latex');

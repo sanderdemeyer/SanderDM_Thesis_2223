@@ -1,4 +1,4 @@
-function phi_yy_list = get_SC_phi_yy(gs_mps, N, P, Q, max_dist, kwargs)
+function phi_yy_list = get_SC_phi_yy_multiple_rungs(gs_mps, N, P, Q, max_dist, kwargs)
     arguments
         gs_mps
         N
@@ -29,7 +29,7 @@ function phi_yy_list = get_SC_phi_yy(gs_mps, N, P, Q, max_dist, kwargs)
     AR = gs_mps.AR;
     w = period(gs_mps);
 
-    assert(w == N);
+    assert(mod(w, N) == 0);
     
     phi_yy_list = zeros(1, max_dist);
     L_values = cell(0, N);

@@ -3,12 +3,13 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
     folder_base = '\home\sanddmey\Data_and_analysis_getting_the_dome_2023_06_09/';
     folder_base = 'Data structures\Superconductivity - None_SU2\oneband_Hg\Getting the Dome\';
     
-    max_dist = 1000;
+    max_dist = 500;
     
     O_hole = hole_density_operator();
     load('operators_SC.mat');
 
     folder = strcat(folder_base, string(mu), '/');
+    %folder = 'Data structures\Superconductivity - None_SU2\mu_m1.6428/';
     disp(folder);
     %folder = folder_base;
     number_of_files = length(dir(fullfile(folder,'**','*.mat')));
@@ -55,7 +56,7 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
         string_trunctotdim = strfind(naam,'trunctotdim');
         string_final = strfind(naam,'final');
     
-        mu = str2double(naam(string_mu+3:string_trunctotdim-2));
+        %mu = str2double(naam(string_mu+3:string_trunctotdim-2));
         if isempty(string_final)
             string_mat = strfind(naam, 'mat');
             trunc = str2double(naam(string_trunctotdim+12:string_mat-2));
@@ -78,8 +79,8 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
             check_trunc_list{k} = 1;
 
             phi_yy_list = get_SC_phi_yy(gs_mps, 2, 0, 0, max_dist, 'symmetries', 'None_SU2', 'operators', {L1 L2 L3 L4});
-            corr_list_density = correlation_function({O_hole O_hole}, gs_mps, 2*max_dist, 'separate');
-            scatter((1:2*max_dist), log(corr_list_density-corr_list_density(end))); 
+            corr_list_density = correlation_function({O_hole O_hole}, gs_mps, max_dist, 'separate');
+            scatter((1:max_dist), log(corr_list_density-corr_list_density(end))); 
             hold on; 
             scatter((1:max_dist), log(phi_yy_list)); 
             hold off; 
@@ -88,9 +89,12 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
             ylabel('log of the correlation function')
             title(sprintf('Comparison between the pair-pair and hole density correlation functions - mu = %d, trunc = %d', mu, round(trunc,2)));
             
-            [exp_SC, maximum_x, maximum_corr] = fit_correlation_function_contour(phi_yy_list, 'connected', true);
-            [exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function_contour(phi_yy_list, 'connected', false);
-            [exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function_contour(corr_list_density, 'connected', false);
+            %[exp_SC, maximum_x, maximum_corr] = fit_correlation_function_contour(phi_yy_list, 'connected', true);
+            %[exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function_contour(phi_yy_list, 'connected', false);
+            %[exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function_contour(corr_list_density, 'connected', false);
+            [exp_SC, maximum_x, maximum_corr] = fit_correlation_function(phi_yy_list, 'connected', true);
+            [exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function(phi_yy_list, 'connected', false);
+            [exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function(corr_list_density, 'connected', false, 'edges', [5.5 6]);
 
             phi_yy_list_list{k} = phi_yy_list;
             corr_list_density_list{k} = corr_list_density;
