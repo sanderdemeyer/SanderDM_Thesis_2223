@@ -35,7 +35,7 @@ function phi_yy_list = get_SC_phi_yy(gs_mps, N, P, Q, max_dist, kwargs)
     L_values = cell(0, N);
 
     for b = 1:N-1
-        fprintf('Started for distance b = %d \n', b);
+        %fprintf('Started for distance b = %d \n', b);
         L_value_b = contract(AC(b), [1 2 3], AR(b+1), [3 4 -1], L1, [5 6 2], L2, [6 9 -3 4], conj(AC(b)), [1 5 7], conj(AR(b+1)), [7 9 -2]);
         L_values{b} = few_steps(L_value_b, AR, b+2, N-2, w);
     end
@@ -44,7 +44,7 @@ function phi_yy_list = get_SC_phi_yy(gs_mps, N, P, Q, max_dist, kwargs)
     L_values{N} = contract(L_N_value, [1 2 -3 4], AR(N), [1 3 -1], L1, [5 4 3], conj(AR(N)), [2 5 -2]);
 
     for i = 0:max_dist-1
-        fprintf('Started for distance i = %d \n', i+1);
+        %fprintf('Started for distance i = %d \n', i+1);
         phi_yy_list_i = zeros(1,N);
         
         for b = 1:N-1

@@ -2,10 +2,10 @@ function [exponent, maximum_x, maximum_corr] = fit_correlation_function(corr_lis
     arguments
         corr_list
         kwargs.connected = true
-        kwargs.edges = [5.4 5.95]
-
+        kwargs.edges = [3.5 4.6] %[5.4 5.95] %[3.5 4.3]
     end
     % fit the correlation function
+    % For most of the oneband model: 5.4 till 5.95 seems to work
     if kwargs.connected
         corr = log(abs(corr_list));
     else
@@ -20,6 +20,7 @@ function [exponent, maximum_x, maximum_corr] = fit_correlation_function(corr_lis
     %log_x = log_x(start:end);
 
     bin_width = 0.05;
+    bin_width = 0.5; %0.25
     starting_point = 5;
     end_point = 5.7;
     starting_point = 5.4;
