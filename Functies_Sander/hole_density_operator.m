@@ -9,9 +9,13 @@ function O = hole_density_operator(symmetries, kwargs)
         pspace = get_spaces_Hubbard_None_SU2();
         tens_one_site = Tensor(pspace, pspace);
         O = fill_tensor(tens_one_site, {reshape([1 0; 0 -1], 2, 2), 0});
-    elseif strcmp(symmetries, 'U1_SU2')
+    elseif strcmp(symmetries, 'U1_U1')
         pspace = get_spaces_Hubbard_asymmetric(kwargs.P,kwargs.Q);
         tens_one_site = Tensor(pspace, pspace);
         O = fill_tensor(tens_one_site, {1 0 0 -1});
+    elseif strcmp(symmetries, 'U1_SU2')
+        pspace = get_spaces_Hubbard_SU2(kwargs.P,kwargs.Q);
+        tens_one_site = Tensor(pspace, pspace);
+        O = fill_tensor(tens_one_site, {1 0 -1});
     end
 end
