@@ -16,9 +16,9 @@ function fit_correlation_function_sine(corr_list, kwargs)
 
     %model = @(n0, A, lambda, phi, exponent, x) n0 + A*sin((2*pi/lambda)*x+phi).*(x.^exponent);
     model = @(A, phi, lambda, exponent, x) A*sin((2*pi/lambda)*x+phi).*(x.^exponent);
-    model = @(y0, A, lambda, phi, x) y0 - A*sin((2*pi/lambda)*x+phi).*x;
+    model = @(y0, A, lambda, phi) y0 - A*sin((2*pi/lambda)*x+phi).*x;
     fitfun = fittype(model);
-    fittedmodel = fit(x, log(y), fitfun, 'StartPoint', [1000 1.1 8 -2.2], 'MaxIter', 100000, 'TolFun', 10^(-10));
+    fittedmodel = fit(x, y, fitfun, 'StartPoint', [1000 1.1 8 -2.2], 'MaxIter', 100000, 'TolFun', 10^(-10));
     bounds = confint(fittedmodel);
     disp(fittedmodel);
     

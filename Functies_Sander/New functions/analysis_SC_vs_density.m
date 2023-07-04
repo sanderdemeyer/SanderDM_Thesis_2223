@@ -1,12 +1,23 @@
-function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu)
+function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu, kwargs)
+    arguments
+        mu
+        kwargs.symmetries = 'None_SU2'
+        kwargs.P = 7
+        kwargs.Q = 8
+    end
+
     folder_base = 'Data structures\Superconductivity - None_SU2\oneband_Hg\Getting the Dome\';
     folder_base = '\home\sanddmey\Data_and_analysis_getting_the_dome_2023_06_09/';
     folder_base = 'Data structures\Superconductivity - None_SU2\oneband_Hg\Getting the Dome\';
     
     max_dist = 500;
     
-    O_hole = hole_density_operator();
-    load('operators_SC.mat');
+    O_hole = hole_density_operator(kwargs.symmetries, 'P', kwargs.P, 'Q', kwargs.Q);
+    if strcmp(kwargs.symmetries, 'None_SU2')
+        load('operators_SC.mat');
+    elseif strcmp(kwargs.symmetries, 'U1_SU2')
+        load('operators_SC_P_7_Q_8.mat');
+    end
 
     folder = strcat(folder_base, string(mu), '/');
 
@@ -88,8 +99,12 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
         disp(trunc);
         if eta < 10^(-trunc) && trunc > 3.8
             check_trunc_list{k} = 1;
-
-            phi_yy_list = get_SC_phi_yy(gs_mps, 2, 0, 0, max_dist, 'symmetries', 'None_SU2', 'operators', {L1 L2 L3 L4});
+        
+            if strcmp(kwargs.symmetries, 'None_SU2')
+                phi_yy_list = get_SC_phi_yy(gs_mps, 2, 0, 0, max_dist, 'symmetries', 'None_SU2', 'operators', {L1 L2 L3 L4});
+            elseif strcmp(kwargs.symmetries, 'U1_SU2')
+                phi_yy_list = get_SC_phi_yy_multiple_rungs(gs_mps, 2, kwargs.P, kwargs.Q, max_dist, 'symmetries', 'U1_SU2', 'operators', {L1 L2 L3 L4});
+            end
             corr_list_density = correlation_function({O_hole O_hole}, gs_mps, max_dist, 'separate');
             scatter((1:max_dist), log(corr_list_density-corr_list_density(end))); 
             hold on; 
@@ -103,6 +118,7 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
             %[exp_SC, maximum_x, maximum_corr] = fit_correlation_function_contour(phi_yy_list, 'connected', true);
             %[exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function_contour(phi_yy_list, 'connected', false);
             %[exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function_contour(corr_list_density, 'connected', false);
+
             [exp_SC, maximum_x, maximum_corr] = fit_correlation_function(phi_yy_list, 'connected', true);
             [exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function(phi_yy_list, 'connected', false);
             [exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function(corr_list_density, 'connected', false);%, [5.5 6]);
