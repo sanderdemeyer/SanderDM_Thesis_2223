@@ -1,8 +1,10 @@
 function [list_D, list_angles, list_charges, list_charges_strings] = plot_transfereigs_None_SU2(gs_mps, kwargs)
     arguments
         gs_mps
-        kwargs.sectors = 5
+        kwargs.sectors = 20
         kwargs.howmany = 25
+        kwargs.symmetries = 'None_SU2'
+        kwargs.charges = {[1 2 1] [-23 1 0] [-23 3 0] [-15 2 1] [-15 4 1] [-7 1 0] [-7 3 0] [-7 5 0] [1 4 1] [1 6 1] [9 1 0] [9 3 0] [9 5 0] [17 2 1] [17 4 1] [17 6 1] [25 1 0] [25 3 0] [25 5 0] [33 2 1]}
     end
 
     if length(kwargs.howmany) == 1
@@ -19,7 +21,12 @@ function [list_D, list_angles, list_charges, list_charges_strings] = plot_transf
     figure;
     for i = 1:kwargs.sectors
         disp(i);
-        charge = ProductCharge(SU2(i), fZ2(mod(i+1,2)));
+        if strcmp(kwargs.symmetries, 'None_SU2')
+            charge = ProductCharge(SU2(i), fZ2(mod(i+1,2)));
+        else
+            charges = kwargs.charges{i};
+            charge = ProductCharge(U1(charges(1)), SU2(charges(2)), fZ2(charges(3)));
+        end
         list_charges{i} = charge;
         [~, D] = transfereigs(gs_mps, gs_mps, kwargs.howmany(i), 'largestabs', 'Charge', charge); %, 'Type', 'l_LL');
         Diag = diag(D);

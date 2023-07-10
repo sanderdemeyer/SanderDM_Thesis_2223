@@ -4,17 +4,19 @@ folder = 'Data structures/Hubbard_1D_U_6_new/Important/';
 folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
 
 folder = 'Data structures\Superconductivity - None_SU2\mu_m1.6428/';
+folder = 'Data structures\Superconductivity\test_entanglement_spectra\nice\Simple Hubbard\N_2_P_7_Q_8_extrapolation/';
+folder = 'Data structures\Superconductivity\test_entanglement_spectra\nice\Simple Hubbard\N_4_P_7_Q_8/';
 number_of_files = length(dir(fullfile(folder,'**','*.mat')));
 %    'test_entanglement_spectra\nice\N_2_P_7_Q_8_extrapolation/'];
 files = dir((folder));
 l = length(files);
 disp('started');
 
-symmetries = 'None_SU2';
+symmetries = 'U1_SU2';
 
 P = 7;
 Q = 8;
-N = 2;
+N = 4;
 rungs = 8;
 
 check_separate_energies = false;
@@ -22,10 +24,10 @@ check_transfereigs = true;
 check_transfereigs_charge = false;
 check_transfereigs_spin = false;
 SU2 = true;
-check_occupancies = false;
+check_occupancies = true;
 check_stag_magn = false;
 check_variances = false;
-check_SC = true;
+check_SC = false;
 
 all_sectors = cell(1,number_of_files);
 energies = cell(1,number_of_files);
@@ -44,9 +46,9 @@ matr_occ = cell(1,number_of_files);
 stag_magn = cell(1,number_of_files);
 variances = cell(1,number_of_files);
 tot_bonddims = cell(1,number_of_files);
-SC_all_lists{k} = cell(1,number_of_files);
-SC_lists_average{k} = cell(1,number_of_files);
-SC_total_sum{k} = cell(1,number_of_files);
+%SC_all_lists{k} = cell(1,number_of_files);
+%SC_lists_average{k} = cell(1,number_of_files);
+%SC_total_sum{k} = cell(1,number_of_files);
 
 k = 1;
 for i = 3:l
@@ -142,7 +144,7 @@ for i = 3:l
         disp('Spin sector done');
     end
     if check_occupancies
-        occupancies{k} = get_occupancies(gs_mps, P, Q, N, rungs, 'SU2', SU2, 'plot', false);
+        occupancies{k} = get_occupancies(gs_mps, P, Q, N, rungs, 'symmetries', symmetries, 'plot', false);
         matr_occ{k} = reshape(real(1-occupancies{k}), N, rungs);
     end
     if check_stag_magn

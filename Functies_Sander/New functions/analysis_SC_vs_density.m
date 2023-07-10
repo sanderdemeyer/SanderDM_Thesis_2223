@@ -119,12 +119,22 @@ function [exp_SC_list, exp_density_list, phase_list] = analysis_SC_vs_density(mu
             %[exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function_contour(phi_yy_list, 'connected', false);
             %[exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function_contour(corr_list_density, 'connected', false);
 
+            edges_density = [3.6 4.7 0.35];
+            edges_SC = [3 5 0.35];
             [exp_SC, maximum_x, maximum_corr] = fit_correlation_function(phi_yy_list, 'connected', true);
-            [exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function(phi_yy_list, 'connected', false);
-            [exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function(corr_list_density, 'connected', false);%, [5.5 6]);
+            [exp_SC_disconnected, maximum_x_disc, maximum_corr_disc] = fit_correlation_function(phi_yy_list, 'connected', false, 'edges', edges_SC); %[4 5 0.25]);
+            [exp_density, maximum_x_dens, maximum_corr_dens] = fit_correlation_function(corr_list_density, 'connected', false, 'edges', edges_density); % [5.6 6.15 0.14]);%, [5.5 6]);
 
-            % for mu = -1.6428: SC_disconnected: 'edges', [3.8 4.8].
+            % for mu = -1.6428: SC_disconnected: 'edges', [3.8 4.8]. See
+            % below
             % density: 'edges', [4.25 5.25]
+            % mu = -10.607: phi_yy: [4 5 0.25]. [5.6 6.15 0.14]
+            % simple Hubbard, mu = -1.6428: phi_yy: [3 5 0.35] density:
+            % [4.4 5.9 0.2], new edges_density = [3.6 4.7 0.35];
+            % oneband, mu = -6.5: edges_density = [5 6 0.15]; edges_SC = [3.5 5.2 0.2];
+
+            % U1xSU2 SC: 
+            % oneband: phi_yy: []. Density: [
             phi_yy_list_list{k} = phi_yy_list;
             corr_list_density_list{k} = corr_list_density;
             exp_SC_list{k} = exp_SC;

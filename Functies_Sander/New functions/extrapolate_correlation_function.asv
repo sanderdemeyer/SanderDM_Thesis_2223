@@ -106,9 +106,8 @@ hold off;
 
 %% Only using the exponents - SC
 
-x = cell2mat(deltas_42)';
-y = cell2mat(exp_SC_disconnected_list)';
-y = cell2mat(exp_density_list)';
+x = cell2mat(deltas_42(3:end))';
+y = cell2mat(exp_SC_list(3:end))';
 
 model =  @(f,a,b,x) f + a*x.^b;
 fitfun = fittype(model);

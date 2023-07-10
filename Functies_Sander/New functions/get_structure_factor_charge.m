@@ -23,5 +23,5 @@ function [s, corr] = get_structure_factor_charge(gs_mps, P, Q, max_dist, kwargs)
     disp('corr_list saved!')
 
     struct = namedargs2cell(kwargs);
-    s = get_structure_factor({O_alpha, O_beta}, gs_mps, max_dist, kwargs.operator_type, struct{5:end});
+    s = get_structure_factor({O_alpha, O_beta}, gs_mps, max_dist, kwargs.operator_type, struct{5:end}, 'corr', corr);
 end
