@@ -6,6 +6,9 @@ folder = 'Data structures/Hubbard Helix/t_1_U_8/N_13/';
 folder = 'Data structures\Superconductivity - None_SU2\mu_m1.6428/';
 folder = 'Data structures\Superconductivity\test_entanglement_spectra\nice\Simple Hubbard\N_2_P_7_Q_8_extrapolation/';
 folder = 'Data structures\Superconductivity\test_entanglement_spectra\nice\Simple Hubbard\N_4_P_7_Q_8/';
+
+folder = 'Data structures\Helix_N_3_postchange/';
+
 number_of_files = length(dir(fullfile(folder,'**','*.mat')));
 %    'test_entanglement_spectra\nice\N_2_P_7_Q_8_extrapolation/'];
 files = dir((folder));
@@ -24,8 +27,8 @@ check_transfereigs = true;
 check_transfereigs_charge = false;
 check_transfereigs_spin = false;
 SU2 = true;
-check_occupancies = true;
-check_stag_magn = false;
+check_occupancies = false;
+check_stag_magn = true;
 check_variances = false;
 check_SC = false;
 

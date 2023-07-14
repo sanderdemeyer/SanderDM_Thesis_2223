@@ -108,7 +108,7 @@ hold off;
 
 x = cell2mat(deltas_42)';
 y = cell2mat(exp_SC_disconnected_list)';
-y = cell2mat(exp_density_list)';
+%y = cell2mat(exp_density_list)';
 
 model =  @(f,a,b,x) f + a*x.^b;
 fitfun = fittype(model);

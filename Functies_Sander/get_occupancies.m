@@ -88,5 +88,10 @@ function [charge_occupancies_matrix, spin_occupancies, Cu_occupancies] = get_occ
         for i = 0:N/3-1
             Cu_occupancies(i+1,:) = charge_occupancies_matrix(3*i + 1,:);
         end
+        O_occupancies = zeros(2*N/3, rungs);
+        for i = 0:N/3-1
+            O_occupancies(2*i+1,:) = charge_occupancies_matrix(3*i + 2,:);
+            O_occupancies(2*i+2,:) = charge_occupancies_matrix(3*i + 3,:);
+        end
     end
 end

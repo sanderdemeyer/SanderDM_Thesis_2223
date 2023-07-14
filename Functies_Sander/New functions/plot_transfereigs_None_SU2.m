@@ -4,7 +4,8 @@ function [list_D, list_angles, list_charges, list_charges_strings] = plot_transf
         kwargs.sectors = 20
         kwargs.howmany = 25
         kwargs.symmetries = 'None_SU2'
-        kwargs.charges = {[1 2 1] [-23 1 0] [-23 3 0] [-15 2 1] [-15 4 1] [-7 1 0] [-7 3 0] [-7 5 0] [1 4 1] [1 6 1] [9 1 0] [9 3 0] [9 5 0] [17 2 1] [17 4 1] [17 6 1] [25 1 0] [25 3 0] [25 5 0] [33 2 1]}
+        kwargs.charges_old = {[1 2 1] [-23 1 0] [-23 3 0] [-15 2 1] [-15 4 1] [-7 1 0] [-7 3 0] [-7 5 0] [1 4 1] [1 6 1] [9 1 0] [9 3 0] [9 5 0] [17 2 1] [17 4 1] [17 6 1] [25 1 0] [25 3 0] [25 5 0] [33 2 1]}
+        kwargs.charges = {[-3 2 1] [-3 4 1] [-2 1 0] [-2 3 0] [-2 5 0] [-1 2 1] [-1 4 1] [-1 6 1] [-1 8 1] [0 1 0] [0 3 0] [0 5 0] [0 7 0] [1 2 1] [1 4 1]}
     end
 
     if length(kwargs.howmany) == 1
@@ -16,6 +17,7 @@ function [list_D, list_angles, list_charges, list_charges_strings] = plot_transf
 
     list_D = cell(1, kwargs.sectors);
     list_angles = cell(1, kwargs.sectors);
+    list_angles_norm = cell(1, kwargs.sectors);
     list_charges = cell(1, kwargs.sectors);
     list_charges_strings = cell(1, kwargs.sectors);
     figure;
@@ -32,6 +34,7 @@ function [list_D, list_angles, list_charges, list_charges_strings] = plot_transf
         Diag = diag(D);
         list_D{i} = Diag;
         list_angles{i} = angle(Diag);
+        list_angles_norm{i} = angle(Diag)/pi;
         list_charges_strings{i} = 'SU2(' + string(i) + ') x fZ2(' + string(mod(i+1,2)) + ')';
         scatter(real(Diag), imag(Diag));
         hold on
@@ -48,5 +51,5 @@ function [list_D, list_angles, list_charges, list_charges_strings] = plot_transf
     hold off;
     
     figure;
-    histogram(cat(1, list_angles{:}), 300);
+    histogram(cat(1, list_angles_norm{:}), 300);
 end

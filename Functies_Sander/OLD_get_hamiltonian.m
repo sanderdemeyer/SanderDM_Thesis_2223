@@ -1,4 +1,4 @@
-function H = get_hamiltonian(type, varargin)
+function H = OLD_get_hamiltonian(type, varargin)
 % The following types are implemented:
 % * Hubbard: Full Hubbard hamiltonian
 % * Hubbard_external_field: Full Hubbard hamiltonian in an external field
